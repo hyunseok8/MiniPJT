@@ -1,0 +1,15 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive    100%  (5/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체          100%  (12/12)
+
+[도구 오류 - 외부 장애일 수 있음]
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/trail-running/iceland'
+For more information check: https://developer.m
+N-02: search_web: 검색 실패: auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out / bing: error sending request for url (https://ht
+N-02: search_web: 검색 실패: auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out / bing: error sending request for url (https://ht
+E-03: search_races: 검색 실패: auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out / bing: error sending request for url (https://ht
+E-03: geocode: 장소를 찾지 못했다: Thai Smile Bus Headquarters, Charoen Nakhon, Bangkok

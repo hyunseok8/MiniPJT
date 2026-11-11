@@ -1,0 +1,12 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     67%  (2/3)
+전체           67%  (2/3)
+
+[실패 문항]
+P-03 (positive) 교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘
+  - 금지 항목 위반: 고저차를 '완만' 같은 말로만 표기
+    근거: 답변 표의 고저차 열에서: 가모가와 공원 '21m', 마루야마 공원 '39m', 헤이안 신궁 정원 '3m', 오카자키 공원 '4m', 교토 교엔 '확인 불가', 철학의 길 '완만한 오르막'. 철학의 길에서 '완만한 오르막'이라고만 표기하여 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: search_races: 검색 실패: auto: No results found. / bing: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect)

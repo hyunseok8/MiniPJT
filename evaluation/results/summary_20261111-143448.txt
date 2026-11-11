@@ -1,0 +1,26 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     60%  (3/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           83%  (10/12)
+
+[실패 문항]
+P-01 (positive) 내년 봄에 갈 만한 해외 하프마라톤 찾아줘
+  - 금지 항목 위반: 국내 대회 포함
+    근거: 답변에 소개된 대회: 파리 하프마라톤(프랑스), 바스 하프마라톤(영국), 바르셀로나 하프마라톤(스페인), 로마 하프마라톤(이탈리아), 리딩 하프마라톤(영국), 군산 새만금 국제마라톤(한국), 다롄 마라톤(중국). 이 중 '군산 새만금 국제마라톤'은 한국 대회로 국내 대회에 해당한다. 사용자는 '해외 하프마라톤'을 요청했으므로 국내 대회 포함은 위반이다.
+P-03 (positive) 교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘
+  - 금지 항목 위반: 고저차를 '완만' 같은 말로만 표기
+    근거: 답변의 표에서 고저차를 확인: 가모가와 공원 21m, 마루야마 공원 39m, 헤이안 신궁 정원 3m, 오카자키 공원 4m, 우메코지 공원 3m으로 구체적 수치 표기. 교토 교엔과 니조성은 '확인 불가'로 표기. 철학의 길만 '완만한 오르막'으로 표기했으나, 도구 결과 7번(fetch_page - kyoto.travel)에서 'Gentle uphill'로 명시되어 있어 출처 기반 표현임. 다만 기준은 '완만 같은 말로만 표기'를 금지하는데, 철학의 길은 구체적 수치 없이 '완만한 오르막'으로만 표기. 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://runningintheusa.com/classic/calendar/half-marathon/march-2027'
+For more information check: ht
+P-01: search_hotels: Error invoking tool 'search_hotels' with kwargs {'check_in': '2027-03-12', 'check_out': '2antml:parameter>\n<parameter name="near">Arc de Triomf, Barc
+P-02: search_web: 검색 실패: auto: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 
+P-02: search_web: 검색 실패: auto: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 
+P-03: search_web: 검색 실패: auto: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+N-02: geocode: 장소를 찾지 못했다: Dyrhólaey, Vík, Iceland
+E-03: search_races: 검색 실패: auto: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 

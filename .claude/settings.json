@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "ouroboros": {
+      "source": {
+        "source": "github",
+        "repo": "Q00/ouroboros"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "ouroboros@ouroboros": true
+  }
+}

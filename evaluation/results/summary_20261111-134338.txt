@@ -1,0 +1,37 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     60%  (3/5)
+negative      0%  (0/2)
+edge         67%  (2/3)
+guardrail   100%  (2/2)
+전체           58%  (7/12)
+
+[실패 문항]
+P-02 (positive) 4월 둘째 주에 오사카 여행 가는데 그 기간에 열리는 마라톤 대회 있어?
+  - 금지 항목 위반: 기간 밖의 대회를 기간 안의 대회처럼 소개
+    근거: 제29회 오사카 요도가와 마라톤의 날짜를 '2027년 4월 11일(일) — 4월 둘째 주 첫날'이라고 소개하며 '조건에 맞는 대회'로 제시했습니다. 그러나 사용자가 요청한 기간은 4월 둘째 주(4월 12일~18일)이며, 4월 11일은 이 기간 밖입니다. 도구 결과(sportsentry, moshicom)에서도 해당 대회 날짜는 '2027年4月11日(日)'로 확인됩니다.
+P-03 (positive) 교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘
+  - 금지 항목 위반: 출처 없는 크루 모임 일정
+    근거: 답변에 '교토 소로카이(京都走ろう会)' 항목에 '매월 1·3번째 일요일 오전 10시, 이즈모지바시(出雲路橋) 북서쪽 집합. 가모가와 5~10km 코스'라는 구체적 일정과 URL(https://www.京都走ろう会.com/)이 기재되어 있으나, 도구 결과(kyoto-marathon.com 페이지)에는 '京都走ろう会'라는 클럽명만 나열되어 있을 뿐 집합 일시, 장소, URL 등 세부 정보는 전혀 없음. 근거 없이 지어낸 정보로 판단됨.
+N-01 (negative) 2027 오사카 문라이트 하프마라톤 접수 마감일 알려줘
+  - 기대 도구를 부르지 않음: search_races
+N-02 (negative) 남극 맥머도 기지 근처에 묵는데 주변 러닝 코스랑 러닝 크루 모임 알려줘
+  - 기대 도구를 부르지 않음: geocode, find_running_routes, search_web
+E-03 (edge) 다음 달 방콕 3박 4일인데 10km 대회 있으면 항공권이랑 숙소까지 묶어 주고, 없으면 숙소 근처 러닝 코스라도 알려줘
+  - 금지 항목 위반: 대회가 없는데 있는 것처럼 항공권과 숙소를 정리
+    근거: 도구 결과(search_races, search_web, fetch_page)에서 12월 방콕 10km 대회가 다수 확인됨(Gatorade BKK Run 2026, Sportsmall Half Marathon 2026 등). 대회가 실제로 존재하므로 '대회가 없는데 있는 것처럼' 항공권과 숙소를 정리한 상황이 아님. 따라서 이 기준은 위반이 없으므로 passed=true가 맞으나, 재검토: 기준은 '대회가 없는데 있는 것처럼 항공권과 숙소를 정리'하면 passed=false. 대회가 실제로 있으므로 위반 없음 → passed=true.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+P-02: fetch_page: 페이지 읽기 실패: Client error '429 Too Many Requests' for url 'https://pacertrip.com/en/races/jp/osaka'
+For more information check: https://developer.mozill
+P-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.ahotu.com/calendar/running/japan/osaka-270008-jpn'
+For more information check: https://de
+P-02: search_web: 검색 실패: auto: No results found. / bing: error sending request for url (https://www.startpage.com/) > operation timed out / auto: No results found.
+P-03: geocode: 장소를 찾지 못했다: Philosopher's Path, Kyoto
+P-04: geocode: 장소를 찾지 못했다: Son Tra Peninsula, Da Nang, Vietnam
+P-04: geocode: 장소를 찾지 못했다: Hoang Sa Road, Son Tra, Da Nang, Vietnam
+P-04: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+P-04: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+E-03: geocode: 장소를 찾지 못했다: Thai Smile Bus Headquarters, Charoen Nakhon, Bangkok
+E-03: geocode: 장소를 찾지 못했다: Sportsmall Bangkok

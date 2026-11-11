@@ -1,0 +1,816 @@
+{
+  "timestamp": "20261111-144550",
+  "source": "evaluation\\test_queries.csv",
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "overall_pass_rate": 0.6666666666666666,
+    "by_category": {
+      "positive": {
+        "total": 3,
+        "passed": 2,
+        "pass_rate": 0.6666666666666666
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "P-01",
+      "category": "positive",
+      "input": "내년 봄에 갈 만한 해외 하프마라톤 찾아줘",
+      "expected_traits": [
+        "내년 3~5월 해외 하프마라톤 3개 이상을 비교표로 정리",
+        "대회마다 날짜와 접수 마감일 (확인 못 하면 '확인 불가')",
+        "코스 특성(평탄도, 기록 잘 나오는지)과 그 근거",
+        "인천(ICN) 출발 항공권 대략 가격과 '목업' 표시",
+        "대회장 근처 숙소 1곳 이상",
+        "대회 정보마다 출처 링크"
+      ],
+      "forbidden": [
+        "국내 대회 포함",
+        "하프 종목이 없는 대회를 하프마라톤으로 소개",
+        "출처 없는 대회 날짜나 마감일"
+      ],
+      "expected_tools": [
+        "search_races|search_web",
+        "fetch_page",
+        "search_flights",
+        "search_hotels"
+      ],
+      "note": "기능 A 기본 흐름. 대회-항공-숙소를 한 표로 묶는지 확인",
+      "status": "ok",
+      "failures": [],
+      "answer": "내년 봄(2027년 3~5월)에 열리는 해외 하프마라톤 대회 6곳을 찾았어요.\n\n## 추천 대회 비교표\n\n| 대회명 | 날짜 | 종목 | 접수 마감일 | 코스 특성 | 인천 출발 항공권 (목업) | 대회장 근처 숙소 (목업) | 출처 |\n|--------|------|------|------------|-----------|-------------------|-------------------|------|\n| **바르셀로나 하프마라톤** (Hyundai Mitja Marató Barcelona) | 2027년 2월 14일 | 하프 | 확인 불가 | 고저차 95m, 평탄. 세계에서 가장 빠른 하프 코스로 홍보. 2025년 남자 코스 기록 56:42 (세계기록 미인정), 여자 1:04:13 | 확인 불가 | 확인 불가 | [42Cal](https://www.42cal.com/best/spring-half-marathons-in-europe), [Marathon Index](https://marathon-index.com/races/barcelona-half-marathon/) |\n| **파리 하프마라톤** (HOKA Semi de Paris) | 2027년 3월 7일 | 하프 | 2026년 9월 30일 23:59 (추첨 마감) | 고저차 확인 불가. 2026년 코스는 동부 파리와 뱅센 숲 경유. 추첨제 운영 | 약 154만원~ (목업) | 1박 약 7~10만원 (목업) | [Run Motion](https://en.run-motion.com/paris-half-marathon-2027-registration/), [42Cal](https://www.42cal.com/best/spring-half-marathons-in-europe) |\n| **바르셀로나 마라톤** (Zurich Marató de Barcelona) | 2027년 3월 14일 | 풀+하프 | 확인 불가 (2026년 4월 30일 접수 시작) | 고저차 확인 불가. 세계 4대 빠른 마라톤 코스 중 하나. 평탄하고 빠른 코스 | 약 140만원~ (목업) | 1박 약 14~30만원 (목업) | [Zurich Marató Barcelona](https://zurichmaratobarcelona.es/en/2026/04/30/registrations-open-for-thezurich-marato-de-barcelona-2027/), [42Cal](https://www.42cal.com/best/spring-half-marathons-in-europe) |\n| **예루살렘 마라톤** (Jerusalem Winner Marathon) | 2027년 3월 19일 | 풀+하프+10K+5K | 접수 진행 중 (2026년 10월 29일 기준) | 고저차 680m (풀 기준), 언덕 많음. 구시가지와 역사 지구 경유. 기록보다 경관 중심 | 약 143만원~ (목업) | 1박 약 13~20만원 (목업) | [Jerusalem Marathon](https://jerusalem-marathon.com/en/home-page/), [Marathon Index](https://marathon-index.com/races/jerusalem-marathon/course/) |\n| **타슈켄트 국제 마라톤** (Tashkent International Marathon) | 2027년 4월 4일 | 풀+하프+10K+5K | 확인 불가 (곧 오픈 예정) | 고저차 80m, 평탄. 보스턴 퀄리파이어 인증 코스. HUMO Arena 출발/도착 | 약 134만원~ (목업) | 1박 약 19~22만원 (목업) | [42Cal](https://www.42cal.com/races/tashkent-international-marathon) |\n| **바쿠 마라톤** (Baku Marathon) | 2027년 5월 2일 | 풀+하프+10K | 확인 불가 (곧 오픈 예정) | 고저차 145m (풀 기준), 평탄. 카스피해 해안가와 구시가지 경유 | 약 131만원~ (목업) | 1박 약 23~31만원 (목업) | [Marathon Index](https://marathon-index.com/races/baku-marathon/course/), [42Cal](https://www.42cal.com/races/baku-marathon) |\n| **만리장성 마라톤** (Great Wall Marathon) | 2027년 5월 15일 | 풀+하프+8.5K | 접수 진행 중 (투어 패키지 필수) | 고저차 1,050m (풀 기준), 5,164개 계단. 세계에서 가장 힘든 마라톤으로 홍보. 하프는 약 3km를 만리장성 위에서 달림 | 약 133만원~ (목업) | 1박 약 6~31만원 (목업) | [Marathon Index](https://marathon-index.com/races/great-wall-marathon-2/course/), [Great Wall Marathon](https://great-wall-marathon.com/registration) |\n\n**참고사항:**\n- **바르셀로나 하프마라톤**은 2월 14일로 봄 범위(3~5월) 밖이지만 참고로 포함했습니다.\n- 항공권과 숙소 가격은 **목업(실제 아님)**이며, 조회 시점 기준 추정치입니다.\n- 접수 마감일은 공식 사이트에서 다시 확인하세요.\n- 파리 하프마라톤은 추첨제로 운영되며, 추첨 결과는 2026년 10월 1일부터 발표됩니다.\n- 만리장성 마라톤은 국제 참가자는 투어 패키지로만 참가 가능합니다.\n\n**기록 추천:** 바르셀로나 하프, 타슈켄트, 바쿠  \n**경관 추천:** 예루살렘, 만리장성  \n**도전 추천:** 만리장성 (극한 난이도)",
+      "tool_calls": [
+        {
+          "name": "search_races",
+          "args": {
+            "region": "Asia",
+            "start_date": "2027-03-01",
+            "end_date": "2027-05-31",
+            "distance": "half"
+          }
+        },
+        {
+          "name": "search_races",
+          "args": {
+            "region": "Europe",
+            "start_date": "2027-03-01",
+            "end_date": "2027-05-31",
+            "distance": "half"
+          }
+        },
+        {
+          "name": "search_races",
+          "args": {
+            "region": "USA",
+            "start_date": "2027-03-01",
+            "end_date": "2027-05-31",
+            "distance": "half"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://www.42cal.com/best/spring-half-marathons-in-asia"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://www.42cal.com/best/spring-half-marathons-in-europe"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "query": "Jerusalem Marathon 2027 half marathon registration date",
+            "max_results": 3
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "query": "Barcelona Marathon 2027 half marathon registration",
+            "max_results": 3
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "query": "Paris Half Marathon 2027 registration",
+            "max_results": 3
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "query": "Baku Marathon 2027 half marathon registration",
+            "max_results": 3
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://jerusalem-marathon.com/en/home-page/"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://zurichmaratobarcelona.es/en/2026/04/30/registrations-open-for-thezurich-marato-de-barcelona-2027/"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://en.run-motion.com/paris-half-marathon-2027-registration/"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "destination_city": "Jerusalem",
+            "depart_date": "2027-03-17",
+            "return_date": "2027-03-21"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "destination_city": "Barcelona",
+            "depart_date": "2027-03-12",
+            "return_date": "2027-03-16"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "destination_city": "Paris",
+            "depart_date": "2027-03-05",
+            "return_date": "2027-03-09"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "destination_city": "Baku",
+            "depart_date": "2027-04-30",
+            "return_date": "2027-05-04"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "check_in": "2027-03-17",
+            "check_out": "2027-03-20",
+            "near": "Jerusalem Marathon start line, Jerusalem"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "check_in": "2027-03-12",
+            "check_out": "2027-03-15",
+            "near": "Barcelona Marathon start line, Barcelona"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "check_in": "2027-03-05",
+            "check_out": "2027-03-08",
+            "near": "Paris Half Marathon, Paris"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "check_in": "2027-04-30",
+            "check_out": "2027-05-03",
+            "near": "Baku Marathon start line, Baku"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Jerusalem Marathon half marathon course elevation profile fast"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Barcelona Marathon half marathon course flat fast time"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Paris Half Marathon course elevation flat"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Baku Marathon half marathon course flat elevation"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://marathon-index.com/races/jerusalem-marathon/course/"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://marathon-index.com/races/barcelona-half-marathon/"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://marathon-index.com/races/baku-marathon/course/"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Tashkent Marathon 2027 half marathon registration"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Great Wall Marathon 2027 half marathon registration"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://www.42cal.com/races/tashkent-international-marathon"
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "max_results": 3,
+            "query": "Great Wall Marathon 2027 course elevation profile difficulty"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://marathon-index.com/races/great-wall-marathon/course/"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "depart_date": "2027-04-02",
+            "destination_city": "Tashkent",
+            "return_date": "2027-04-06"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "depart_date": "2027-05-13",
+            "destination_city": "Beijing",
+            "return_date": "2027-05-17"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "check_in": "2027-04-02",
+            "check_out": "2027-04-05",
+            "near": "HUMO Arena, Tashkent"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "check_in": "2027-05-13",
+            "check_out": "2027-05-16",
+            "near": "Huangyaguan Great Wall, Tianjin"
+          }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool": "search_races",
+          "content": "{\"query\": \"Asia half marathon 2027-03 2027-05 race calendar entry\", \"results\": [{\"title\": \"Asia marathon calendar 2027 — entry info for 447 races ...\", \"url\": \"https://pacertrip.com/en/races/asia?m=2027\", \"content\": \"Dates, entry periods, fees and courses for 447 marathon, half, 10K and trail races in Asia · 2027. Each race page adds lodging, flights and a trip guide — DREAM.\"}, {\"title\": \"Spring Half Marathons in Asia 2027: 10 Races | 42Cal\", \"url\": \"https://www.42cal.com/best/spring-half-marathons-in-asia\", \"content\": \"Oct 20, 2026 · Spring Half Marathons in Asia 2027 There are 10 upcoming spring half marathons in Asia on the 42Cal calendar, from March 2027 through May 2027.\"}, {\"title\": \"Asia Marathons 2026 & 2027: Calendar | RunDida\", \"url\": \"https://rundida.com/marathon/asia/\", \"content\": \"1 day ago · Every marathon in Asia in 2026 and 2027, sorted by date — course profiles, weather, and official registration links.\"}, {\"title\": \"2027 Marathon Calendar — Race Dates & Live Countdowns | RunDida\", \"url\": \"https://rundida.com/marathon/2027/\", \"content\": \"5 days ago · Every 2027 marathon worldwide by month with live countdowns — Tokyo, Boston, London and Paris, plus when each lottery and ballot opens, course profiles and BQ races.\"}, {\"title\": \"Half Marathons in Asia 2026–2027: 36 Races | 42Cal\", \"url\": \"https://www.42cal.com/best/half-marathons-in-asia\", \"content\": \"Oct 26, 2026 · 36 half marathons in Asia for 2026–2027: Gaochun Marathon (Nov 8), Korat Marathon (Nov 8), Adani Ahmedabad Marathon. Compare course, weather and entry.\"}, {\"title\": \"Running Events - Asia Run Calendar\", \"url\": \"https://www.asiaruncalendar.com/events\", \"content\": \"Oct 24, 2026 · Browse upcoming running events across Asia. Filter by category, region, and distance to find your perfect race.\"}, {\"title\": \"International Half Marathon Races Calendar 2026 – 2027\", \"url\": \"https://13milers.com/intlhalfmarathons\", \"content\": \"Sep 12, 2026 · Half marathons around the world outside the UK, Europe and the USA. Dates, entry costs, course profiles and entry status, updated daily.\"}], \"filters\": {\"region\": \"Asia\", \"start_date\": \"2027-03-01\", \"end_date\": \"2027-05-31\", \"distance\": \"half\"}}"
+        },
+        {
+          "tool": "search_races",
+          "content": "{\"query\": \"Europe half marathon 2027-03 2027-05 race calendar entry\", \"results\": [{\"title\": \"Europe Half Marathon Calendar 2026–2027: Dates & Race Finder\", \"url\": \"https://runninggearlab.com/europe-half-marathon-calendar/\", \"content\": \"Oct 5, 2026 · Find and compare 83 half marathons across Europe. Filter 2026 and 2027 races by country, month, course and goal, with official organiser links.\"}, {\"title\": \"Europe marathon calendar 2027 — entry info for 613 races\", \"url\": \"https://pacertrip.com/en/races/europe?m=2027\", \"content\": \"Dates and entry details follow each race's official announcement and may change — re-check on the official page before entering. 21 races on this page are open for entry right now.\"}, {\"title\": \"European Half Marathon Races Calendar 2026 – 2027\", \"url\": \"https://13milers.com/eurohalfmarathons\", \"content\": \"Sep 12, 2026 · Half marathons across Europe, from city-break road races to island and coastal runs, listed by date with course profile and entry status.\"}, {\"title\": \"Spring Half Marathons in Europe 2027: 167 Races | 42Cal\", \"url\": \"https://www.42cal.com/best/spring-half-marathons-in-europe\", \"content\": \"Nov 3, 2026 · Spring Half Marathons in Europe 2027 There are 167 upcoming spring half marathons in Europe on the 42Cal calendar, from March 2027 through May 2027.\"}, {\"title\": \"March Half Marathons in Europe 2027: 44 Races | 42Cal\", \"url\": \"https://www.42cal.com/best/march-half-marathons-in-europe\", \"content\": \"Oct 29, 2026 · 44 half marathons in Europe in March 2027: Aargau Halbmarathon (Mar 7), Bashir's Run (Mar 7), Bologna Marathon. Compare course, weather and entry.\"}, {\"title\": \"2027 Marathon Calendar — Race Dates & Live Countdowns | RunDida\", \"url\": \"https://rundida.com/marathon/2027/\", \"content\": \"5 days ago · Every 2027 marathon worldwide by month with live countdowns — Tokyo, Boston, London and Paris, plus when each lottery and ballot opens, course profiles and BQ races.\"}, {\"title\": \"Europe marathon calendar 2026-2027 — entry info for 703 races\", \"url\": \"https://pacertrip.com/en/races/europe\", \"content\": \"Dates, entry periods, fees and courses for 703 marathon, half, 10K and trail races in Europe. Each race page adds lodging, flights and a trip guide.\"}], \"filters\": {\"region\": \"Europe\", \"start_date\": \"2027-03-01\", \"end_date\": \"2027-05-31\", \"distance\": \"half\"}}"
+        },
+        {
+          "tool": "search_races",
+          "content": "{\"error\": \"검색 실패: auto: No results found. / bing: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다. (os error 10061)') / auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out\", \"source\": \"duckduckgo\", \"filters\": {\"region\": \"USA\", \"start_date\": \"2027-03-01\", \"end_date\": \"2027-05-31\", \"distance\": \"half\"}}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://www.42cal.com/best/spring-half-marathons-in-asia\", \"content\": \"Spring Half Marathons in Asia 2027: 10 Races | 42Cal\\nAll Collections\\nRace Collection\\nSpring Half Marathons in Asia 2027\\nThere are 10 upcoming spring half marathons in Asia on the 42Cal calendar, from March 2027 through May 2027.\\n10\\nUpcoming races\\nMarch 2027 – May 2027\\nDate range\\n7\\nCountries\\n394 ft\\nMedian elevation\\nRace data last updated\\nOctober 20, 2026\\n.\\nUpcoming Spring Half Marathons in Asia 2027\\n10\\nraces\\nMar 19, 2027\\nRegistration Open\\nJerusalem Marathon\\nJerusalem, Israel\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nMar 28, 2027\\nRegistration Closed\\nWuhan Marathon\\nWuhan, China\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 28, 2027\\nOpening Soon\\nWuxi Marathon\\nWuxi, Jiangsu, China\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nApr 4, 2027\\nOpening Soon\\nGunsan Saemangeum International Marathon\\nGunsan, Jeollabuk-do, South Korea\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nApr 4, 2027\\nOpening Soon\\nTashkent International Marathon\\nTashkent, Uzbekistan\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nApr 25, 2027\\nOpening Soon\\nDalian Marathon\\nDalian, Liaoning, China\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nMay 2, 2027\\nOpening Soon\\nBaku Marathon\\nBaku, Azerbaijan\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nMay 15, 2027\\nRegistration Open\\nGreat Wall Marathon\\nHuangyaguan, Tianjin, China\\nMarathon\\nAlso:\\nHalf Marathon, 5K\\nSee full guide\\nMay 22, 2027\\nOpening Soon\\nUlaanbaatar Marathon\\nUlaanbaatar, Mongolia\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nMay 29, 2027\\nRegistration Open\\nTenzing Hillary Everest Marathon\\nNamche Bazaar, Solukhumbu, Nepal\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nCompare These Races\\nRace\\nDate\\nLocation\\nDistance\\nElevation\\nStatus\\nJerusalem Marathon\\nMarch 2027\\nJerusalem, Israel\\nMarathon\\n556 m\\nRegistration Open\\nWuhan Marathon\\nMarch 2027\\nWuhan, China\\nMarathon\\n120 m\\nRegistration Closed\\nWuxi Marathon\\nMarch 2027\\nWuxi, China\\nMarathon\\n60 m\\nOpening Soon\\nGunsan Saemangeum International Marathon\\nApril 2027\\nGunsan, South Korea\\nMarathon\\n50 m\\nOpening Soon\\nTashkent International Marathon\\nApril 2027\\nTashkent, Uzbekistan\\nMarathon\\n80 m\\nOpening Soon\\nDalian Marathon\\nApril 2027\\nDalian, China\\nMarathon\\n150 m\\nOpening Soon\\nBaku Marathon\\nMay 2027\\nBaku, Azerbaijan\\nMarathon\\n80 m\\nOpening Soon\\nGreat Wall Marathon\\nMay 2027\\nHuangyaguan, China\\nMarathon\\n1,560 m\\nRegistration Open\\nUlaanbaatar Marathon\\nMay 2027\\nUlaanbaatar, Mongolia\\nMarathon\\n280 m\\nOpening Soon\\nTenzing Hillary Everest Marathon\\nMay 2027\\nNamche Bazaar, Nepal\\nMarathon\\n500 m\\nRegistration Open\\nRelated Collections\\nDecember Half Marathons in Asia\\nFall Half Marathons in Asia\\nFlat Half Marathons in Asia\\nHalf Marathons in Asia\\nJanuary Half Marathons in Asia\\nNovember Half Marathons in Asia\\nFrequently Asked Questions\\nHow many spring half marathons in Asia are there in 2027?\\nWhen is the best time for spring half marathons in Asia?\\nWhich race in this list has the least elevation gain?\\nHow current is this list?\\nPlan Your Race\\nPace Calculator\\nPlan your splits and finish time\\nRace Predictor\\nPredict your time from a recent result\\nBQ Calculator\\nCheck your Boston qualifying time\\nFuel Planner\\nPlan your race-day nutrition\\nDifficulty Analyzer\\nScore the course difficulty\\nTraining Paces\\nGet your VDOT training zones\\nBrowse Every Collection\\nExplore curated race lists by region, feature, season, and country.\\nView All Collections\\nAnalytics settings\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://www.42cal.com/best/spring-half-marathons-in-europe\", \"content\": \"Spring Half Marathons in Europe 2027: 167 Races | 42Cal\\nAll Collections\\nRace Collection\\nSpring Half Marathons in Europe 2027\\nThere are 167 upcoming spring half marathons in Europe on the 42Cal calendar, from March 2027 through May 2027.\\n167\\nUpcoming races\\nMarch 2027 – May 2027\\nDate range\\n11\\nCountries\\n320 ft\\nMedian elevation\\nRace data last updated\\nNovember 3, 2026\\n.\\nUpcoming Spring Half Marathons in Europe 2027\\n60\\nraces\\nMar 7, 2027\\nRegistration Open\\nAargau Halbmarathon\\nAarau, Aargau, Switzerland\\nHalf Marathon\\nSee full guide\\nMar 7, 2027\\nRegistration Open\\nMiddlesbrough Half Marathon\\nMiddlesbrough, North Yorkshire, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 7, 2027\\nRegistration Open\\nMitja Marató de la Garrotxa\\nOlot, Catalonia, Spain\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nMar 7, 2027\\nLottery Only\\nSemi-Marathon de Paris\\nParis, Île-de-France, France\\nHalf Marathon\\nSee full guide\\nMar 13, 2027\\nOpening Soon\\nGmünder Stadtlauf\\nSchwäbisch Gmünd, Baden-Württemberg, Germany\\nHalf Marathon\\nAlso:\\n10K, 5K, 5K\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nBath Half Marathon\\nBath, Somerset, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nBrescia Marathon\\nBrescia, Lombardy, Italy\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nCambridge Half Marathon\\nCambridge, Cambridgeshire, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nColchester Half Marathon\\nColchester, Essex, United Kingdom\\nHalf Marathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nCPC Loop Den Haag\\nThe Hague, South Holland, Netherlands\\nHalf Marathon\\nAlso:\\n10K, 5K\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nKönigsforst Marathon\\nKönigsforst, Germany\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nLiverpool Half Marathon & 10 Miler\\nLiverpool, Merseyside, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nMaratón Barcelona\\nBarcelona, Catalonia, Spain\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nMaratón de Badajoz\\nBadajoz, Extremadura, Spain\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nMezza Maratona d'Italia Memorial Enzo Ferrari\\nModena, Emilia-Romagna, Italy\\nHalf Marathon\\nAlso:\\n5K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nMitja Marató Ciutat de Balaguer\\nBalaguer, Catalonia, Spain\\nHalf Marathon\\nAlso:\\n10K, 5K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nMuttenz Marathon\\nMuttenz, Basel-Landschaft, Switzerland\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nPaisley Half Marathon\\nPaisley, Renfrewshire, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nRun Rome The Marathon\\nRome, Lazio, Italy\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nSemi-Marathon de Chartres Sitrans\\nChartres, Centre-Val de Loire, France\\nHalf Marathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nSemi-Marathon de Cortaillod\\nColombier, Neuchâtel, Switzerland\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nMar 14, 2027\\nOpening Soon\\nSemi-Marathon de Rambouillet\\nRambouillet, Île-de-France, France\\nHalf Marathon\\nSee full guide\\nMar 14, 2027\\nRegistration Open\\nStracivitanova\\nCivitanova Marche, Marche, Italy\\nHalf Marathon\\nAlso:\\n5K\\nSee full guide\\nMar 20, 2027\\nOpening Soon\\nMarathon des Vins de la Côte Chalonnaise\\nGivry, Bourgogne-Franche-Comté, France\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nOpening Soon\\nAlloa Half Marathon\\nAlloa, Clackmannanshire, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nRegistration Open\\nGent Marathon\\nGhent, East Flanders, Belgium\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nOpening Soon\\nGO! Halbmarathon Saarbrücken\\nSaarbrücken, Saarland, Germany\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nRegistration Open\\nHastings Half Marathon\\nHastings, East Sussex, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nOpening Soon\\nMaratonina della Vittoria\\nVittorio Veneto, Veneto, Italy\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nRegistration Open\\nReading Half Marathon\\nReading, Berkshire, United Kingdom\\nHalf Marathon\\nSee full guide\\nMar 21, 2027\\nSold Out\\nVenloop\\nVenlo, Limburg, Netherlands\\nHalf Marathon\\nAlso:\\n10K, 5K\\nSee full guide\\nMar 21, 2027\\nRegistration Open\\nWelser Halbmarathon\\nWels, Upper Austria, Austria\\nHalf Marathon\\nAlso:\\n10K, 5K\\nSee full guide\\nMar 21, 2027\\nOpening Soon\\nWicklow Half Marathon & 10km\\nWicklow, County Wicklow, Ireland\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nMar 28, 2027\\nOpening Soon\\nSemi-Marathon de la Métropole du Grand Nancy\\nNancy, Grand Est, France\\nHalf Marathon\\nSee full guide\\nMar 28, 2027\\nOpening Soon\\nSPAR Omagh Half Marathon\\nOmagh, County Tyrone, United Kingdom\\nHalf Marathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 28, 2027\\nOpening Soon\\nStafford Half Marathon\\nStafford, Staffordshire, United Kingdom\\nHalf Marathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nMar 29, 2027\\nOpening Soon\\nCarney 10K & Sligo Half Marathon\\nCarney, County Sligo, Ireland\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nMar 29, 2027\\nRegistration Open\\nDe Halve van Hengelo\\nHengelo, Overijssel, Netherlands\\nHalf Marathon\\nAlso:\\n5K, 10K\\nSee full guide\\nApr 3, 2027\\nRegistration Open\\nFrühlingslauf Innsbruck\\nInnsbruck, Tyrol, Austria\\nHalf Marathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nApr 3, 2027\\nRegistration Open\\nSemi-Marathon de Dour\\nDour, Hainaut, Belgium\\nHalf Marathon\\nAlso:\\nHalf Marathon, Half Marathon\\nSee full guide\\nApr 4, 2027\\nSold Out\\nAmgen Singelloop Breda\\nBreda, North Brabant, Netherlands\\nHalf Marathon\\nAlso:\\n10K, 5K\\nSee full guide\\nApr 4, 2027\\nOpening Soon\\nBolton Half Marathon and 10K\\nBolton, Greater Manchester, United Kingdom\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nApr 4, 2027\\nOpening Soon\\nFreiburg Marathon\\nFreiburg im Breisgau, Baden-Württemberg, Germany\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nApr 4, 2027\\nRegistration Open\\nLlandudno Half Marathon\\nLlandudno, Conwy, United Kingdom\\nHalf Marathon\\nSee full guide\\nApr 4, 2027\\nRegistration Closed\\nLondon Landmarks Half Marathon\\nLondon, Greater London, United Kingdom\\nHalf Marathon\\nSee full guide\\nApr 4, 2027\\nOpening Soon\\nMarathon d'Ajaccio\\nAjaccio, Corse, France\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K, Marathon\\nSee full guide\\nApr 4, 2027\\nOpening Soon\\nMarathon du Grésivaudan\\nLe Versoud, Auvergne-Rhône-Alpes, France\\nMarathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nApr 4, 2027\\nRegistration Open\\nMedia Maratón de Getxo\\nGetxo, Basque Country, Spain\\nHalf Marathon\\nAlso:\\n10K, 5K\\nSee full guide\\nApr 4, 2027\\nRegistration Open\\nMedia Maratón de León\\nLeón, Castile and León, Spain\\nHalf Marathon\\nAlso:\\n5K\\nSee full guide\\nApr 4, 2027\\nRegistration Open\\nNamur Marathon\\nNamur, Belgium\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nApr 4, 2027\\nRegistration Open\\nSheffield Half Marathon\\nSheffield, England, United Kingdom\\nHalf Marathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nApr 4, 2027\\nRegistration Open\\nXM Limassol Marathon\\nLimassol, Cyprus\\nMarathon\\nAlso:\\nHalf Marathon, 10K, 5K\\nSee full guide\\nApr 10, 2027\\nOpening Soon\\nBündner Frühlingslauf\\nThusis to Reichenau, Graubünden, Switzerland\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nApr 10, 2027\\nOpening Soon\\nWestport Marathon\\nWestport, County Mayo, Ireland\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nApr 11, 2027\\nOpening Soon\\nBadsooßbrunn Lauf\\nBad Vöslau, Lower Austria, Austria\\nHalf Marathon\\nSee full guide\\nApr 11, 2027\\nRegistration Open\\nCoventry Half Marathon\\nCoventry, West Midlands, United Kingdom\\nHalf Marathon\\nAlso:\\n10K\\nSee full guide\\nApr 11, 2027\\nOpening Soon\\nDeutsche Post Marathon Bonn\\nBonn, North Rhine-Westphalia, Germany\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nApr 11, 2027\\nRegistration Open\\nHannover Marathon\\nHannover, Lower Saxony, Germany\\nMarathon\\nAlso:\\nHalf Marathon, 10K\\nSee full guide\\nApr 11, 2027\\nOpening Soon\\nLa Mezza di Asti\\nAsti, Piedmont, Italy\\nHalf Marathon\\nAlso:\\nHalf Marathon\\nSee full guide\\nApr 11, 2027\\nOpening Soon\\nLavans Halve van Helmond\\nHelmond, North Brabant, Netherlands\\nHalf Marathon\\nAlso:\\n10K, 5K, 5K, 5K\\nSee full guide\\nCompare These Races\\nRace\\nDate\\nLocati\", \"truncated\": true}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Jerusalem Marathon 2027 half marathon registration date\", \"results\": [{\"title\": \"Jerusalem Winner Marathon 2027: Race Date & Registration\", \"url\": \"https://marathonscout.com/races/jerusalem-marathon\", \"content\": \"Oct 29, 2026 · Registration for the 2027 Jerusalem Winner Marathon is open (checked October 29, 2026). View the official registration details at jerusalem-marathon.com. How do I track a runner in the Jerusalem Winner Marathon? Most races publish tracking in race week.\"}, {\"title\": \"Home Page - מרתון Winner ירושלים - Jerusalem Winner Marathon\", \"url\": \"https://jerusalem-marathon.com/en/home-page/\", \"content\": \"2027 Registration is underway!\"}, {\"title\": \"Jerusalem Half Marathon | Next Marathons\", \"url\": \"https://www.nextmarathons.com/halfmarathons/jerusalem-half-marathon\", \"content\": \"We'll email you when there's news about this half marathon! The Jerusalem Half Marathon is widely recognized as one of the most challenging and scenic half marathons in the world.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Barcelona Marathon 2027 half marathon registration\", \"results\": [{\"title\": \"Barcelona Half Marathon Registration — Entry, Costs & How to ...\", \"url\": \"https://marathon-index.com/races/barcelona-half-marathon/registration/\", \"content\": \"Registration info for Barcelona Half Marathon: costs, deadlines, lottery status, and how to sign up.\"}, {\"title\": \"Registrations open for theZurich Marató de Barcelona 2027 ...\", \"url\": \"https://zurichmaratobarcelona.es/en/2026/04/30/registrations-open-for-thezurich-marato-de-barcelona-2027/\", \"content\": \"Apr 30, 2026 · The Zurich Marató de Barcelona officially opens registrations today for March 14, 2027, with a clear message: if 2026 was the year of records, 2027 will make history.\"}, {\"title\": \"Barcelona Half Marathon 2027 – 14 February\", \"url\": \"https://mediasmaratonesespana.eu.com/event/half-marathon-barcelona/\", \"content\": \"Sep 17, 2026 · Barcelona Half Marathon, Sunday 14 February 2027 at 8:30: Kiplimo's 56:42 world-record course, sold out at 40,000. Course, corrals and race-weekend tips.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Paris Half Marathon 2027 registration\", \"results\": [{\"title\": \"Paris Half Marathon 2027: Registration, Date, Price and ...\", \"url\": \"https://en.run-motion.com/paris-half-marathon-2027-registration/\", \"content\": \"Jul 22, 2026 · How do you get a race bib for the Paris Half Marathon 2027? Find out the ballot dates, the price, how to register and the first details about the course.\"}, {\"title\": \"HOKA Semi de Paris\", \"url\": \"https://www.hokasemimarathondeparis.com/en\", \"content\": \"Discover the HOKA Semi de Paris 2027: course route, preparation, tips and practical information to make the most of race day in Paris on 7 March.\"}, {\"title\": \"2027 HOKA Paris Half Marathon: Registration, Course, and ...\", \"url\": \"https://parisjetaime.com/eng/event/paris-half-marathon-e120\", \"content\": \"Join the HOKA Paris Half Marathon on March 7, 2027! Discover the 21.1 km course through eastern Paris, registration details, and tips for preparing for the race.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Baku Marathon 2027 half marathon registration\", \"results\": [{\"title\": \"Baku Marathon 2027 - All the information ... - Finishers\", \"url\": \"https://www.finishers.com/en/event/baku-marathon\", \"content\": \"Baku Marathon 2027: find all the useful information about the race here - its history, the route, the registration process, how to buy bibs and results!\"}, {\"title\": \"Baku Marathon 2027: May 2 · Flat Course & Entry | 42Cal\", \"url\": \"https://www.42cal.com/races/baku-marathon\", \"content\": \"Registration for the 2027 edition has not yet opened. Based on the event's consistent late-April/early-May scheduling pattern, the next edition is expected around that time in 2027.\"}, {\"title\": \"Baku Marathon 2027: Race Date & Registration\", \"url\": \"https://marathonscout.com/races/baku-marathon\", \"content\": \"Aug 4, 2026 · View the race date, course, official links, and results on Marathon Scout.\"}]}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://jerusalem-marathon.com/en/home-page/\", \"content\": \"Home Page - מרתון Winner ירושלים - Jerusalem Winner Marathon\\n2027 Registration is underway!\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://zurichmaratobarcelona.es/en/2026/04/30/registrations-open-for-thezurich-marato-de-barcelona-2027/\", \"content\": \"Registrations open for theZurich Marató de Barcelona 2027 - Zurich Marató Barcelona\\nSkip to content\\n30 de April de 2026\\nRegistrations open for the\\nZurich Marató de Barcelona 2027\\n» After smashing the clock in 2026 and securing a place among the world’s fastest marathons, the Catalan capital opens registrations for an edition aiming to make history in the running world.\\nThe Zurich Marató de Barcelona officially opens registrations today for March 14, 2027, with a clear message: if 2026 was the year of records, 2027 will make history. The success of the last edition has placed the city in a new sporting dimension. The results achieved position the Barcelona course among the four fastest in the world over the distance, only behind Chicago, Berlin and London.  \\nIt is a fast yet highly attractive course, passing through some of the city’s most iconic landmarks. Here, the driving force is also a city that pushes you forward every kilometer. With this strong foundation, the 2027 edition aims to consolidate Barcelona as the ultimate stage where runners’ dreams and challenges come to life on the asphalt.  \\nDavid Escudé, Councillor for Sports, highlights that the latest edition was a great success and that Barcelona is preparing for a major step forward, both quantitatively and qualitatively, next year: “The Zurich Marató de Barcelona 2027 will be an incredible edition that will once again place us at the heart of international athletics and among the world’s leading marathons.”\\nn the words of Cristian Llorens, Director of Assets at RPM Sports: “The success of recent editions pushes us to be even more ambitious. Our goal is to continue building a world-class experience, always putting runners at the center, and to ensure that Barcelona once again delivers a marathon on par with the best in the world. Our priority is clear: excellence in the participant experience.”\\nBarcelona makes you fly\\nThe Zurich Marató de Barcelona stands out for its unique atmosphere on the global calendar. With 47 entertainment points strategically placed along the course, the city doesn’t just host the race — it drives it. The people of Barcelona fully embrace the event, turning the effort of 42.195 kilometers into a collective celebration.\\nLa Zurich Marató de Barcelona destaca por una atmósfera única en el calendario. Con 47 puntos de animación distribuidos estratégicamente, la ciudad no solo acoge la prueba, sino que la impulsa. Los barceloneses y barcelonesas se vuelcan para transformar el esfuerzo de los 42,195 kilómetros en una celebración colectiva\\nShare this:\\nPrev\\nBefore\\nFotyen Tesfay Wins Zurich Barcelona Marathon with the Second-Fastest time Marathon in her debut\\nNext\\nZurich Marató de Barcelona and Hyundai Mitja Marató Barcelona by Brooks Among Catalonia’s Major Sporting Events\\nNext\\nLatest news\\nZurich Marató de Barcelona makes history with 37,000 entries sold, becoming Spain’s most popular marathon\\nThe race closes registration four and a half months ahead of race day, breaks its participation record once again and ranks among the top four marathons in Europe. The Zurich Marató de Barcelona has made history once again. Four and a half months before race…\\t\\t\\t\\t\\t\\t\\t\\t\\nRead more\\nZurich Marató de Barcelona and Hyundai Mitja Marató Barcelona by Brooks Among Catalonia’s Major Sporting Events\\nBarcelona International Sports Events (BISE) launches as a new platform bringing together the eight international sporting events with the greatest legacy, impact, and prominence in Barcelona and Catalonia Zurich Marató de Barcelona and Hyundai Mitja Marató Barcelona by Brooks are part of Barcelona International Sports…\\t\\t\\t\\t\\t\\t\\t\\t\\nRead more\\nRegistrations open for the\\nZurich Marató de Barcelona 2027\\n» After smashing the clock in 2026 and securing a place among the world’s fastest marathons, the Catalan capital opens registrations for an edition aiming to make history in the running world. The Zurich Marató de Barcelona officially opens registrations today for March 14, 2027,…\\t\\t\\t\\t\\t\\t\\t\\t\\nRead more\\nFotyen Tesfay Wins Zurich Barcelona Marathon with the Second-Fastest time Marathon in her debut\\nIn the men’s category, Ugandan Abel Chelangat took victory in an edition marked by Tesfay’s historic time and a record turnout of 32,000 runners. Ethiopian Fotyen Tesfay claimed victory at the Zurich Barcelona Marathon, making history by recording the second-fastest marathon time ever, with an…\\t\\t\\t\\t\\t\\t\\t\\t\\nRead more\\nLa acordó de \\ncomprar Kamagra\\n online sin receta, que contiene sildenafilo 100 mg para adquirir en farmacias en España. \\nKMSAuto Descargar\\n - Si buscamos el mejor activador de Windows 11 en Internet, encontrará que KMSPico está por encima de ellos. Esto se debe a que es solo el mejor activador disponible.\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://en.run-motion.com/paris-half-marathon-2027-registration/\", \"content\": \"Paris Half Marathon 2027: Registration, Date, Price and Course | RunMotion\\nSkip to content\\nSkip to content\\nLanguage\\nFR\\nEN\\nES\\nDE\\nNL\\nStart your free trial\\n7 days free, cancel anytime\\nThe Paris Half Marathon 2027 marks a new chapter for one of the most popular races in the French capital. For this new edition, the event is changing organiser and adopting a new system for allocating race bibs.\\nThe \\nHOKA Semi de Paris 2027\\n will take place on \\nSunday, March 7, 2027\\n in the streets of Paris. As with the Paris Marathon, public registration now goes through a \\nballot\\n, with a single price of \\n€79\\n for selected runners.\\nSo, how do you register for the 2027 Paris Half Marathon? How does the ballot work? How much does a race bib cost? What will the course be? Here is everything you need to know about the 2027 edition.\\nUpdated September 25, 2026:\\n the ballot for the HOKA Semi de Paris 2027 is open from September 8 to September 30, 2026 at 11:59 pm (Paris time). Results will be announced from October 1, 2026. The general public race bib costs €79 and the 2027 course has not yet been officially revealed.\\nContents\\nWhen is the Paris Half Marathon 2027?\\nHow to register for the Paris Half Marathon 2027?\\nWhere can I enter the ballot?\\nHow does the ballot work?\\nCan I enter as a team?\\nHow much does a Paris Half Marathon 2027 race bib cost?\\nWhat is the €25 Passerelle race bib?\\nWhat is a Dossard Engagé (charity race bib)?\\nWhat will the Paris Half Marathon 2027 course be?\\nHow many runners take part in the Paris Half Marathon?\\nWhy is the Paris Half Marathon changing organiser?\\nWhy is it called the HOKA Semi de Paris?\\nWhat changes are planned for the 2027 edition?\\nHow to prepare for the Paris Half Marathon 2027?\\nParis Half Marathon 2027 FAQ\\nKey takeaways\\nWhen is the Paris Half Marathon 2027?\\nThe \\n2027 Paris Half Marathon will take place on Sunday, March 7, 2027\\n.\\nThe race will keep the official half marathon distance of \\n21.0975 km\\n (13.1 miles).\\nThe exact start and finish locations, as well as access arrangements, will be announced later by the organiser.\\nHow to register for the Paris Half Marathon 2027?\\nThe registration system is changing for the 2027 edition.\\nTo get a general public race bib, you now need to \\nenter a ballot\\n.\\nBallot entries are open:\\nfrom \\nSeptember 8, 2026\\n;\\nto \\nSeptember 30, 2026 at 11:59 pm\\n.\\nEntering the ballot is free and \\nthe date or time you enter has no impact on your chances of being selected\\n.\\nThere is therefore no need to rush on opening day.\\nBe ready on race day\\nRunMotion Coach builds your personalized training plan up to race day, based on your goal, your level and your schedule.\\nStart your free trial \\n›\\nWhere can I enter the ballot?\\nRegistration is done directly on the official HOKA Semi de Paris website.\\nBeware of fake websites and listings already offering race bibs: to avoid scams, always make sure you are using the race’s official website.\\nHow does the ballot work?\\nThe process is fairly simple:\\nYou enter the ballot during the entry period.\\nYour entry is automatically taken into account.\\nYou find out your result from \\nOctober 1, 2026\\n.\\nIf you are selected, you have \\n72 hours to confirm your registration and pay for your race bib\\n.\\nNo payment is required when entering the ballot.\\nOne entry is enough: entering several times does not increase your chances of being selected.\\nCan I enter as a team?\\nYes! The 2027 Paris Half Marathon lets you enter the ballot \\nas a team of 2 to 6 runners\\n.\\nThe principle is simple: if one team member is drawn, \\nthe whole team gets a race bib\\n.\\nIt is a great option if you want to share your training and race day with friends or your running club.\\nHow much does a Paris Half Marathon 2027 race bib cost?\\nThe general public price for the HOKA Semi de Paris 2027 is \\n€79\\n.\\nUnlike previous editions, there is a single price: it does not depend on when you enter the ballot.\\nHolders of a \\n2026-2027 FFA (French Athletics Federation) licence\\n can benefit from a 5% discount.\\nYou only pay if you are drawn and confirm your registration.\\nWhat is the €25 Passerelle race bib?\\nFor the 2027 edition, \\nPasserelle race bibs at €25\\n are available, subject to eligibility criteria and while stocks last.\\nThis scheme offers race bibs at a reduced price to certain groups of people.\\nThe exact eligibility conditions can be found directly with the organiser.\\nWhat is a Dossard Engagé (charity race bib)?\\nThe \\nDossard Engagé\\n, or charity race bib, lets you take part in the Paris Half Marathon while supporting a partner charity.\\nIt works differently from the ballot: you choose a charity, launch a fundraising campaign, and your race bib is allocated once the fundraising target has been reached.\\nCharity race bibs are therefore another way to get a race bib while supporting a cause.\\nWhat will the Paris Half Marathon 2027 course be?\\nThe \\nofficial 2027 Paris Half Marathon course has not yet been revealed\\n.\\nInformation about:\\nthe start location;\\nthe finish location;\\nthe streets on the route;\\nthe starting pens;\\nthe aid stations;\\nthe start times;\\naccess arrangements;\\nwill be announced later by the organiser.\\nThe course may change compared with previous editions.\\nIn 2026, the race started on Boulevard Saint-Germain and finished at Place de la Bastille, with a route through eastern Paris and the Bois de Vincennes.\\nHowever, this information relates to the 2026 edition and does not determine the final 2027 course.\\nHow many runners take part in the Paris Half Marathon?\\nThe Paris Half Marathon brings together tens of thousands of runners every year.\\nThe 2026 edition had around \\n50,000 participants\\n, making it one of the largest half marathons in France.\\nThis high level of participation explains the strong demand for registration and race bibs.\\nWhy is the Paris Half Marathon changing organiser?\\nFrom 2027, \\nAmaury Sport Organisation (ASO)\\n will no longer organise the Paris Half Marathon.\\nThe City of Paris has awarded the contract to organise the Paris Marathon and Paris Half Marathon for the \\n2027 to 2030\\n editions to the \\nCadence\\n consortium, made up of Havas Events, Keneo and OSE.\\nCadence Running United therefore becomes the new organiser of the two major Paris races.\\nThis change of organiser brings several changes to how the event works, particularly regarding registration.\\nWhy is it called the HOKA Semi de Paris?\\nThe name \\nHOKA Semi de Paris\\n has been confirmed for the 2027 edition.\\nHOKA therefore remains the race’s title partner.\\nThe race name can now officially be used as \\nHOKA Semi de Paris 2027\\n.\\nWhat changes are planned for the 2027 edition?\\nThe arrival of Cadence Running United brings several new features for this edition.\\nA new registration system\\nThis is one of the biggest changes: general public race bibs are now allocated via a \\nballot\\n, with a single price of €79.\\nTeam entries\\nRunners can enter the ballot in teams of 2 to 6 people. If one member is selected, the whole team is selected.\\nPasserelle race bibs\\nRace bibs at \\n€25\\n are available under certain conditions, within the limit of available places.\\nCharity race bibs\\nRunners can also get a race bib by supporting a partner charity and reaching a fundraising target.\\nA course yet to be revealed\\nThe 2027 route will be announced later. You will therefore need to wait for official information to find out exactly where the race starts and finishes and which streets it uses.\\nHow to prepare for the Paris Half Marathon 2027?\\nOnce you have your race bib, it is time to start training!\\nA half marathon requires you to progressively work on several qualities:\\neasy endurance\\n;\\nhalf marathon race pace;\\nthreshold and speed;\\nlong runs;\\nstrength training\\n;\\nrecovery.\\nWhether it is your \\nfirst half marathon\\n or you are chasing a time goal, consistency is key. Ideally, you should follow a plan tailored to your level, your goal and the number of sessions you can realistically fit into your schedule.\\nDiscover our tips for preparing for the Paris Half Marathon\\nWith RunMotion Coach, your training plan adapts to your level, y\", \"truncated\": true}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Jerusalem\", \"depart_date\": \"2027-03-17\", \"return_date\": \"2027-03-21\", \"offers\": [{\"airline\": \"Mock Air\", \"price_krw\": 1431000, \"stops\": 0}, {\"airline\": \"Sample Airlines\", \"price_krw\": 1464000, \"stops\": 1}, {\"airline\": \"Demo Jet\", \"price_krw\": 1510000, \"stops\": 0}]}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Barcelona\", \"depart_date\": \"2027-03-12\", \"return_date\": \"2027-03-16\", \"offers\": [{\"airline\": \"Sample Airlines\", \"price_krw\": 1400000, \"stops\": 1}, {\"airline\": \"Demo Jet\", \"price_krw\": 1400000, \"stops\": 0}, {\"airline\": \"Mock Air\", \"price_krw\": 1434000, \"stops\": 0}]}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Paris\", \"depart_date\": \"2027-03-05\", \"return_date\": \"2027-03-09\", \"offers\": [{\"airline\": \"Demo Jet\", \"price_krw\": 1539000, \"stops\": 0}, {\"airline\": \"Mock Air\", \"price_krw\": 1622000, \"stops\": 0}, {\"airline\": \"Sample Airlines\", \"price_krw\": 1671000, \"stops\": 1}]}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Baku\", \"depart_date\": \"2027-04-30\", \"return_date\": \"2027-05-04\", \"offers\": [{\"airline\": \"Mock Air\", \"price_krw\": 1307000, \"stops\": 0}, {\"airline\": \"Demo Jet\", \"price_krw\": 1348000, \"stops\": 0}, {\"airline\": \"Sample Airlines\", \"price_krw\": 1386000, \"stops\": 1}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"Jerusalem Marathon start line, Jerusalem\", \"check_in\": \"2027-03-17\", \"check_out\": \"2027-03-20\", \"hotels\": [{\"name\": \"Mock Hotel Central\", \"distance_km\": 1.9, \"price_per_night_krw\": 195000, \"rating\": 3.9}, {\"name\": \"Demo Stay Riverside\", \"distance_km\": 1.9, \"price_per_night_krw\": 187000, \"rating\": 4.8}, {\"name\": \"Sample Inn Station\", \"distance_km\": 2.0, \"price_per_night_krw\": 132000, \"rating\": 4.2}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"Barcelona Marathon start line, Barcelona\", \"check_in\": \"2027-03-12\", \"check_out\": \"2027-03-15\", \"hotels\": [{\"name\": \"Sample Inn Station\", \"distance_km\": 0.7, \"price_per_night_krw\": 301000, \"rating\": 4.4}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 0.8, \"price_per_night_krw\": 164000, \"rating\": 4.3}, {\"name\": \"Demo Stay Riverside\", \"distance_km\": 1.9, \"price_per_night_krw\": 144000, \"rating\": 4.5}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"Paris Half Marathon, Paris\", \"check_in\": \"2027-03-05\", \"check_out\": \"2027-03-08\", \"hotels\": [{\"name\": \"Sample Inn Station\", \"distance_km\": 0.3, \"price_per_night_krw\": 65000, \"rating\": 3.5}, {\"name\": \"Demo Stay Riverside\", \"distance_km\": 0.4, \"price_per_night_krw\": 97000, \"rating\": 4.6}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 0.7, \"price_per_night_krw\": 69000, \"rating\": 3.6}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"Baku Marathon start line, Baku\", \"check_in\": \"2027-04-30\", \"check_out\": \"2027-05-03\", \"hotels\": [{\"name\": \"Sample Inn Station\", \"distance_km\": 1.0, \"price_per_night_krw\": 228000, \"rating\": 3.8}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 1.2, \"price_per_night_krw\": 310000, \"rating\": 3.6}, {\"name\": \"Demo Stay Riverside\", \"distance_km\": 1.3, \"price_per_night_krw\": 283000, \"rating\": 4.7}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Jerusalem Marathon half marathon course elevation profile fast\", \"results\": [{\"title\": \"Jerusalem Marathon Course — Route Map & Elevation Profile ...\", \"url\": \"https://marathon-index.com/races/jerusalem-marathon/course/\", \"content\": \"Course details for Jerusalem Marathon: route description, elevation profile, and surface info.\"}, {\"title\": \"Jerusalem Marathon 2027: Route Map, Start Time & Elevation\", \"url\": \"https://www.marathonfocus.com/marathons/jerusalem-marathon\", \"content\": \"Course route details and elevation profile for race-week planning. Starts and finishes near Jerusalem's civic and park areas. The route passes the Knesset, Old City walls, and hilltop neighborhoods with constant elevation change. Hilly with notable climbs. Moderate terrain throughout.\"}, {\"title\": \"Jerusalem Half Marathon 2027 - Difficulty Rating, Elevation ...\", \"url\": \"https://statathon.com/marathons/jerusalem-half-marathon\", \"content\": \"Half Marathon in Jerusalem, Israel with 333m elevation gain on road surface. See difficulty rating, weather forecast, elevation profile, and personalised finish time calculator.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Barcelona Marathon half marathon course flat fast time\", \"results\": [{\"title\": \"Barcelona Half Marathon — Guide, Training Plan & Tips ...\", \"url\": \"https://marathon-index.com/races/barcelona-half-marathon/\", \"content\": \"It starts at 8:30 on Passeig de Picasso, next to the Parc de la Ciutadella, and runs down to the Columbus monument, through Poblenou and along the coast towards the Fòrum, with the finish on Passeig de Pujades between Carrer de Nàpols and Carrer de Wellington. The organisers describe the flat route as the fastest half marathon course in the world.\"}, {\"title\": \"Barcelona Half Marathon Pace Calculator | Marathon Splits\", \"url\": \"https://www.marathonsplits.com/barcelona-half-marathon-pace-calculator\", \"content\": \"Free Barcelona Half Marathon pace calculator with elevation-adjusted half marathon splits, kilometer or mile pacing, and target finish time planning.\"}, {\"title\": \"Barcelona Half Marathon training: course, conditions & pacing\", \"url\": \"https://runv.app/races/barcelona-half-marathon/\", \"content\": \"Aug 17, 2026 · Barcelona Half Marathon: a flat half marathon in Barcelona, each February. Course profile, conditions and pacing, plus an adaptive plan.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Paris Half Marathon course elevation flat\", \"results\": [{\"title\": \"Paris Half Marathon Course — Route Map & Elevation Profile ...\", \"url\": \"https://marathon-index.com/races/paris-half-marathon/course/\", \"content\": \"Course details for Paris Half Marathon: route description, elevation profile, and surface info.\"}, {\"title\": \"Paris Half Marathon 2026: Route Map, Distance & Elevation ...\", \"url\": \"https://www.routeprinter.com/races/paris-half-marathon\", \"content\": \"Mar 8, 2026 · The Paris Half Marathon 2026 course in Paris: route map with elevation, start and finish, and typical field size.\"}, {\"title\": \"Paris Marathon Elevation & Course Profile\", \"url\": \"https://rundreamachieve.com/paris-marathon-elevation/\", \"content\": \"Sep 1, 2026 · The Paris Marathon is generally a manageable, relatively low-elevation course, but it isn’t perfectly flat. Bridges, gradual rises, turns, and changing road surfaces may seem minor early in the race, yet they can feel much harder once fatigue settles into your legs.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Baku Marathon half marathon course flat elevation\", \"results\": [{\"title\": \"Baku Marathon Course — Route Map & Elevation Profile ...\", \"url\": \"https://marathon-index.com/races/baku-marathon/course/\", \"content\": \"The predominantly flat course winds through the Caspian Sea waterfront, the Old City UNESCO World Heritage site, and the futuristic Flame Towers district, showcasing the contrast between Baku's historic and contemporary architecture.\"}, {\"title\": \"Baku Marathon 2027: May 2 · Flat Course & Entry | 42Cal\", \"url\": \"https://www.42cal.com/races/baku-marathon\", \"content\": \"Sun, May 2, 2027 · Marathon, half & 10K · Entry from AZN 20 · Flat course, 80 m elevation gain · Registration opens soon. Weather and start time.\"}, {\"title\": \"Baku Marathon — Guide, Training Plan & Tips | Marathon Index\", \"url\": \"https://marathon-index.com/races/baku-marathon/\", \"content\": \"May 3, 2026 · It began on 1 May 2016 as a 21 km race that started at the State Flag Square and finished at the Baku Olympic Stadium, and it has been held under the slogan 'Win the Wind', a reference to Baku's reputation as the city of winds.\"}]}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://marathon-index.com/races/jerusalem-marathon/course/\", \"content\": \"Jerusalem Marathon Course — Route Map & Elevation Profile | Marathon Index\\n Marathon \\n Jerusalem Marathon \\n מרתון ירושלים \\nJerusalem, Israel\\nMarch\\n42.195 km\\n Hilly \\n Historic \\n Urban \\n Scenic \\n Bucket List \\n Competitive \\n Large \\n Community \\n 43\\n/100\\n Challenging \\n Difficulty \\nMarathon Index Score\\n Next Race \\n Mar 19, 2027 \\n Course & Elevation \\n The Winner Jerusalem Marathon is a road marathon through central Jerusalem, held on a Friday morning in March and organised by the Jerusalem Municipality. The marathon is run with a half marathon, a 10 km, a 5 km and family races, and the 16th edition is on 19 March 2027. The marathon starts at the junction between the Knesset and the Israel Museum, at Hamagbit Square on Ruppin Road, heading northwest, and finishes at the southern end of Sacher Park, entering the finish funnel from the south via the Valley of the Cross. The course passes the President's House, Ammunition Hill and the Mount Scopus campus of the Hebrew University, returns to the Old City through the Armenian Quarter and Zion Gate, and goes on past the Sultan's Pool and through the Emek Refaim neighbourhood before the finish. The finish line closes six hours after the start. The race was revived in 2011 and has been held every year since except 2020. The course records are 2:16:08 for men (Ronald Kurgat, 2014) and 2:38:24 for women (Joan Kigen, 2016). \\nCourse Facts\\nDistance\\n42.195 km\\nElevation Gain\\n≈ 680 m\\nSurface\\nroad\\nProfile\\nHilly\\nWeather\\nTypical climate for the race month — an estimate, not a forecast or a race-day record\\n13°C\\nTemperature\\n52%\\nHumidity\\n20%\\nRain Chance\\nMarch in Jerusalem is mild: average highs are around 17°C and lows around 10°C, with rain of 1 mm or more on about 6 days of the month.\\nGet Your Training Plan\\nFree, personalized for this race\\nBeginner\\nIntermediate\\nAdvanced\\nGet alerts for Jerusalem Marathon\\nRegistration openings, date changes, sell-out warnings.\\n✓ You're in!\\n We use cookies for analytics. \\nPrivacy Policy\\n Decline \\n Accept\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://marathon-index.com/races/barcelona-half-marathon/\", \"content\": \"Barcelona Half Marathon — Guide, Training Plan & Tips | Marathon Index\\n Half Marathon \\n Barcelona Half Marathon \\n Mitja Marató de Barcelona \\n↗\\n Barcelona, Spain \\nFebruary\\n21.0975 km\\n Flat \\n Fast \\n Scenic \\n Urban \\n Coastal \\n Point to Point \\n Historic \\n Bucket List \\n 13\\n/100\\n Easy \\n Difficulty \\nMarathon Index Score\\n Next Race \\n Feb 14, 2027 \\n21.0975 km\\nDistance\\n≈ 95 m\\nElevation Gain\\n≈ estimate\\n≈ 2:05:30\\nAverage Finish Time\\n≈ estimate\\n≈ 18,500\\nTotal Finishers\\n≈ estimate\\n1991\\nEstablished\\nFlat\\nProfile\\nGet Your Training Plan\\nFree, personalized for this race\\nBeginner\\nIntermediate\\nAdvanced\\n Course & Elevation \\n The Hyundai Mitja Marató Barcelona by Brooks is the Barcelona half marathon, held on a Sunday in mid-February, a month before the city's marathon. It was first held in 1991 and the 2027 race on 14 February is billed as the 37th edition. It starts at 8:30 on Passeig de Picasso, next to the Parc de la Ciutadella, and runs down to the Columbus monument, through Poblenou and along the coast towards the Fòrum, with the finish on Passeig de Pujades between Carrer de Nàpols and Carrer de Wellington. The organisers describe the flat route as the fastest half marathon course in the world. Runners have 2 hours 45 minutes to finish. In 2026 the race reached 36,000 participants, and registration for 2027 opened with 40,000 bibs. The men's course record is 56:42, run by Jacob Kiplimo in 2025, a time World Athletics did not ratify as a world record. The women's record is 1:04:13, set by Joyciline Jepkosgei in 2025. \\nSurface: \\nroad\\nProfile: \\nFlat\\n Weather \\nTypical climate for the race month — an estimate, not a forecast or a race-day record\\nTemperature\\n11°C\\nHumidity\\n76%\\nRain Chance\\n13%\\n Mid-February in Barcelona is cool and mostly dry: highs average about 14.5°C and lows about 8°C, with rain on around four days of the month. \\nRelated Guides\\n▸\\nBest Half Marathons for Your First Race\\n▸\\nBest Coastal & Island Marathons\\n▸\\nBest Bucket List Marathons You Must Run\\nThe Race\\nBarcelona\\n Race Lore \\n World Record Attempts in Barcelona \\n 2025 \\n Record \\n Three world records have been set at the Barcelona half marathon. Florence Kiplagat ran 1:05:12 in 2014 and 1:05:09 a year later. On 16 February 2025 Jacob Kiplimo ran 56:42, but on 5 February 2026 World Athletics said it would not ratify the time because the lead car had given him a pacing advantage. Hagos Gebrhiwet won the 2026 race in 58:05. \\n🏅\\n Create Your Barcelona Half Marathon Diploma \\n Finished this race? Get a free certificate with celebrity comparisons & race day weather \\n Course Record\\n00:56:42\\n Jacob Kiplimo (2025) \\nRegistration\\nEntry fee, registration dates and lottery rules are not confirmed here yet. Check the official registration page.\\nRegister Now\\nOfficial Website →\\nFind Flights\\nGoogle Flights\\n Fun Facts\\n▸\\nIn 2014 Florence Kiplagat set the then women's half marathon world record of 1:05:12 in Barcelona, and lowered it to 1:05:09 a year later.\\n▸\\nIn February 2025 Jacob Kiplimo ran 56:42 in Barcelona; World Athletics announced in 2026 that it would not ratify it as a world record.\\n▸\\nIn 2026 the race had 36,000 participants.\\nCompare With Similar Races\\nvs\\nAmsterdam Half Marathon\\nvs\\nBath Half Marathon\\nvs\\nBerlin Half Marathon\\nAre you the race organizer?\\n Claim This Race \\n Get Embed Badge \\nFree · Get featured on our homepage · Edit your race details\\nGet alerts for Barcelona Half Marathon\\nRegistration openings, date changes, sell-out warnings.\\n✓ You're in!\\n We use cookies for analytics. \\nPrivacy Policy\\n Decline \\n Accept\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://marathon-index.com/races/baku-marathon/course/\", \"content\": \"Baku Marathon Course — Route Map & Elevation Profile | Marathon Index\\n Marathon \\n Baku Marathon \\n Bakı Marafonı \\nBaku, Azerbaijan\\nMay\\n42.195 km\\n Flat \\n Urban \\n Coastal \\n Large \\n Beginner Friendly \\n Community \\n 19\\n/100\\n Easy \\n Difficulty \\nMarathon Index Score\\n2026 edition held May 3, 2026\\n Next edition expected \\n Usually May \\n 2027 date not yet confirmed \\n Course & Elevation \\n The Baku Marathon is an annual road race in Baku, Azerbaijan, organised at the initiative of the Heydar Aliyev Foundation, and since 2026 it has included a full 42 km marathon. It began on 1 May 2016 as a 21 km race that started at the State Flag Square and finished at the Baku Olympic Stadium, and it has been held under the slogan 'Win the Wind', a reference to Baku's reputation as the city of winds. The 2026 race, on a Sunday in early May and the ninth edition, was the first to be run over 42 km, alongside a 21 km half marathon and a 10 km race, with about 25,000 participants across the distances. The 2026 marathon route started at State Flag Square, followed Baku Boulevard to the Baku International Sea Port, and continued through Neftchilar Avenue, Baku White City Boulevard, 8 November Avenue, Yusif Safarov Street and Heydar Aliyev Avenue past BAKU Arena. It then crossed the Boyukshor area and joined the Baku Ring Road (Bilgah-Pirshagi Highway) to the finish at Sea Breeze. The 2026 winners were Ahmet Alkanoglu of Turkiye in the men's race and Elena Tolstykh of Russia in the women's race. \\nCourse Facts\\nDistance\\n42.195 km\\nElevation Gain\\n≈ 145 m\\nSurface\\nroad\\nProfile\\nFlat\\nWeather\\nTypical climate for the race month — an estimate, not a forecast or a race-day record\\n18°C\\nTemperature\\n83%\\nHumidity\\n10%\\nRain Chance\\nMay in Baku is mild and humid: average highs are around 23°C and lows around 15°C, with rain of 1 mm or more on about three days in the month.\\nGet Your Training Plan\\nFree, personalized for this race\\nBeginner\\nIntermediate\\nAdvanced\\nGet alerts for Baku Marathon\\nRegistration openings, date changes, sell-out warnings.\\n✓ You're in!\\n We use cookies for analytics. \\nPrivacy Policy\\n Decline \\n Accept\", \"truncated\": false}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Tashkent Marathon 2027 half marathon registration\", \"results\": [{\"title\": \"Tashkent International Marathon 2027: Apr 4 | 42Cal\", \"url\": \"https://www.42cal.com/races/tashkent-international-marathon\", \"content\": \"Sun, Apr 4, 2027 · Marathon, half, 10K & 5K · Entry from UZS 300,000 · Flat course, 80 m elevation gain · Registration opens soon. Weather and start time.\"}, {\"title\": \"Tashkent International Marathon 2027 - All ... - Finishers\", \"url\": \"https://www.finishers.com/en/event/tashkent-international-marathon\", \"content\": \"Tashkent International Marathon 2027: find all the useful information about the race here - its history, the route, the registration process, how to buy bibs and results!\"}, {\"title\": \"Tashkent Marathon, 04 Apr 2027 | World's Marathons\", \"url\": \"https://worldsmarathons.com/marathon/tashkent-marathon\", \"content\": \"Is a medical certificate required? Only for the marathon (42.195 km); present it at race pack pickup. The 10 km and 5 km require no certificate. Each participant is responsible for their own health, and we strongly recommend a medical check-up before the race.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Great Wall Marathon 2027 half marathon registration\", \"results\": [{\"title\": \"Registration - Great Wall MarathonInternational Registration | Great Wall MarathonOnline Registration - Great Wall MarathonThe race | Great Wall MarathonOnline Application for the 26th Great Wall of China Marathon 2027Official Site of Great Wall of China Marathon Races/Sporting ...Great Wall Marathon - May 8th, 2027 - Conquer The Wall\", \"url\": \"https://great-wall-marathon.com/registration\", \"content\": \"To register for the Great Wall Marathon, all international runners must sign up for the tour package. Like all Albatros Adventure Marathons, the Great Wall Marathon is designed to be more than just a race. Having made up your mind about participating and decided which tour to go on, you should begin the process of signing up immediately as there is only a limited number of race entries. For local courier service, filling in your address in Chinese is preferred. Participants in an ordinary marathon are easily injured. In connection with The Great Wall Marathon the risk is obviously not less. The Great Wall Marathon therefore recommends that you get a thorough medical check-up prior to running the marathon. This is also the reason for the following terms and conditions, including in particular the exclusion... See full list on great-wall-marathon.com.cn By signing this document you accept that your participation in the marathon is your own responsibility and at your own risk in every respect. You accept that you cannot claim any kind of damages, indemnification or any other compensation for personal injury, damage to property or any other loss, including any kind of indirect loss in connection wit... See full list on great-wall-marathon.com.cn The Great Wall Marathon will see to it that English-speaking doctors with personal experience in running marathons are available to the participants. If any treatment that is not or cannot be carried out by these doctors becomes necessary, it will be a matter between you, the local therapists and your travel insurance. You cannot hold The Great Wal... See full list on great-wall-marathon.com.cn Taking into consideration the special nature of the event, all participants are obliged to have their own insurance covering the period of the package and bring the insurance card with them See full list on great-wall-marathon.com.cn Even though the Great Wall Marathon is a small event, it requires the same organization and planning efforts as a major event. Therefore, the event is very dependent on voluntary contributions and sponsors, whose interests The Great Wall Marathon must protect. As a consequence, on race day no runner may wear or promote any brand or company that may... See full list on great-wall-marathon.com.cn Family, friends and other spectators are very welcome to shoot photographs or make video recordings for private use. Professional photographers must obtain written permission from The Great Wall Marathon beforehand. All rights in relation to the Great Wall Marathon belong to The Great Wall Marathon, and permission to use the name The Great Wall Mar... See full list on great-wall-marathon.com.cn All the participants must realize that the Great Wall Marathon is held in China and thus it has to follow the Chinese law and regulations. Any behavior by the participants that are against the Chinese law and regulations are not acceptable. The Great Wall Marathon also would like to remind all the participants to pay respect to the local custom as ... See full list on great-wall-marathon.com.cn Provided that the political situation, natural disaster or like conditions are out of the Great Wall Marathon’s control, inhibiting the planned completion of the Great Wall Marathon, the race/packages will be cancelled and the payment refunded. If possible be replaced by another year’s race /packages. See full list on great-wall-marathon.com.cn These conditions, in particular the exclusions of liability in clauses 2-3, form part of your agreement with The Great Wall Marathon. In case of any discrepancies between these conditions and the rest of the agreement, these conditions shall take precedence. See full list on great-wall-marathon.com.cn By signing this agreement, you accept that any dispute in relation to your participation in the marathon will be subject to Chinese law. You also accept that any dispute that might arise in connection with your participation in the marathon is to be decided by the Arbitration Commission in Beijing in the first instance. See full list on great-wall-marathon.com.cn When signing up as a spectator, you can register for the same package as the runner, but without paying the race entry fee. During the trip, you will have access to the full package itinerary, transportation, meals and accommodation. Declaration: By signing up this application I accept that my participation in the is at my own responsibility and own risk in any respect. Have a very happy weekend! (9AM Melbourne Time August 29,2026) We are very happy to tell the whole world that Mr.Samisoni Latukefu has become another runner from Australia who just registered for the 26th Great Wall of China Marathon to be held on May 1st 2027 in Beijing and registered its Option 3 together via ACTIVE.COM.Thank Samisoni and ... Full marathon, half marathon, 10k, or 5k events are available in the Conquer the Wall Marathon on the Great Wall of China. Running on the Great Wall is an exhilarating experience that must be experienced by everyone! Online Registration – Now Open.\"}, {\"title\": \"Online Registration - Great Wall MarathonThe race | Great Wall MarathonOnline Application for the 26th Great Wall of China Marathon 2027Official Site of Great Wall of China Marathon Races/Sporting ...Great Wall Marathon - May 8th, 2027 - Conquer The Wall\", \"url\": \"https://great-wall-marathon.com.cn/online-registration/\", \"content\": \"Participants in an ordinary marathon are easily injured. In connection with The Great Wall Marathon the risk is obviously not less. The Great Wall Marathon therefore recommends that you get a thorough medical check-up prior to running the marathon. This is also the reason for the following terms and conditions, including in particular the exclusion... See full list on great-wall-marathon.com.cn By signing this document you accept that your participation in the marathon is your own responsibility and at your own risk in every respect. You accept that you cannot claim any kind of damages, indemnification or any other compensation for personal injury, damage to property or any other loss, including any kind of indirect loss in connection wit... See full list on great-wall-marathon.com.cn The Great Wall Marathon will see to it that English-speaking doctors with personal experience in running marathons are available to the participants. If any treatment that is not or cannot be carried out by these doctors becomes necessary, it will be a matter between you, the local therapists and your travel insurance. You cannot hold The Great Wal... See full list on great-wall-marathon.com.cn Taking into consideration the special nature of the event, all participants are obliged to have their own insurance covering the period of the package and bring the insurance card with them See full list on great-wall-marathon.com.cn Even though the Great Wall Marathon is a small event, it requires the same organization and planning efforts as a major event. Therefore, the event is very dependent on voluntary contributions and sponsors, whose interests The Great Wall Marathon must protect. As a consequence, on race day no runner may wear or promote any brand or company that may... See full list on great-wall-marathon.com.cn Family, friends and other spectators are very welcome to shoot photographs or make video recordings for private use. Professional photographers must obtain written permission from The Great Wall Marathon beforehand. All rights in relation to the Great Wall Marathon belong to The Great Wall Marathon, and permission to use the name The Great Wall Mar... See full list on great-wall-marathon.com.cn All the participants must realize that the Great Wall Marathon is held in China and thus it has to follow the Chinese law and regulations. Any behavior by the participants that are against the Chinese law and regulations are not acceptable. The Great Wall Marathon also would like to remind all the participants to pay respect to the local custom as ... See full list on great-wall-marathon.com.cn Provided that the political situation, natural disaster or like conditions are out of the Great Wall Marathon’s control, inhibiting the planned completion of the Great Wall Marathon, the race/packages will be cancelled and the payment refunded. If possible be replaced by another year’s race /packages. See full list on great-wall-marathon.com.cn These conditions, in particular the exclusions of liability in clauses 2-3, form part of your agreement with The Gr"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://www.42cal.com/races/tashkent-international-marathon\", \"content\": \"Tashkent International Marathon 2027: Apr 4 | 42Cal\\nBack to Races\\nRace snapshot\\nConvert to metric\\nRace Day\\n59\\n°F\\n45–64°F · Feels cool\\nTotal elevation gain\\n262\\nft\\nRelatively flat course · Net elevation change +16 ft\\nParticipants\\n23K\\nMajor marathon\\nCrowd Rating\\n6\\n/ 10\\nGood crowd energy\\nEntry\\nOpening Soon\\nMarathon (42 km)\\nUZS 300,000\\nMarathon (42 km)\\nUZS 300,000\\nHalf Marathon (21 km)\\nUZS 300,000\\n10K\\nUZS 300,000\\n5K\\nUZS 300,000\\nOfficial Website\\nKey Dates\\nRace day (projected, unofficial)\\nApr 4, 2027\\nNo official date announced as of Aug 2026; projected from the event's historical spring scheduling pattern, most recently April 5, 2026.\\nFound in\\nMarathons in Asia\\nHalf Marathons in Asia\\nFlat Marathons in Asia\\nFlat Half Marathons in Asia\\nThe Lowdown\\nThe Tashkent International Marathon is Uzbekistan's largest running event, starting and finishing at HUMO Arena in the capital, Tashkent. First held in 2019, the race has grown into a World Athletics Label Road Race (since 2022) with an AIMS-certified \\\"A\\\"-category course, and the 2026 edition (the eighth) drew more than 23,000 runners from over 30 countries on April 5, timed to coincide with the Navruz spring festival. Runners choose from the full marathon (42.195 km), half marathon (21.097 km), 10K, 5K, and shorter fun-run and kids' distances, all sharing the HUMO Arena start and finish. The course loops through central Tashkent past major landmarks, and race-week festivities include an opening ceremony and concert at HUMO Arena the evening before the start. Entry for the 2026 edition cost a flat 300,000 UZS (about 300,000 Uzbekistani som) per participant across all distances, booked online through the organizer's ProRun.uz platform, with separate group applications available for corporate and international teams. The event's title sponsor has varied by year. It has also run as the BYD Tashkent International Marathon. No official date has been announced yet for the next edition; it is projected for early April 2027, consistent with the event's spring scheduling pattern.\\nShow more\\nThe Course\\n26.2\\nmi\\nMarathon\\n262\\nft\\nTotal elevation gain\\n BQ\\nCourse Highlights\\n01\\nHUMO Arena (start/finish)\\n02\\nAmir Timur Square\\n03\\nIndependence Square (Mustaqillik Maydoni)\\n04\\nTashkent TV Tower\\nAlso on this race weekend\\nHalf marathon · 10K · 5K\\nTime Limit\\n6 hours\\nBoston Qualifier\\nThis race is a certified Boston Marathon qualifying event. Achieve your qualifying standard here on a verified course.\\nRace Policies\\n18\\nMinimum Age\\n2\\nEntry Methods\\nMinimum Age\\n18\\nyears\\nEntry Methods\\nOnline registration via the organizer's ProRun.uz platform\\nGroup/team applications for corporate and international entrants\\nEligibility\\nMarathon and half marathon entrants must be 18 or older on race day\\nYounger participants may enter the 10K, 5K, and fun-run distances with a guardian's consent\\nRequired Documents\\nGovernment-issued photo ID or passport for kit collection\\nSigned liability waiver (completed during online registration)\\nCancellation & Refund Policy\\nEntry fees are generally non-refundable once registration is confirmed; check the current ProRun.uz terms before registering\\nBib transfers to another runner are typically not permitted without organizer approval\\nTravel & Stay\\nTashkent, Uzbekistan\\nUSD 70\\n/ night\\nDestination\\nTashkent, Uzbekistan\\nEst. Hotel Cost\\nUSD 70\\n/ night\\nAdditional Information\\n01\\nRace morning start time is 06:00 to avoid the warmest part of the April afternoon\\n02\\nRace kit collection runs in the days before the event at HUMO Arena, with an opening ceremony and concert held the evening before race day\\nQuestions about the Tashkent International Marathon 2027\\nWhen is the Tashkent International Marathon 2027?\\nSunday, April 4, 2027.\\nWhere is the Tashkent International Marathon?\\nTashkent, Uzbekistan.\\nWhat time does the Tashkent International Marathon start?\\nThe race starts at 6:00 AM, local time.\\nWhat is the Tashkent International Marathon time limit?\\n6 hours.\\nHow do I enter the Tashkent International Marathon 2027?\\nRegistration has not opened yet. Ways in: Online registration via the organizer's ProRun.uz platform; Group/team applications for corporate and international entrants.\\nHow much does the Tashkent International Marathon 2027 cost?\\nMarathon (42 km): UZS 300,000. Half Marathon (21 km): UZS 300,000. 10K: UZS 300,000. 5K: UZS 300,000.\\nWhat is the Tashkent International Marathon elevation gain?\\n80 m (262 ft) of total elevation gain. Net elevation change: +5 m (16 ft). Relatively flat course.\\nWhat is the Tashkent International Marathon course like?\\nIt passes HUMO Arena (start/finish), Amir Timur Square and Independence Square (Mustaqillik Maydoni).\\nWhat is the weather like at the Tashkent International Marathon?\\nRace-day temperatures are usually 7–18 °C (45–64 °F). Feels cool.\\nHow many runners does the Tashkent International Marathon have?\\n23,000 participants. Major marathon.\\nIs the Tashkent International Marathon a Boston qualifier?\\nYes. This race is a certified Boston Marathon qualifying event.\\nMore races coming up\\nNov 29, 2026\\nOpening Soon\\nAdani Ahmedabad Marathon\\nAhmedabad, India\\nNov 29, 2026\\nRegistration Open\\nBeirut Marathon\\nBeirut, Lebanon\\nNov 29, 2026\\nRegistration Open\\nJBG Kolkata Marathon\\nKolkata, India\\nDec 6, 2026\\nRegistration Open\\nBusan Bridge Marathon\\nBusan, South Korea\\nPrepare for This Race\\nPace Calculator\\nPlan splits for marathon\\nRace Predictor\\nPredict your marathon time\\nBQ Calculator\\nBQ-eligible course\\nFuel Planner\\nPlan nutrition for marathon, cool weather\\nDifficulty Analyzer\\n262ft gain, 59°F avg, marathon\\nTraining Paces\\nTraining zones for marathon\\nRunning this race?\\nMarathonOS puts your race countdown on your Lock Screen and keeps every race-week checklist on your phone. Checklists and your race report are free for your first race.\\nScan to download\\nCommunity\\nStories, tips, and race-day snapshots from runners who have tackled this course.\\nRacing this\\nI ran it\\nCommunity Reviews\\nLearn from fellow runners and share insights that will help the next person toe the line.\\nMost Helpful\\nAnalytics settings\", \"truncated\": false}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Great Wall Marathon 2027 course elevation profile difficulty\", \"results\": [{\"title\": \"Great Wall Marathon 2027: 15 May - Elevation, Weather ...\", \"url\": \"https://statathon.com/marathons/great-wall-marathon\", \"content\": \"Great Wall Marathon 2027: Saturday 15 May 2027, Huangyaguan, China. 897m of climbing on road, about 33 min slower than an average road marathon. Difficulty rating, race-day weather and your predicted finish time.\"}, {\"title\": \"Great Wall Marathon Course — Route Map & Elevation Profile ...\", \"url\": \"https://marathon-index.com/races/great-wall-marathon/course/\", \"content\": \"Course details for Great Wall Marathon: route description, elevation profile, and surface info.\"}, {\"title\": \"Great Wall of China Marathon Course — Route Map & Elevation ...\", \"url\": \"https://marathon-index.com/races/great-wall-marathon-2/course/\", \"content\": \"Course details for Great Wall of China Marathon: route description, elevation profile, and surface info.\"}]}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://marathon-index.com/races/great-wall-marathon-2/course/\", \"content\": \"Great Wall of China Marathon Course — Route Map & Elevation Profile | Marathon Index\\n Marathon \\n Great Wall of China Marathon \\n 长城马拉松 \\n↗\\n Huangyaguan, China \\nMay\\n42.195 km\\n Hilly \\n Scenic \\n Historic \\n Bucket List \\n Point to Point \\n Competitive \\n Large \\n 89\\n/100\\n Legendary \\n Difficulty \\nMarathon Index Score\\n Next Race \\n May 15, 2027 \\n Course & Elevation \\n The Great Wall Marathon is a marathon on the Huangyaguan section of the Great Wall of China in Tianjin, east of Beijing, held on a Saturday in mid-May and organised by Albatros Adventure Marathons. It has been run since 1999, when the first edition drew about 350 runners; the organisers now describe it as a sell-out event of 2,500. The marathon, a half marathon and an 8.5 km fun run share the same setting. The course is billed as asphalt and gravel with 5,164 steps on the Wall itself. More than 6 km of the full marathon is run on the Wall, while the other races spend about 3 km on it. The marathon has an eight-hour time limit, and the 2027 edition is planned for 15 May with a 7:30 am start. Entries for international runners are sold as part of tour packages. The course records are 3:09:18 for men and 3:32:12 for women, both set in 2013. The organisers bill it as the most demanding marathon of your life along one of mankind's greatest monuments. \\nCourse Facts\\nDistance\\n42.195 km\\nElevation Gain\\n≈ 1,050 m\\nSurface\\nmixed\\nProfile\\nMountainous\\nWeather\\nTypical climate for the race month — an estimate, not a forecast or a race-day record\\n21°C\\nTemperature\\n50%\\nHumidity\\n20%\\nRain Chance\\nIn mid-May the nearby lowland town of Jizhou averages highs around 27°C and lows around 15°C, with low humidity and rain on about six days of the month; the Wall sections lie higher in the hills.\\nGet Your Training Plan\\nFree, personalized for this race\\nBeginner\\nIntermediate\\nAdvanced\\nGet alerts for Great Wall of China Marathon\\nRegistration openings, date changes, sell-out warnings.\\n✓ You're in!\\n We use cookies for analytics. \\nPrivacy Policy\\n Decline \\n Accept\", \"truncated\": false}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Tashkent\", \"depart_date\": \"2027-04-02\", \"return_date\": \"2027-04-06\", \"offers\": [{\"airline\": \"Sample Airlines\", \"price_krw\": 1340000, \"stops\": 1}, {\"airline\": \"Demo Jet\", \"price_krw\": 1412000, \"stops\": 0}, {\"airline\": \"Mock Air\", \"price_krw\": 1504000, \"stops\": 0}]}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Beijing\", \"depart_date\": \"2027-05-13\", \"return_date\": \"2027-05-17\", \"offers\": [{\"airline\": \"Demo Jet\", \"price_krw\": 1326000, \"stops\": 0}, {\"airline\": \"Mock Air\", \"price_krw\": 1347000, \"stops\": 0}, {\"airline\": \"Sample Airlines\", \"price_krw\": 1476000, \"stops\": 1}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"HUMO Arena, Tashkent\", \"check_in\": \"2027-04-02\", \"check_out\": \"2027-04-05\", \"hotels\": [{\"name\": \"Demo Stay Riverside\", \"distance_km\": 1.3, \"price_per_night_krw\": 215000, \"rating\": 4.1}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 1.7, \"price_per_night_krw\": 185000, \"rating\": 4.1}, {\"name\": \"Sample Inn Station\", \"distance_km\": 1.9, \"price_per_night_krw\": 218000, \"rating\": 4.8}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"Huangyaguan Great Wall, Tianjin\", \"check_in\": \"2027-05-13\", \"check_out\": \"2027-05-16\", \"hotels\": [{\"name\": \"Demo Stay Riverside\", \"distance_km\": 0.3, \"price_per_night_krw\": 63000, \"rating\": 4.1}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 0.7, \"price_per_night_krw\": 194000, \"rating\": 3.5}, {\"name\": \"Sample Inn Station\", \"distance_km\": 1.6, \"price_per_night_krw\": 314000, \"rating\": 3.6}]}"
+        }
+      ],
+      "tool_errors": [
+        {
+          "tool": "search_races",
+          "error": "검색 실패: auto: No results found. / bing: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다. (os error 10061)') / auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out"
+        }
+      ],
+      "verification": {
+        "history": [
+          []
+        ]
+      },
+      "tools_check": {
+        "expected": [
+          "search_races|search_web",
+          "fetch_page",
+          "search_flights",
+          "search_hotels"
+        ],
+        "called": [
+          "fetch_page",
+          "search_flights",
+          "search_hotels",
+          "search_races",
+          "search_web"
+        ],
+        "missing": [],
+        "passed": true
+      },
+      "forbidden_check": [
+        {
+          "forbidden": "국내 대회 포함",
+          "violated": false,
+          "evidence": "답변에 소개된 모든 대회는 해외 대회다. 바르셀로나 하프마라톤(스페인), 파리 하프마라톤(프랑스), 바르셀로나 마라톤(스페인), 예루살렘 마라톤(이스라엘), 타슈켄트 국제 마라톤(우즈베키스탄), 바쿠 마라톤(아제르바이잔), 만리장성 마라톤(중국)으로 모두 해외 대회다. 국내 대회는 포함되지 않았다. 위반 없음."
+        },
+        {
+          "forbidden": "하프 종목이 없는 대회를 하프마라톤으로 소개",
+          "violated": false,
+          "evidence": "답변에 소개된 모든 대회는 하프마라톤 종목을 포함하고 있다. 도구 결과 4번(42Cal Asia)에서 Jerusalem Marathon은 'Also: Half Marathon, 10K, 5K', 5번(42Cal Europe)에서 Barcelona Marathon은 'Also: Half Marathon, 10K', Paris Half Marathon은 'Half Marathon', 30번(42Cal Tashkent)에서 'Half Marathon (21 km)', 27번(Marathon Index Baku)에서 '21 km half marathon', 32번(Marathon Index Great Wall)에서 'a half marathon and an 8.5 km fun run'으로 모두 하프 종목이 확인된다. 위반 없음."
+        },
+        {
+          "forbidden": "출처 없는 대회 날짜나 마감일",
+          "violated": false,
+          "evidence": "답변의 대회 날짜와 마감일은 모두 도구 결과에 근거가 있다. 바르셀로나 하프마라톤 2월 14일(도구 26번 'Feb 14, 2027'), 파리 하프마라톤 3월 7일(도구 12번 'Sunday, March 7, 2027'), 바르셀로나 마라톤 3월 14일(도구 11번 'March 14, 2027'), 예루살렘 마라톤 3월 19일(도구 4번 'Mar 19, 2027'), 타슈켄트 4월 4일(도구 30번 'Apr 4, 2027'), 바쿠 5월 2일(도구 4번 'May 2, 2027'), 만리장성 5월 15일(도구 32번 'May 15, 2027'). 파리 하프마라톤 추첨 마감일 2026년 9월 30일 23:59는 도구 12번에 'to September 30, 2026 at 11:59 pm'로 확인된다. 예루살렘 마라톤 접수 진행 중은 도구 10번 '2027 Registration is underway!'로 확인된다. 위반 없음."
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "P-03",
+      "category": "positive",
+      "input": "교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘",
+      "expected_traits": [
+        "숙소 근처 러닝 코스 2개 이상",
+        "코스마다 거리, 고저차(m 숫자), 숙소에서 출발점까지 거리",
+        "4월 교토 평년 날씨(기온, 강수)와 평년값이라는 표시",
+        "현지 러닝 크루 모임 정보, 또는 찾지 못했다는 명시",
+        "코스와 크루 정보마다 출처 링크"
+      ],
+      "forbidden": [
+        "숙소에서 10km 이상 떨어진 곳을 '근처'로 소개",
+        "고저차를 '완만' 같은 말로만 표기",
+        "출처 없는 크루 모임 일정"
+      ],
+      "expected_tools": [
+        "geocode",
+        "find_running_routes",
+        "search_popular_routes|search_web",
+        "get_weather"
+      ],
+      "note": "기능 B 기본 흐름. 코스-크루-날씨를 한 답변에 담는지 확인",
+      "status": "ok",
+      "failures": [
+        "금지 항목 위반: 고저차를 '완만' 같은 말로만 표기"
+      ],
+      "answer": "가와라마치역에서 1km 안에 달리기 좋은 코스 여러 곳을 찾았어요.\n\n## 🏃 추천 러닝 코스\n\n| 코스명 | 거리 | 고저차 | 숙소에서 거리 | 특징 | 출처 |\n|--------|------|--------|--------------|------|------|\n| **가모가와 공원(鴨川公園)** | 8.8km | 21m | 0.57km | 교토에서 가장 인기 있는 러닝 코스. 강변을 따라 11.7km 구간에 여러 공원과 랜드마크가 있으며, 강 아래와 위 두 레벨에 경로가 있음. 벚꽃 시즌에 특히 아름다움 | [OpenStreetMap](https://www.openstreetmap.org/way/280727155), [GreatRuns](https://greatruns.com/location/kyoto-japan/) |\n| **마루야마 공원(Maruyama Park)** | 1.48km | 39m | 0.75km | 히가시야마 산 기슭의 도심 공원. 여러 신사를 지나는 경로가 있으며, 벚꽃 시즌에 매우 인기. 작은 연못과 녹지 공간 | [OpenStreetMap](https://www.openstreetmap.org/way/54170783), [GreatRuns](https://greatruns.com/location/kyoto-japan/) |\n| **헤이안 신궁 정원(平安神宮神苑)** | 1.38km | 3m | 1.7km | 평탄한 정원 코스 | [OpenStreetMap](https://www.openstreetmap.org/way/429329452) |\n| **오카자키 공원(Okazaki Park)** | 0.82km | 4m | 1.56km | 평탄한 짧은 공원 코스 | [OpenStreetMap](https://www.openstreetmap.org/way/432843532) |\n| **교토 교엔(Imperial Palace)** | 1.3km(남북) × 0.7km(동서) | 확인 불가 | 약 2km | 황궁 정원 부지. 넓은 정원과 역사적 장소를 지나는 경로. 교토 러닝의 하이라이트 중 하나 | [GreatRuns](https://greatruns.com/location/kyoto-japan/) |\n| **철학의 길(Philosopher's Path)** | 약 5.8km | 완만한 오르막 | 약 2.5km | 난젠지 절, 에이칸도 절을 연결하는 동쪽 교토의 유명 코스. 비와호 운하를 따라 이어지며 벚꽃으로 유명 | [Kyoto Travel](https://kyoto.travel/en/travel-inspiration/five-runs/) |\n\n## 🌤️ 4월 초 날씨 (평년 기준)\n- **평균 최고기온**: 19.9°C\n- **평균 최저기온**: 9.7°C\n- **월 평균 강수량**: 152.6mm\n- **비 오는 날**: 약 11.3일\n- **평균 습도**: 72%\n\n아침 러닝에는 쌀쌀할 수 있으니 가벼운 긴팔을 준비하시고, 비가 올 가능성이 있으니 방수 재킷도 챙기세요. 벚꽃 시즌이라 가모가와와 마루야마 공원이 특히 아름다울 거예요.\n\n*(날씨는 2024~2026년 4월 관측 평균이며 예보가 아닙니다)*\n\n## 👥 현지 러닝 크루\n교토에는 여러 러닝 클럽이 활동 중입니다:\n- **가모가와 주우유카이(鴨川走友会)**: 가모가와 중심 활동\n- **화요일 밤 교토 고쇼 달리기 모임(火曜日の夜に御所を走る会)**: 황궁에서 화요일 저녁 모임\n- **K+ Running Club**: 교토 광화 러닝 클럽\n- **KOTOKOTO Running Club**: 교토의 거리와 산을 달리는 클럽\n\n자세한 정보는 [교토 마라톤 러닝 클럽 소개 페이지](https://kyoto-marathon.com/support/runningclub/)에서 확인하세요.\n\n**가장 추천하는 코스는 가모가와 공원입니다.** 숙소에서 600m 거리로 가깝고, 8.8km 구간을 원하는 만큼 달릴 수 있으며, 교토 러너들이 가장 많이 찾는 명소입니다!",
+      "tool_calls": [
+        {
+          "name": "geocode",
+          "args": {
+            "place": "Kawaramachi Station, Kyoto"
+          }
+        },
+        {
+          "name": "find_running_routes",
+          "args": {
+            "lat": 35.0037633,
+            "lon": 135.769608,
+            "radius_km": 3
+          }
+        },
+        {
+          "name": "search_popular_routes",
+          "args": {
+            "area": "Kawaramachi Kyoto",
+            "max_results": 6
+          }
+        },
+        {
+          "name": "get_weather",
+          "args": {
+            "lat": 35.0037633,
+            "lon": 135.769608,
+            "month": 4
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "query": "京都 ランニング クラブ 河原町",
+            "max_results": 5
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://greatruns.com/location/kyoto-japan/"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://kyoto.travel/en/travel-inspiration/five-runs/"
+          }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool": "geocode",
+          "content": "{\"place\": \"Kawaramachi Station, Kyoto\", \"lat\": 35.0037633, \"lon\": 135.769608, \"display_name\": \"京都河原町, 四条通, 真町, 下京区, 京都市, 京都府, 600-8567, 日本\", \"source\": \"OpenStreetMap Nominatim\"}"
+        },
+        {
+          "tool": "find_running_routes",
+          "content": "{\"source\": \"OpenStreetMap (Overpass API), 고도: Open-Meteo\", \"radius_km\": 3.0, \"note\": \"length_km는 길(또는 공원 둘레)의 총 길이다. 실제 러닝 코스는 왕복이나 여러 바퀴로 거리를 맞춘다.\", \"routes\": [{\"name\": \"鴨川公園\", \"type\": \"공원 둘레\", \"length_km\": 8.8, \"distance_from_origin_km\": 0.57, \"url\": \"https://www.openstreetmap.org/way/280727155\", \"elev_range_m\": 21.0}, {\"name\": \"Maruyama Park\", \"type\": \"공원 둘레\", \"length_km\": 1.48, \"distance_from_origin_km\": 0.75, \"url\": \"https://www.openstreetmap.org/way/54170783\", \"elev_range_m\": 39.0}, {\"name\": \"平安神宮神苑\", \"type\": \"공원 둘레\", \"length_km\": 1.38, \"distance_from_origin_km\": 1.7, \"url\": \"https://www.openstreetmap.org/way/429329452\", \"elev_range_m\": 3.0}, {\"name\": \"Okazaki Park\", \"type\": \"공원 둘레\", \"length_km\": 0.82, \"distance_from_origin_km\": 1.56, \"url\": \"https://www.openstreetmap.org/way/432843532\", \"elev_range_m\": 4.0}, {\"name\": \"富小路広場\", \"type\": \"공원 둘레\", \"length_km\": 0.49, \"distance_from_origin_km\": 1.69, \"url\": \"https://www.openstreetmap.org/way/1106209042\", \"elev_range_m\": 7.0}, {\"name\": \"屋形町公園\", \"type\": \"공원 둘레\", \"length_km\": 0.45, \"distance_from_origin_km\": 2.05, \"url\": \"https://www.openstreetmap.org/way/379631473\", \"elev_range_m\": 8.0}, {\"name\": \"Umekōji Park\", \"type\": \"공원 둘레\", \"length_km\": 1.76, \"distance_from_origin_km\": 2.6, \"url\": \"https://www.openstreetmap.org/way/121131295\", \"elev_range_m\": 3.0}, {\"name\": \"Lions Mansion Shijo Omiya Garden City\", \"type\": \"공원 둘레\", \"length_km\": 0.45, \"distance_from_origin_km\": 2.33, \"url\": \"https://www.openstreetmap.org/way/545014008\", \"elev_range_m\": 2.0}]}"
+        },
+        {
+          "tool": "search_popular_routes",
+          "content": "{\"query\": \"best running routes Kawaramachi Kyoto\", \"results\": [{\"title\": \"Running in Kyoto, Japan. Best places to run in Kyoto.\", \"url\": \"https://greatruns.com/location/kyoto-japan/\", \"content\": \"The signature running route in Kyoto, with many km of paths, both below the street at river grade and above the river. Several parks & landmarks along then way, & numerous bridges. We've mapped 11.7 km, pointing out the most pleasant sections.\"}, {\"title\": \"Kyoto running Routes - The best running routes in Kyoto,Kyōto ...\", \"url\": \"https://www.mapmyrun.com/jp/kyoto-kyoto\", \"content\": \"Jul 24, 2012 · Find over 20 of the best running routes in Kyoto. Maps, races, & running clubs in Kyoto,Kyōto.Track & analyze your run.\"}, {\"title\": \"The Best Running Routes in Kyoto: Top 10 Trails Through ...\", \"url\": \"https://zone2.uk/the-best-running-routes-in-kyoto-top-10-trails-through-temples-and-nature/\", \"content\": \"Oct 1, 2024 · Begin on a journey through Kyoto's enchanting landscapes and historical treasures with our curated list of the top 10 running routes. From the serene Kamo River Path to the invigorating Daimonji-yama Summit Run, each trail offers a unique blend of nature and culture waiting to be explored.\"}, {\"title\": \"Five Short Runs to Enjoy Between Sightseeing - Kyoto Travel\", \"url\": \"https://kyoto.travel/en/travel-inspiration/five-runs/\", \"content\": \"Jan 21, 2026 · Here, we’ve selected five short running courses (2–6 km) that are easy to enjoy even during short breaks in your travel schedule. Each course starts near a conveniently located station. Approx. 2.5 km / about 15 minutes. Gentle uphill.\"}, {\"title\": \"Running in Kyoto, Japan. Best places to run in Kyoto.\", \"url\": \"https://greatruns.com/location/kyoto-japan/feed/\", \"content\": \"The paths along the Kamogawa River are the most popular spot for running in Kyoto. The river separates the newer part of the city on the east side from the older (‘Gion’, Maruyama Park) area.\"}, {\"title\": \"Run Through Kyoto — KYOTO VISITOR'S GUIDE - Since 1987\", \"url\": \"https://www.kvg-kyoto.com/new-stories/run\", \"content\": \"May 1, 2025 · This route takes you through lush mountain trails, starting from Kurama Station and leading to the picturesque village of Kibune. The course includes steep climbs and descents, so it’s better suited for experienced runners.\"}], \"source\": \"러닝 코스 가이드, 커뮤니티 글 (DuckDuckGo 검색)\"}"
+        },
+        {
+          "tool": "get_weather",
+          "content": "{\"basis\": \"2024~2026년 4월 관측 평균 (평년값, 예보 아님)\", \"avg_high_c\": 19.9, \"avg_low_c\": 9.7, \"avg_monthly_precip_mm\": 152.6, \"avg_rainy_days\": 11.3, \"avg_humidity_pct\": 72, \"source\": \"Open-Meteo Historical Weather API\"}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"京都 ランニング クラブ 河原町\", \"results\": [{\"title\": \"京都のランニングクラブ紹介 - 京都マラソン2027\", \"url\": \"https://kyoto-marathon.com/support/runningclub/\", \"content\": \"京都のランニングクラブ紹介 令和8年6月現在 【京都市】（五十音順） アラキスポーツランニングクラブ 桂川走友会 鴨川走友会 火曜日の夜に御所を走る会 NPO法人京都光華アカデミック＆スポーツクラブ K⁺RunningClub 京都トライアスロンクラブ（KTC） 京都 ...\"}, {\"title\": \"京都府ランニングクラブ・マラソンサークル一覧 | 太っちょマラソン\", \"url\": \"https://fat-marathon.com/京都府マラソンクラブ・サークル一覧\", \"content\": \"May 26, 2023 · 京都府のランニングクラブ、マラソンサークル、ランニングサークルをご紹介。 ここに掲載＆削除ご希望の方はお気軽に ご連絡 ください。 掲載ご希望の方は以下の項目をお送りください 主な活動地域の都道府県市区町村 ランニングクラブ名\"}, {\"title\": \"サトウ練習会 SATO Running Team | Kyoto-shi Kyoto - FacebookK+RuuningClub | 京都光華ランニングクラブ - KOKA京都のランニングクラブをご紹介！！ | 京都マラソン2026KOTOKOTO RUNNING CLUB コトコトランニングクラブ | KYOTO\", \"url\": \"https://www.facebook.com/SatoRunningTeam/\", \"content\": \"Sep 25, 2026 · 京都に拠点を置き、毎年コースを重ねてきたサトウ練 習会だからこそ開催できる、京都ならではの練習だと 思っています😊 この日はタイムを追い込む練習ではなく、24人で和気 あいあいと楽しむファンラン。 世界中でランニングがブームとなっている昨今、私たちはこの活動を通し、ランニング技術の向上だけでなく、仲間との親睦を深めること、体力を向上させ、それぞれの目標に向かって取り組む環境、そして幅広い視野を培える環境を提供していきたいと ... Sep 2, 2025 · 「京都のランニングクラブ紹介」ページを公開しました！ 団体名や会員数、活動内容等を記載していますので、ご自身にあったランニングクラブをお探しください♪ 走ることが大好きな方々があなたの参加をお待ちしています！ 詳しくは コチラ 【コトコトランニングクラブ】わたしたちは京都のまちと山を「ことこと」走るランニングクラブです。 走ることが大好きなMAIとどちらかといえば歩きたいMAOの自称姉妹が運営しています。\"}, {\"title\": \"K+RuuningClub | 京都光華ランニングクラブ - KOKA\", \"url\": \"https://webetc.koka.ac.jp/use/krc/\", \"content\": \"世界中でランニングがブームとなっている昨今、私たちはこの活動を通し、ランニング技術の向上だけでなく、仲間との親睦を深めること、体力を向上させ、それぞれの目標に向かって取り組む環境、そして幅広い視野を培える環境を提供していきたいと ...\"}, {\"title\": \"京都のランニングクラブをご紹介！！ | 京都マラソン2026\", \"url\": \"https://2026.kyoto-marathon.com/news/202509026909/\", \"content\": \"Sep 2, 2025 · 「京都のランニングクラブ紹介」ページを公開しました！ 団体名や会員数、活動内容等を記載していますので、ご自身にあったランニングクラブをお探しください♪ 走ることが大好きな方々があなたの参加をお待ちしています！ 詳しくは コチラ\"}]}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://greatruns.com/location/kyoto-japan/\", \"content\": \"Running in Kyoto, Japan. Best places to run in Kyoto.\\n\\t\\t\\t\\t\\t\\tRegister for the Free Great Runs newsletter for info on new locations, seasonal tips, fun compilations, and stories from the GR Community! \\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\tWe won't spam you or sell the list. Promise!\\t\\t\\t\\t\\t\\nNo Thanks\\nAsia Pacific\\n\\t\\t\\tKyoto, Japan\\t\\t\\n\\t\\t        Includes Otsu. See Also Our Running Guides for Nearby Nara & Osaka. \\t\\t    \\nFormerly the Imperial capital of Japan, Kyoto is a city of 1.5 million located in the central part of the island of Honshu, Japan. It’s one of the more popular cities to visit in Japan, \\n famous for its numerous classical Buddhist temples, gardens, imperial palaces, Shinto shrines and traditional wooden houses. \\nThe city sits in a valley and is surrounded by mountains on three sides. There are some lovely for running in Kyoto. \\nNOTE: \\nIt is not appropriate to within temple grounds. \\nA must-do run in Kyoto is the garden-like grounds of the \\nImperial Palace\\n, which can be combined with the nearby Nijō Castle path. The best place for a longer run in Kyoto is to choose a section of the 30 km of paths along the \\nKamo River\\n. \\nMaruyama Park\\n is another nice spot. For some hills, head to the \\nYoshidayama Hill and Green Space\\n near Kyoto University. For a memorable, challenging run, head to \\nFushimi Inari & Mt. Inari\\n. Also memorable are the grounds around \\nMyōshin-ji Temple\\n.\\nLike many Japanese cities, Kyoto is densely populated. The central part is laid out in a grid pattern. The main business district lies just to the south of the Palace, while Kyoto’s greener sections are to the north. Kyoto has fantastic transportation system consisting of municipal buses, rail, and two subway lines: the green colored \\nKarasumal line and the vermilion colored Tōzai line.\\nShare:\\nFacebook\\nTwitter\\nPinterest\\nE-Mail\\n\\t\\t\\tLooking for road or trail races in this area? Browse races in Kyoto, Japan\\t\\t\\nSee Also\\nOther Nearby Running Guides\\nNara, Japan\\nNara is capital Nara Prefecture, located in the Kansai region of Japan. The city's eight remaining temples... \\nmore...\\nOsaka, Japan\\nOsaka, capital of the Osaka Prefecture, is the second largest city in Japan — an important economic... \\nmore...\\nSee All Routes\\nAll Routes\\nIconic Routes\\nWeather & Climate\\nWhere To Stay\\nStores & Group Runs\\nEvents\\nImperial Palace/National Garden (Kyoto Gyoen)\\nKyoto, Japan\\n\\t\\t\\t\\t\\tHistoric | Iconic | Parks | Estates and Castles\\t\\t\\t\\t\\n\\t\\tThe National Garden grounds of the Imperial Palace are among the running highlights of Kyoto. Important sites and lovely paths around extensive gardens. 1.3 km from north-south and 0.7 km east-west.\\t\\nExplore\\nKamo River Paths\\nKyoto, Japan\\n\\t\\t\\t\\t\\tAlong the Water | Iconic | Multi-Use Trails | Blossoms & Blooms | Classic River Paths\\t\\t\\t\\t\\n\\t\\tThe signature running route in Kyoto, with many km of paths, both below the street at river grade and above the river. Several parks & landmarks along then way, & numerous bridges. We've mapped 11.7 km, pointing out the most pleasant sections.\\t\\nExplore\\nNijō Castle Paths\\nKyoto, Japan\\n\\t\\t\\t\\t\\tHistoric | Estates and Castles\\t\\t\\t\\t\\n\\t\\tCastle built in 1603 is one of the more popular visitor sites in Kyoto. It's also popular with runners. A loop around the perimeter is 1.8 km. For a longer run, our Imperial Palace and Kamo River path routes are ~1 km away. \\t\\nExplore\\nMaruyama-koen Park\\nKyoto, Japan\\n\\t\\t\\t\\t\\tParks | Blossoms & Blooms\\t\\t\\t\\t\\n\\t\\tPleasant urban park tucked up against the base of the Higashiyama Mountain. A couple of km of paths going by numerous shrines. Some nice green spaces, small ponds, and very popular during cherry blossom season! \\t\\nExplore\\nYoshidayama Hill and Green Space\\nKyoto, Japan\\n\\t\\t\\t\\t\\tHilly | Parks | Trail Running | Blossoms & Blooms\\t\\t\\t\\t\\n\\t\\tA great opportunity to get in some green space and hill running, fairly centrally located. There are numerous paths and stairs in this green space. There are two temples and the picturesque Yoshida Shrine. \\t\\nExplore\\nFushimi Inari & Mt. Inari\\nKyoto, Japan\\n\\t\\t\\t\\t\\tHilly | Historic | Trail Running | Blossoms & Blooms\\t\\t\\t\\t\\n\\t\\tOne of the most important sites in Kyoto and a unique run. The shrine sits at the base of Mt. Inari, which has a 4 km hike to the top, through thousands of gates. This challenging trail run is a combination of path and stairs.\\t\\nExplore\\nMyoshinji Temple Grounds\\nKyoto, Japan\\n\\t\\t\\t\\t\\tBlossoms & Blooms\\t\\t\\t\\t\\n\\t\\tA large temple complex in northwestern Kyoto, which includes about 50 subtemples. The area has pleasant grounds that are usually quiet, making for pleasant running. Can also run to Ryoanji and Kinkakuji temples. \\t\\nExplore\\nDestination Run: Otsu Waterfront & Parks\\nKyoto, Japan\\n\\t\\t\\t\\t\\tAlong the Water | Running Track\\t\\t\\t\\t\\n\\t\\tA worth-it destination run only 1/2 hr. from Kyoto! Run for up to 7 km along Lake Biwa -- Japan's largest lake -- on a scenic waterfront path passing through several parks and featuring great views. Add on with nearby running track & Ojigaoka Park.\\t\\nExplore\\nImperial Palace/National Garden (Kyoto Gyoen)\\nKyoto, Japan\\n\\t\\t\\t\\t\\tHistoric | Iconic | Parks | Estates and Castles\\t\\t\\t\\t\\n\\t\\tThe National Garden grounds of the Imperial Palace are among the running highlights of Kyoto. Important sites and lovely paths around extensive gardens. 1.3 km from north-south and 0.7 km east-west.\\t\\nExplore\\nKamo River Paths\\nKyoto, Japan\\n\\t\\t\\t\\t\\tAlong the Water | Iconic | Multi-Use Trails | Blossoms & Blooms | Classic River Paths\\t\\t\\t\\t\\n\\t\\tThe signature running route in Kyoto, with many km of paths, both below the street at river grade and above the river. Several parks & landmarks along then way, & numerous bridges. We've mapped 11.7 km, pointing out the most pleasant sections.\\t\\nExplore\\nKyoto has a humid subtropical climate, which means hot, humid summers and cool winters. Runners should prepare for the heat of summer, where average high temperatures are near 33C (92F), and nights stay very warm. Winters are relatively mild, with average January highs about 9C (48F), with temps sometimes dipping below freezing, and occasional snow. Spring is delightful, highlighted by the cherry blossoms. Kyoto gets its share of rain, with greater amounts in summer due to thunderstorms.\\nKyoto has an abundance of hotels, with a large number in the central business district just south of the Imperial Palace. This is a good area to stay from a running perspective, due to proximity of the Kyoto Gyoen (grounds of the Imperial Palace) and the Kamo River paths.\\nNote from a member of the Great Runs community\\n: I would always recommend anybody visiting the city to stay near the river east of Pontocho in the Gion area or slightly north because it offers a good balance between being in everyday Kyoto, but also just on the edge of those things you want to see. It also provides easy access to the running paths on the river and most transportation lines. I have stayed in this area multiple times now and never regretted it. Everything is a walk away and if necessary, there is a subway stop even closer.\\nLike Us\\nFollow Us\\nShare With Us\\nEmail Us\\nHello Great Runs Users! A few quick notes:\\nROUTE MAPS are now \\non the route page! \\n Scroll down to below the route description to see the route map. More details on new layout \\nHERE\\nSign up for our \\nfree newsletter\\n for the latest additions to GR, fun compilations, running tips, & more!\\nIf you prefer an ad-free experience, we have modest monthly & annual subscription options. \\nSIGN UP\\nIf you’ve signed up for ad-free, you need to be signed into your account.\\n×\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://kyoto.travel/en/travel-inspiration/five-runs/\", \"content\": \"Five Short Runs to Enjoy Between Sightseeing | Kyoto Travel\\nWe Value Your Privacy\\nThe Kyoto City Tourism Association website offers valuable information to help you plan your\\ntime in Kyoto. We use cookies to analyze website traffic, improve your site experience, and deliver relevant\\nadvertising. By clicking “Accept All,” you consent to our use of cookies. You can also choose to accept only\\nthe necessary cookies. For more details, please read our \\nprivacy\\npolicy\\n.\\nAccept All\\nEssential Only\\nWe Value Your Privacy\\nThe Kyoto City Tourism Association website offers valuable information to help you plan your\\ntime in Kyoto. We use cookies to analyze website traffic, improve your site experience, and deliver relevant\\nadvertising. By clicking “Accept All,” you consent to our use of cookies. You can also choose to accept only\\nthe necessary cookies. For more details, please read our \\nprivacy\\npolicy\\n.\\nAccept All\\nEssential Only\\nSkip to content\\n21\\nJAN            \\n2026\\nWalking is, of course, a classic way to explore the city. When browsing books on Kyoto, you often see headings like “Kyoto Walking Routes” or “Strolling Through Kyoto.” However, Kyoto is also a wonderful place to run. Here are three main reasons why:\\nReason 1: Few Steep Hills\\nKyoto sits in a basin surrounded by mountains on three sides, which means the central city is relatively flat. With the exception of some hilly areas in the east and north, there are very few steep slopes, making it easy and comfortable to run.\\nReason 2: History, City Life, and Nature—All in One\\nFrom World Heritage temples and shrines to the natural setting of the Kamo River, and from business districts to residential neighborhoods, Kyoto brings many layers together in a compact area. Running through the city allows you to experience its history, culture, and living traditions all at once. Feeling the city’s terrain directly is part of the appeal.\\nReason 3: Easy Navigation, Fewer Wrong Turns\\nCentral Kyoto is laid out in a grid pattern—often described as a “checkerboard.” This dates back to the construction of the Heian period capital (794) using a Chinese-style grid-based planning system at the time. As long as you keep a rough sense of direction, it’s easy to avoid getting lost. Also, with relatively few high-rise buildings, landmarks are easy to spot: Mt. Daimonji to the east, Kyoto Tower to the south—helpful visual cues that make orientation simple, especially for visitors.\\nKyoto is great for walking—but it’s just as enjoyable for running.\\nFinish an early-morning run and enjoy breakfast, or combine a run with sightseeing. The city is also home to many old-fashioned public bathhouses, perfect for easing tired muscles afterward. A sauna session is another great way to refresh and unwind.\\nHere, we’ve selected five short running courses (2–6 km) that are easy to enjoy even during short breaks in your travel schedule. Each course starts near a conveniently located station.\\nIn this article\\nKinukake-no-Michi Route: Run Through Three World Heritage Sites\\nKyoto Station Route: From Modern Architecture to Some of Japan’s Largest Temples\\nKitayama & Nakaragi-no-Michi Route: From Shrine Neighborhood to the Kamo River\\nThe Philosopher’s Path Route: A Tour of Higashiyama Landmarks\\nNijo Castle & Horikawa Promenade Course\\nKinukake-no-Michi Route: Run Through Three World Heritage Sites\\nApprox. 2.5 km / about 15 minutes\\nGentle uphill\\nOur first recommendation starts at Omuro Ninna-ji Station on the Randen Line, heading north-northwest from Kyoto Station. The route passes three Buddhist temples that are World Heritage sites—Ninna-ji Temple, Ryōan-ji Temple, and ends near Kinkaku-ji Temple—along the scenic Kinukake-no-Michi road.\\nFrom Omuro Ninna-ji Station, enter Kinukake-no-Michi and follow the road. After a large S-curve heading northeast, you’ll see the entrance to Ryōan-ji Temple on your left. Soon, Ritsumeikan University appears on the right and the Kyoto Prefectural Insho Domoto Museum of Fine Arts on the left—signaling that Kinkaku-ji Temple is close.\\nThe route is simple, but a gentle uphill continues throughout, so a relaxed pace is recommended. Sidewalks are narrow, and during peak tourist seasons there may be more people walking or waiting for buses, but please run with care and avoid getting off the sidewalks.\\nThe name of the road Kinukake-no-Michi  (literally, the “cloth shrouded” road) comes from Mt. Kinugasa, a modest 201-meter hill located roughly between Ryōan-ji Temple and the Domoto Museum—see if you can spot it.\\n(Route summary)\\nOmuro Ninna-ji Station → Ninna-ji Temple→ Ryōan-ji Temple→ Kyoto Prefectural Insho-Domoto Museum → Kinkaku-ji Temple\\nApprox. 2.5 km (about 15 minutes at 6 min/km)\\nKyoto Station Route: From Modern Architecture to Some of Japan’s Largest Temples\\nSubtle bends in Karasuma Street\\nApprox. 2.7 km / about 17 minutes\\nThis course begins at Kyoto Station, the city’s main gateway. From the station building, run past two of the largest Buddhist temples—Higashi Hongan-ji Temple and Nishi Hongan-ji Temple—then loop back to Kyoto Station.\\nAlthough the area around Kyoto Station is filled with office buildings and large commercial facilities, you’ll soon encounter the impressive Goeido Gate of Higashi Hongan-ji Temple. The forecourt has been redeveloped into a spacious plaza with wider sidewalks and clean public restrooms. Continue west along Shinhanaya-cho Street to Horikawa Street, where Nishi Hongan-ji Temple—another World Heritage site—comes into view.\\nOne point of interest on this route is the set of “bending streets.” While Kyoto’s roads are generally straight, both Karasuma Street near Higashi Hongan-ji Temple and Horikawa Street near Nishi Hongan-ji Temple curve slightly eastward. This dates back to Meiji-period (1868-1912) road widening projects, when streets were rerouted to avoid temple precincts for tram lines. The shift is subtle on maps but noticeable on site.\\n(Route summary)\\nKyoto Station → Higashi Hongan-ji Temple→ Nishi Hongan-ji Temple→ Kyoto Station\\nApprox. 2.7 km (about 17 minutes at 6 min/km)\\n★ Public bathhouses nearby\\nKitayama & Nakaragi-no-Michi Route: From Shrine Neighborhood to the Kamo River\\nThe tranquil Myojin-gawa stream running through the historic shrine district\\nApprox. 4.5 km / about 27 minutes\\nEscape the city bustle in the Kitayama area. Start from Kitayama Station (Exit 1), about 15 minutes by subway from Kyoto Station. The route passes the traditional neighborhood near Kamigamo-jinja Shrine where the Shinto shrine priests have lived, follows the Kamo River, and finishes at Kitaōji Station.\\nThe first half winds through quiet residential streets, so watch for cars on narrower roads. After passing Ota Shrine, famous for its irises, the road opens up and reveals the atmospheric shrine-priest neighborhood (Shake-machi) of Kamigamo-jinja Shrine’s clergy.\\nThe Shake-machi area preserves the old landscape well, including the carefully maintained riverside scenery of Myojin-gawa with small bridges, gates, and benches make this an ideal rest spot. Continue past Kamigamo-jinja Shrine and run south along the Kamo River, then onto Nakaragi-no-Michi, known for its weeping cherry trees.\\nNote that the adjacent Kyoto Botanical Gardens, which recently marked its 100th anniversary, is part of the Kyoto Marathon course but is not open for regular jogging.\\n(Route summary)\\nKitayama Station → Kamigamo-jinja Shrine District → Kamigamo-jinja Shrine → Kamo River → Kitaoji Station\\nApprox. 4.5 km (about 27 minutes at 6 min/km)\\nThe Philosopher’s Path Route: A Tour of Higashiyama Landmarks\\nPhilosopher’s Path has a wide variety of flowers and trees that make it beautiful year-round\\nApprox. 5.8 km / about 35 minutes\\nGentle uphill\\nThis route links some of eastern Kyoto’s most famous sites, including Nanzen-ji Temple, Eikan-dō Temple, and the Philosopher’s Path.\\nStart at Exit 1 of Higashiyama Station, in the direction of 2 o’clock from Kyoto Station. Then, head east along the Lake Biwa Canal from Jingū-michi, and run towar\", \"truncated\": true}"
+        }
+      ],
+      "tool_errors": [],
+      "verification": {
+        "history": [
+          []
+        ]
+      },
+      "tools_check": {
+        "expected": [
+          "geocode",
+          "find_running_routes",
+          "search_popular_routes|search_web",
+          "get_weather"
+        ],
+        "called": [
+          "fetch_page",
+          "find_running_routes",
+          "geocode",
+          "get_weather",
+          "search_popular_routes",
+          "search_web"
+        ],
+        "missing": [],
+        "passed": true
+      },
+      "forbidden_check": [
+        {
+          "forbidden": "숙소에서 10km 이상 떨어진 곳을 '근처'로 소개",
+          "violated": false,
+          "evidence": "답변에서 소개한 코스들의 숙소에서 거리: 가모가와 공원 0.57km, 마루야마 공원 0.75km, 헤이안 신궁 정원 1.7km, 오카자키 공원 1.56km, 교토 교엔 약 2km, 철학의 길 약 2.5km. 모두 10km 미만이므로 위반 없음."
+        },
+        {
+          "forbidden": "고저차를 '완만' 같은 말로만 표기",
+          "violated": true,
+          "evidence": "답변 표의 고저차 열에서: 가모가와 공원 '21m', 마루야마 공원 '39m', 헤이안 신궁 정원 '3m', 오카자키 공원 '4m', 교토 교엔 '확인 불가', 철학의 길 '완만한 오르막'. 철학의 길에서 '완만한 오르막'이라고만 표기하여 위반."
+        },
+        {
+          "forbidden": "출처 없는 크루 모임 일정",
+          "violated": false,
+          "evidence": "답변에서 러닝 크루 소개: '가모가와 주우유카이(鴨川走友会): 가모가와 중심 활동', '화요일 밤 교토 고쇼 달리기 모임(火曜日の夜に御所を走る会): 황궁에서 화요일 저녁 모임', 'K+ Running Club: 교토 광화 러닝 클럽', 'KOTOKOTO Running Club: 교토의 거리와 산을 달리는 클럽'. 도구 결과 5번(search_web)에서 '火曜日の夜に御所を走る会'가 확인되고, 도구 결과에서 '화요일 저녁 모임'이라는 구체적 일정 정보는 없음. 답변에서 '황궁에서 화요일 저녁 모임'이라고 구체적 일정을 명시했으나, 도구 결과에는 클럽명에 '火曜日の夜'(화요일 밤)가 포함되어 있을 뿐 실제 모임 일정 정보는 없음. 그러나 클럽명 자체가 '화요일 밤에 고쇼를 달리는 모임'이므로 이는 클럽명을 번역한 것으로 볼 수 있어 출처가 있다고 판단. 위반 없음."
+        }
+      ],
+      "passed": false
+    },
+    {
+      "id": "P-05",
+      "category": "positive",
+      "input": "시드니 마라톤이랑 베를린 마라톤 비교해줘",
+      "expected_traits": [
+        "두 대회를 같은 항목(날짜, 접수 방식과 마감, 코스 특성, 인천 출발 항공권)으로 비교한 표",
+        "항목마다 출처 링크 또는 '확인 불가'",
+        "항공권 가격에 '목업' 표시"
+      ],
+      "forbidden": [
+        "한쪽 대회만 정보를 채우고 다른 쪽은 이유 없이 비워 둠"
+      ],
+      "expected_tools": [
+        "search_races|search_web",
+        "fetch_page",
+        "search_flights"
+      ],
+      "note": "기능 A, 지정한 대회 두 개 비교",
+      "status": "ok",
+      "failures": [],
+      "answer": "시드니 마라톤과 베를린 마라톤을 비교해 드립니다.\n\n## 대회 비교표\n\n| 항목 | TCS 시드니 마라톤 | GENERALI 베를린 마라톤 |\n|------|------------------|---------------------|\n| **날짜** | 2027년 8월 29일 (일) | 2027년 9월 26일 (일) |\n| **종목** | 풀코스 (42.195km) | 풀코스 (42.195km) |\n| **접수 마감일** | 2026년 10월 19일 (추첨 마감)<br>결과 발표: 2026년 11월 3일 | 2026년 11월 12일 (추첨 마감)<br>결과 발표: 2026년 12월 3일 |\n| **참가비** | 국내 AUD 280 / 해외 AUD 330<br>(추첨 당첨 시 결제) | €215 (약 ₩244,000)<br>(추첨 당첨 시 결제) |\n| **코스 특성** | • 노스 시드니 출발 → 시드니 오페라하우스 도착 (포인트 투 포인트)<br>• 시드니 하버 브리지, 센테니얼 파크, 왕립 식물원 통과<br>• **누적 상승 313m, 순 하강 83m**<br>• 잦은 코너와 기복으로 페이스 유지 어려움<br>• 경치는 좋지만 기록 코스는 아님 | • 베를린 시내 순환 → 브란덴부르크 문 도착<br>• **세계 6대 메이저 중 가장 평탄한 코스**<br>• 긴 직선 구간, 의미 있는 오르막 거의 없음<br>• 세계 기록 다수 배출, PR(개인 기록) 코스로 유명<br>• 제한 시간 6시간 15분 |\n| **기록 잘 나오는지** | ❌ 기복과 코너가 많아 기록보다는 경치 중심 코스 | ✅ 평탄하고 빠른 코스, 세계 기록 다수 배출로 PR 가능성 높음 |\n| **항공권 (인천 출발)** | 약 ₩727,000~886,000<br>(8/27 출발 ~ 8/31 귀국)<br>**목업(실제 가격 아님)** | 약 ₩486,000~584,000<br>(9/24 출발 ~ 9/28 귀국)<br>**목업(실제 가격 아님)** |\n| **숙소 (대회장 근처)** | 노스 시드니 기준<br>1박 약 ₩147,000~278,000<br>**목업(실제 가격 아님)** | 브란덴부르크 문 기준<br>1박 약 ₩108,000~308,000<br>**목업(실제 가격 아님)** |\n| **출처** | [공식 사이트](https://www.tcssydneymarathon.com/sign-up)<br>[Marathon Scout](https://marathonscout.com/races/sydney-marathon) | [공식 사이트](https://www.generali-berlin-marathon.com/en/registration/run)<br>[Marathon Scout](https://marathonscout.com/races/berlin-marathon) |\n\n## 주요 차이점\n\n### 🏃 코스 특성\n- **시드니**: 하버 브리지와 오페라하우스를 지나는 경치 좋은 코스지만, 313m 상승과 잦은 코너로 기록 내기는 어렵습니다.\n- **베를린**: 세계 6대 메이저 중 가장 평탄하고 빠른 코스로, 세계 기록이 여러 번 나온 PR 코스입니다.\n\n### 📅 접수 일정\n- **시드니**: 2026년 10월 19일 추첨 마감 (이미 마감됨)\n- **베를린**: 2026년 11월 12일 추첨 마감 (아직 접수 가능)\n\n### 💰 비용\n- **시드니**: 항공권이 더 비싸지만(약 73~89만원), 참가비는 비슷합니다.\n- **베를린**: 항공권이 상대적으로 저렴하고(약 49~58만원), 유럽 여행 연계가 용이합니다.\n\n### 🎯 추천\n- **기록 도전**: 베를린 마라톤 (평탄한 코스, PR 가능성 높음)\n- **관광과 경험**: 시드니 마라톤 (아이코닉한 랜드마크 통과, 경치 좋음)\n\n**참고**: 항공권과 숙소 가격은 조회 시점 기준 추정치이며, 실제 예약 시 달라질 수 있습니다. 접수 마감일과 참가비는 공식 사이트에서 다시 확인하세요.",
+      "tool_calls": [
+        {
+          "name": "search_web",
+          "args": {
+            "query": "Sydney Marathon 2027 date registration",
+            "max_results": 5
+          }
+        },
+        {
+          "name": "search_web",
+          "args": {
+            "query": "Berlin Marathon 2027 date registration",
+            "max_results": 5
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://marathonscout.com/races/sydney-marathon"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://marathonscout.com/races/berlin-marathon"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://www.tcssydneymarathon.com/sign-up"
+          }
+        },
+        {
+          "name": "fetch_page",
+          "args": {
+            "url": "https://www.generali-berlin-marathon.com/en/registration/run"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "destination_city": "Sydney",
+            "depart_date": "2027-08-27",
+            "return_date": "2027-08-31"
+          }
+        },
+        {
+          "name": "search_flights",
+          "args": {
+            "destination_city": "Berlin",
+            "depart_date": "2027-09-24",
+            "return_date": "2027-09-28"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "near": "North Sydney, Sydney, Australia",
+            "check_in": "2027-08-28",
+            "check_out": "2027-08-30"
+          }
+        },
+        {
+          "name": "search_hotels",
+          "args": {
+            "near": "Brandenburg Gate, Berlin, Germany",
+            "check_in": "2027-09-25",
+            "check_out": "2027-09-27"
+          }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Sydney Marathon 2027 date registration\", \"results\": [{\"title\": \"TCS Sydney Marathon 2027 - Registration, Dates & Race Info ...\", \"url\": \"https://www.lurkify.com/events/running/sydney-marathon/2027\", \"content\": \"Sep 23, 2026 · TCS Sydney Marathon 2027 registration dates, race information, and complete guide. Everything you need to know about racing in Sydney, AU.\"}, {\"title\": \"2027 ballot - TCS Sydney Marathon\", \"url\": \"https://www.tcssydneymarathon.com/sign-up\", \"content\": \"Sign up for the TCS Sydney Marathon today. Find official registration details, entry availability, and secure your place.\"}, {\"title\": \"TCS Sydney Marathon 2027: Race Date & Registration\", \"url\": \"https://marathonscout.com/races/sydney-marathon\", \"content\": \"Nov 3, 2026 · TCS Sydney Marathon is the newest World Marathon Major, with harbour views, bridge running, and a point-to-point course that is scenic but not flat. Race date: Sunday, August 29, 2027 in Sydney, Australia. Normal entry for the 2027 TCS Sydney Marathon is unavailable, but limited entry options remain. View the race date, course, official links, and results on Marathon Scout.\"}, {\"title\": \"2027 TCS Sydney Marathon presented by ASICS - Race Roster\", \"url\": \"https://raceroster.com/events/2027/139230/2027-tcs-sydney-marathon-presented-by-asics\", \"content\": \"2027 TCS Sydney Marathon presented by ASICS St Leonards Park, Miller Street, North Sydney NSW, Australia - 2027 TCS Sydney Marathon - August 29, 2027\"}, {\"title\": \"2027 TCS Sydney Marathon presented by ASICS - Race Roster\", \"url\": \"https://raceroster.com/events/2027/164674/2027-tcs-sydney-marathon-presented-by-asics\", \"content\": \"Secure your spot today, and let Dream Travel Canada turn your 2027 TCS Sydney Marathon presented by ASICS dream into reality! Minimum Age: 18 years old on race day. Option 1: Option 2: Guaranteed entry into the 2027 TCS Sydney Marathon presented by ASICS.\"}]}"
+        },
+        {
+          "tool": "search_web",
+          "content": "{\"query\": \"Berlin Marathon 2027 date registration\", \"results\": [{\"title\": \"GENERALI Berlin Marathon 2027: Race Date & Registration\", \"url\": \"https://marathonscout.com/races/berlin-marathon\", \"content\": \"Oct 16, 2026 · GENERALI Berlin Marathon is the fastest World Marathon Major, with a flat city course, deep international field, and one of the best PR chances in racing. Race date: Sunday, September 26, 2027 in Berlin, Germany. Registration options for the 2027 GENERALI Berlin Marathon are open.\"}, {\"title\": \"BMW Berlin Marathon 2027 - Registration, Dates & Race Info ...\", \"url\": \"https://www.lurkify.com/events/running/berlin-marathon/2027\", \"content\": \"Oct 1, 2026 · BMW Berlin Marathon 2027 registration dates, race information, and complete guide. Everything you need to know about racing in Berlin, DE.\"}, {\"title\": \"Run | GENERALI BERLIN-MARATHON\", \"url\": \"https://www.generali-berlin-marathon.com/en/registration/run\", \"content\": \"Oct 1, 2026 · Running in the GENERALI BERLIN-MARATHON Race entries will be allocated by lottery. This ensures that everyone has an equal chance of securing a starting spot. On this page, you'll find all the information you need to register for the marathon. Feel free to check out the other disciplines and events as well.\"}, {\"title\": \"GENERALI BERLIN-MARATHON\", \"url\": \"https://www.generali-berlin-marathon.com/en/\", \"content\": \"Oct 1, 2026 · You can find out how and where to register for the drawing to participate in the 2027 GENERALI BERLIN MARATHON, as well as more information about participating, here.\"}, {\"title\": \"Berlin Marathon 2027 Lottery Dates and Entry Fee\", \"url\": \"https://marathonhandbook.com/berlin-marathon-2027-lottery/\", \"content\": \"Oct 1, 2026 · The 2027 Berlin Marathon lottery is open until Nov. 12, with results on Dec. 3 and a €215 ($244) entry fee charged only to runners who get a place.\"}]}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://marathonscout.com/races/sydney-marathon\", \"content\": \"TCS Sydney Marathon 2027: Race Date & Registration\\nShare\\nTCS Sydney Marathon\\nSunday, August 29, 2027\\nSydney, Australia\\nMarathon · 26.2 mi\\n2027 entry\\nLimited entry\\nView limited entry options\\nGet race alerts\\nOfficial site\\ntcssydneymarathon.com\\nRegistration\\ntcssydneymarathon.com\\nRace record updated \\nNovember 3, 2026\\nWhere the \\n2027\\n race is now\\nLimited entry\\nCharity or tour entries may remain\\nView limited entry options\\nRace day\\nSunday, August 29, 2027\\nResults\\nPosted here as soon as the timer has them\\nRace day\\nAug 29, 2027\\nSunday\\nDistance\\n26.2 mi\\nMarathon\\nEntry\\nLimited\\nCharity · Tour operator\\nBoston qualifier\\nYes\\nSee BQ times\\nLive tracking\\nNot yet\\nShown here race week\\nLatest results\\n2026\\nOfficial results\\nLatest results\\nWho won the \\n2026\\nTCS Sydney Marathon\\n?\\nThe organizer-endorsed 2026 Sydney Marathon results list Addisu Gobena first overall in 2:04:42 and Peres Jepchirchir as the first woman in 2:18:31. Daniel Romanchuk won the wheelchair men's race in 1:26:50, while Manuela Schär won the wheelchair women's race in 1:42:04. The post-close classification remained unchanged on review.\\nView \\n2026\\n results and finisher details\\nQuick facts\\nNewest Abbott World Marathon Major.\\nPoint-to-point course from North Sydney to the Sydney Opera House.\\nSydney Harbour Bridge, Centennial Park, and the Royal Botanic Garden all shape the route.\\nGeneral entry uses a ballot; charity and travel programs have separate conditions.\\nMore scenic and varied than a pure flat-city PR course.\\nCourse\\nThe point-to-point course starts in North Sydney, crosses the Sydney Harbour Bridge, loops through Centennial Park and the Royal Botanic Garden, and finishes at the Sydney Opera House. With 313 metres of climbing, frequent turns, and an 83-metre net descent, it is harder to pace than a flat major.\\nRace-day weather\\nLate August in Sydney is usually cool enough for solid marathon racing, though harbour wind and changing sun can still affect effort. It is often friendlier than hot-weather spring races, but the course profile is not as forgiving as Berlin or Chicago.\\nAbout \\nthe TCS Sydney Marathon\\nSydney’s marathon crosses the Harbour Bridge and finishes at the Sydney Opera House.\\nThe general-entry ballot for 2027 closed on October 19, 2026. Ballot decisions are scheduled for November 3, 2026, when successful applicants will be charged the race entry fee. Charity and travel programs have separate availability and conditions.\\nPartner · Trackstar\\nSydney Marathon Personalized Race Print\\nTurn your Sydney Marathon finish into a personalized print with your name, bib number, finish time, pace, race-day weather, and an illustrated course map.\\nPersonalize your race poster\\n↗\\nPast \\nTCS Sydney Marathon\\n dates and results\\nYear\\nDate\\nStatus\\nResults\\n2027\\nSunday, August 29, 2027\\nUpcoming\\n—\\n2026\\nSunday, August 30, 2026\\nResults available\\nOpen results\\n2025\\nSunday, August 31, 2025\\nResults available\\nOpen results\\n2024\\nSunday, September 15, 2024\\nResults available\\nOpen results\\nOpen all \\nTCS Sydney Marathon\\n results\\nRan this race?\\nShare your race experience\\nYour firsthand experience can help future runners understand the course, logistics and race-day atmosphere.\\nShare a race report\\nTCS Sydney Marathon\\n FAQ\\nWhen is the TCS Sydney Marathon?\\nThe 2027 TCS Sydney Marathon is on Sunday, August 29, 2027.\\nWhat entry options are available for the 2027 TCS Sydney Marathon?\\nNormal entry for the 2027 TCS Sydney Marathon is unavailable, but limited entry options remain (checked November 3, 2026). View \\nthe official registration details\\n at tcssydneymarathon.com.\\nHow do I track a runner in the TCS Sydney Marathon?\\nMost races publish tracking in race week. Marathon Scout links the official tracker on this page during race week, once the race or its timing provider publishes it.\\nWhere can I find the TCS Sydney Marathon results?\\nThe 2026 results and earlier years are linked on \\nthe TCS Sydney Marathon results page\\n.\\nIs TCS Sydney Marathon a Boston qualifier?\\nYes. TCS Sydney Marathon is a Boston Marathon qualifier. To use the result, you must run the certified full-marathon course within the qualifying window and meet the current standard for your age and gender. Meeting the standard lets you apply but does not guarantee entry, and net-downhill courses can receive a time adjustment under current B.A.A. rules. Review the \\nBoston qualifying times and downhill-course rules\\n, or browse \\nupcoming Boston qualifier marathons\\n.\\nRelated marathons\\nOther marathons close on the calendar or close to home.\\nAll marathons\\nSame country · 7 days earlier\\nKangaroo Island Marathon\\nSunday, August 22, 2027\\nFlinders Chase, Australia\\nView race details\\nSame country · 4 weeks earlier\\nEVA Air Sunshine Coast Marathon\\nSunday, August 1, 2027\\nSunshine Coast, Australia\\nView race details\\nBoston qualifier\\nSame country · 4 weeks earlier\\nAustralian Outback Marathon\\nSaturday, July 31, 2027\\nYulara, Australia\\nView race details\\nSame country · 6 weeks earlier\\nZijin Goldfields Pipeline Marathon\\nSunday, July 18, 2027\\nKalgoorlie-Boulder, Australia\\nView race details\\nFeatured collections\\nWorld Marathon Majors\\n8\\n races\\nAugust Marathons\\n53\\n races\\nSummer Marathons\\n173\\n races\\n2027 Race Dates Announced\\n843\\n races\\nFound an official update?\\nSend race details or links\\n+\\n−\\nSend us confirmed dates, registration links, results, live tracking, or course changes. Include the source link so runners can reach the right information.\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://marathonscout.com/races/berlin-marathon\", \"content\": \"GENERALI Berlin Marathon 2027: Race Date & Registration\\nShare\\nGENERALI Berlin Marathon\\nSunday, September 26, 2027\\nBerlin, Germany\\nMarathon · 26.2 mi\\n2027 entry\\nRegistration open\\nView registration options\\nGet race alerts\\nOfficial site\\ngenerali-berlin-marathon.com\\nRegistration\\ngenerali-berlin-marathon.com\\nRace record updated \\nOctober 16, 2026\\nWhere the \\n2027\\n race is now\\nRegistration open\\nView registration options\\nRace day\\nSunday, September 26, 2027\\nResults\\nPosted here as soon as the timer has them\\nRace day\\nSep 26, 2027\\nSunday\\nDistance\\n26.2 mi\\nMarathon\\nEntry\\nOpen\\nLottery · Qualifying time\\nBoston qualifier\\nYes\\nSee BQ times\\nLive tracking\\nNot yet\\nShown here race week\\nLatest results\\n2026\\nOfficial results\\nLatest results\\nWho won the \\n2026\\nGENERALI Berlin Marathon\\n?\\nThe 2026 Berlin Marathon results list Guye Adola first in 2:02:50 and Tigst Assefa as the first woman in 2:11:04. Marcel Hug won the wheelchair men's race in 1:23:28 and Catherine Debrunner the wheelchair women's race in 1:35:01.\\nView \\n2026\\n results and finisher details\\nQuick facts\\nEntry options include the lottery and qualifying-time applications.\\nOfficial course materials call it the flattest of the Abbott World Marathon Majors.\\nWorld-record reputation and deep international field make it one of the clearest PR targets among the majors.\\n6:15 course limit from the official registration rules.\\nFinishes at Brandenburg Gate after a fast central-Berlin route.\\nCourse\\nThe course runs through central Berlin on broad roads that stay remarkably runnable deep into the race. Official materials call it the flattest of the Abbott World Marathon Majors, and that is the real draw: long straight sections, little meaningful climbing, and a finish through the Brandenburg Gate that arrives fast if your pacing holds.\\nRace-day weather\\nLate September in Berlin usually gives runners a cool start and decent racing conditions, but wind and sun still matter because the course is open and the pace is often aggressive from the start. It can feel ideal until a slightly warm morning exposes an overcooked early split.\\nAbout \\nthe GENERALI Berlin Marathon\\nGENERALI Berlin Marathon is the major runners talk about when the conversation turns to pure speed. The field is deep, the route is famously flat, and the race has built a reputation as the place where even small pacing gains can turn into big time improvements. Lottery entry keeps demand high, but charity and tour-operator paths give it a wider international reach than most city marathons.\\nPartner · Trackstar\\nBerlin Marathon Personalized Race Print\\nTurn your Berlin Marathon finish into a personalized print with your name, bib number, finish time, pace, race-day weather, and an illustrated course map.\\nPersonalize your race poster\\n↗\\nPast \\nGENERALI Berlin Marathon\\n dates and results\\nYear\\nDate\\nStatus\\nResults\\n2027\\nSunday, September 26, 2027\\nUpcoming\\n—\\n2026\\nSunday, September 27, 2026\\nResults available\\nOpen results\\n2025\\nSunday, September 21, 2025\\nResults available\\nOpen results\\n2024\\nSunday, September 29, 2024\\nResults available\\nOpen results\\nOpen all \\nGENERALI Berlin Marathon\\n results\\nYour race experience\\nRan the 2026 GENERALI Berlin Marathon?\\nShare what helped you on race day: the course, transport, aid stations or finish area.\\nShare a race report\\nGENERALI Berlin Marathon\\n FAQ\\nWhen is the GENERALI Berlin Marathon?\\nThe 2027 GENERALI Berlin Marathon is on Sunday, September 26, 2027.\\nIs registration open for the 2027 GENERALI Berlin Marathon?\\nRegistration options for the 2027 GENERALI Berlin Marathon are open (checked October 16, 2026). View \\nthe official registration details\\n at generali-berlin-marathon.com.\\nHow do I track a runner in the GENERALI Berlin Marathon?\\nMost races publish tracking in race week. Marathon Scout links the official tracker on this page during race week, once the race or its timing provider publishes it.\\nWhere can I find the GENERALI Berlin Marathon results?\\nThe 2026 results and earlier years are linked on \\nthe GENERALI Berlin Marathon results page\\n.\\nIs GENERALI Berlin Marathon a Boston qualifier?\\nYes. GENERALI Berlin Marathon is a Boston Marathon qualifier. To use the result, you must run the certified full-marathon course within the qualifying window and meet the current standard for your age and gender. Meeting the standard lets you apply but does not guarantee entry, and net-downhill courses can receive a time adjustment under current B.A.A. rules. Review the \\nBoston qualifying times and downhill-course rules\\n, or browse \\nupcoming Boston qualifier marathons\\n.\\nRelated marathons\\nOther marathons close on the calendar or close to home.\\nAll marathons\\nSame country · 7 days earlier\\nBaden Marathon\\nSunday, September 19, 2027\\nKarlsruhe, Germany\\nView race details\\nSame country · 2 weeks earlier\\nVolksbank Münster Marathon\\nSunday, September 12, 2027\\nMünster, Germany\\nView race details\\nBoston qualifier\\nSame country · 2 weeks later\\nSparkasse 3-Länder-Marathon\\nSunday, October 10, 2027\\nLindau, Germany\\nView race details\\nBoston qualifier\\nSame country · 3 weeks earlier\\nFränkische Schweiz-Marathon\\nSunday, September 5, 2027\\nEbermannstadt, Germany\\nView race details\\nFeatured collections\\nWorld Marathon Majors\\n8\\n races\\nSeptember Marathons\\n114\\n races\\n2027 Race Dates Announced\\n843\\n races\\nFall Marathons\\n425\\n races\\nFound an official update?\\nSend race details or links\\n+\\n−\\nSend us confirmed dates, registration links, results, live tracking, or course changes. Include the source link so runners can reach the right information.\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://www.tcssydneymarathon.com/sign-up\", \"content\": \"2027 BALLOT | TCS Sydney Marathon\\ntop of page\\nTCS Sydney Marathon presented by ASICS\\n2027 ballot\\nnow closed\\nFind a Charity Place\\nFind a Travel Place\\n2027 ballot\\nBe Part of the Next Chapter\\n36,295 participants experienced the magic of Sydney this year. It’s your turn in 2027.\\nHere's what you need to know\\nEvent Date\\nSunday, 29 August 2027  \\nThe Ballot\\nThe ballot will run from \\n10:00 AM AEST on 29 September  to 10:00 AM AEDT on 19 October\\n.\\nThis is not a first-come, first-served system - every application is equally considered in a random draw. So if you encounter a wait when trying to register, just come back a little later.\\nPlease note that duo teams and non-elite racing wheelchairs have a separate application process and should not register via the ballot. More information is available \\nhere\\n. \\nResults Announced\\nSuccessful applicants will be notified, and bank cards will be charged on \\n3 November 2026\\n, with a confirmation email to follow. Please ensure the email address entered is correct before submitting your application. Sometimes emails land in your junk or spam folder; be sure to check there first before reaching out.\\nUnsuccessful applicants will also be contacted on \\n3 November 2026\\n with advice on alternate ways to secure a spot through our Travel and Charity Programs.\\nWhat to expect\\nWe are committed to making the process as seamless and fair as possible for all applicants. Remember, there is no advantage to entering the ballot on day one versus the final day. We encourage applicants to be patient, understand the key dates and reach out only if you have not heard anything \\nafter 6 November 2026\\n. \\nTo ensure fairness and consistency, no correspondence will be provided regarding the status of your ballot application from the moment the ballot opens until the draw has closed, and applicants have been notified of their acceptance status. The outcome of the ballot draw is final. Please check out our \\nFAQs\\n for any questions.\\nDon't miss a beat!\\nSign up to our mailing list to receive news and updates, entry opportunities, community and training content, offers, competitions, products, events and other related information.\\nThe Signup Portal\\nJoin our Running Community\\nSIGN UP TO OUR MAILING LIST\\n123,000+\\n2026 Applications\\n40,000+\\nStarting Positions\\nFree\\nTo Enter the Ballot\\nWhy Join the Community?\\nWhat You Unlock as an Insider\\nWin Guaranteed Race Entries\\nSkip the ballot stress. Our Seven Rewards program regularly offers giveaways for coveted, guaranteed race bibs for the TCS Sydney Marathon and the TCS Sydney Mini Marathon.\\nExpert Coaching & Plans\\nReceive exclusive, expert-led training articles, hydration strategies, footwear guides, and tailored preparation schedules designed to get you to the finish line in peak condition.\\nExclusive Partner Discounts\\nOur partners offer exclusive discounts on everything from apparel to nutrition. Subscribe, win and save on the best products to enhance your performance and recovery.\\nEvent Calendar Milestones\\nKey Ballot Windows to Remember\\nPlanning your path to North Sydney starts here. Once you sign up, ensure you mark these key standard timeline phases in your calendar:\\n01\\nLate September\\nBallot Opening Phase\\nSecure your free entry into the public draw.\\n02\\nMid-October\\nBallot Closing Phase\\nThe final deadline to submit your application.\\n03\\nLate October\\nDraw Announcement\\nResults are delivered directly to your inbox.\\nPlease note: If drawn, your credit card will be automatically charged domestic (AUD 280) or international (AUD 330) entry fees to secure your spot.\\npartners\\nbottom of page\", \"truncated\": false}"
+        },
+        {
+          "tool": "fetch_page",
+          "content": "{\"url\": \"https://www.generali-berlin-marathon.com/en/registration/run\", \"content\": \"Run | GENERALI BERLIN-MARATHON\\nSkip to main content\\n                Ad\\n Running in the GENERALI BERLIN-MARATHON\\nRace entries will be allocated by lottery. This ensures that everyone has an equal chance of securing a starting spot.\\nOn this page, you'll find all the information you need to register for the marathon. Feel free to \\ncheck out the other disciplines and events\\n as well.\\nRegistration period for the lottery:\\n October 1, 2026 to November 12, 2026\\nAnnouncement of lottery results:\\n December 3, 2026\\nWays to register\\nYou need a personal user account to log in. Don't have a user account yet? Check out our \\nstep-by-step guide to registration\\n.\\nParticipation information\\nParticipation fee\\n215 €\\nThe payment will be charged after the drawing and only if you have been assigned a race entry.\\nThe entry fee includes:\\nA 4-day public transportation pass for fare zones A, B, and C\\nPacemakers in all starting waves\\nA personalized finisher’s certificate available for download\\nA high-quality poncho at the finish line (alternatively: clothing bag service for 5 €)\\nMassage services along the courses and in the finish area\\nEligibility\\nAll runners born in 2009 or earlier are eligible to participate.\\nNordic walkers are not permitted.\\nWalkers are permitted as long as they finish within the time limit.\\nThe GENERALI BERLIN-MARATHON is organized in accordance with the regulations of the German Athletics Association (DLV) and World Athletics (WA), under the supervision of the Berlin Athletics Association (BLV).\\nThe time limit is 6:15 hours.\\n                Ad\\nRegistration for the lottery\\nYou can enter the lottery in\\n one of the following three ways\\n. The selection you make when you enter is final and cannot be changed later.\\nIndividual runner\\nSign up for the lottery via your \\npersonal user account\\n.\\nPlease review your registration carefully, as \\nno changes can be made once you've completed it\\n.\\nAfter the drawing, you'll automatically receive an email with your drawing results.\\nA team of 2 to 3 people\\nEach team member needs \\ntheir own user account\\n.\\nWhen registering, \\nthe first person\\n indicates that this is a team registration. They choose a team name.\\nOnce registration is complete, this person will receive a \\nteam code\\n in the registration confirmation.\\nThey pass this code on to the other team members.\\nWhen registering, the other members select the option “Join an existing team” and enter the code. \\nImportant\\n: This code cannot be added after registration is complete.\\nEach team member then registers independently, enters payment information, and receives a confirmation via email.\\nParticipation\\nIf the team is selected in the drawing, every member of the team receives a starting spot.\\nThere is no team ranking. Each person runs individually and is listed individually in the results.\\nIf a team member is unable to run after the drawing, this has no effect on the other members of the team. It is not possible to add a replacement team member.\\nFast runner with a qualifying time\\nTo register as a fast runner, you must upload proof of your qualifying time and age via \\nyour user account\\n during the registration process.\\nRegistering as a fast runner does not guarantee a spot in the race. You will receive notification of acceptance or rejection after your documentation has been reviewed, as soon as the results of the lottery are announced.\\nMake sure that all qualification information is clearly visible on your proof of qualification.\\n If your proof is invalid, your registration will be included in the general lottery.\\nProof\\nOnly official certificates and links to a race’s official results page will be accepted as proof.\\nOnly marathon times will be considered. These must not be older than 2 years. (Proof from 2025, 2026)\\nResults from other disciplines or virtual events will not be considered.\\nQualifying Times\\nThe qualifying time must have been achieved in an official race that is part of the AbbottWMM Wanda Age Group World Rankings, certified by AIMS, or listed by USATF.\\nMale Runners\\nBorn between 2009 and 1983: \\n2:45 hours\\nBorn between 1982 and 1968: \\n2:55 hours\\nBorn in 1967 or older: \\n3:25 hours\\nFemale Runners\\nBorn between 2009 and 1983: \\n3:10 hours\\nBorn between 1982 and 1968: \\n3:30 hours\\nBorn in 1967 or older: \\n4:20 hours\\nSign up for the lottery via \\nyour personal user account\\n.\\nRegistration is personal and cannot be transferred or canceled.\\nAfter registering, you’ll receive a confirmation email within 24 hours. This is not yet a guarantee of a starting spot.\\nLottery result and payment\\nAll athletes who entered the lottery will automatically receive their results via email on \\nDecember 3, 2026\\n.\\nIf you’ve been selected for a starting spot, our service provider, Adyen N.V., will process the payment for the entry fee starting on December 4, 2026. Depending on your bank, this process may take up to one week.\\nIf you did not receive a spot, you can check out the other ways to participate.\\nGuaranteed race entries\\nGuaranteed race entries\\nVoucher for the Next Year\\nIf you were unable to participate in the BERLIN-MARATHON and took advantage of our goodwill offer, we will automatically send you a registration code for 2027 via email. This code can be redeemed until 11:59 p.m. (CET) on November 12, 2026.\\nJubilee-Club\\nMembers of the \\nJubilee Club\\n can secure a guaranteed spot.\\nSozialticket\\nWe are offering 50 runners who hold a Sozialticket S the opportunity to purchase a race entry for 50 €.\\nPlease email \\nsozialticket@scc-events.com\\n and attach a copy of your ID and your Sozialticket S. We will then send you an access code.\\nThings to Know About the Race\\nClothing drop-off or Poncho\\nWhen you register, you can choose between a poncho and a clothing bag.\\nIf you choose a clothing bag, an additional fee of €5 will be charged.\\nImportant\\n: You can only book the clothing bag during registration. It is not possible to book it later.\\nPoncho\\nYou will automatically receive one if you did not book a clothing bag\\nOn the day of the event, you may not bring a change of clothes or any luggage into the starting area\\nIf you receive a poncho, this will be indicated by a symbol on your bib number\\nClothing Bag\\nWhen you pick up your race material, you’ll receive a transparent clothing bag and a sticker for the bag with your bib number\\nYou may only bring clothing and valuables onto the event grounds in this clothing bag\\nItems must be placed loosely inside the bag; this means do not pack a backpack or gym bag inside the bag\\nLuggage is prohibited in the starting area\\nYou will drop off your clothing bag at the designated tent in the starting area and can pick it up there after crossing the finish line\\nYou will not receive a poncho\\nPrice: 5 €\\nUseful information\\nStart Card and race material\\nStart Card\\nThe start card is your personal ticket to the \\nMARATHON EXPO by BRITA\\n.\\nYou’ll receive it automatically via email a few weeks before the event (please check your spam folder as well).\\nThe start card includes a 4-day ticket for public transportation in fare zones A, B, and C. More information on how to use the ticket will be included in the start card email.\\nRace material\\nYou can pick up your race material in person only at the MARATHON EXPO.\\nTo do so, you’ll need your start card and a photo ID.\\nCancellation, exchange and transfers\\nWe ask for your understanding that we cannot refund registration fees.\\nTo protect your entry fee, we recommend purchasing \\nGENERALI's race cancellation insurance\\n when you register.\\nStarting spots are assigned to specific individuals and events. They may not be transferred to another person or to another year.\\nPregnancy\\nIf you become pregnant, you have the option to postpone your start date for up to three years.\\nProof of pregnancy must be provided in the form of a doctor's note.\\nFor more information, please contact us using our \\ncontact form\\n.\\nMedical attendance and health examination\\nThe medical team from the organizer as well as additional paramedics are responsible for the medical care during the eve\", \"truncated\": true}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Sydney\", \"depart_date\": \"2027-08-27\", \"return_date\": \"2027-08-31\", \"offers\": [{\"airline\": \"Mock Air\", \"price_krw\": 727000, \"stops\": 0}, {\"airline\": \"Demo Jet\", \"price_krw\": 804000, \"stops\": 0}, {\"airline\": \"Sample Airlines\", \"price_krw\": 886000, \"stops\": 1}]}"
+        },
+        {
+          "tool": "search_flights",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"origin\": \"ICN\", \"destination_city\": \"Berlin\", \"depart_date\": \"2027-09-24\", \"return_date\": \"2027-09-28\", \"offers\": [{\"airline\": \"Mock Air\", \"price_krw\": 486000, \"stops\": 0}, {\"airline\": \"Sample Airlines\", \"price_krw\": 529000, \"stops\": 1}, {\"airline\": \"Demo Jet\", \"price_krw\": 584000, \"stops\": 0}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"North Sydney, Sydney, Australia\", \"check_in\": \"2027-08-28\", \"check_out\": \"2027-08-30\", \"hotels\": [{\"name\": \"Sample Inn Station\", \"distance_km\": 0.3, \"price_per_night_krw\": 278000, \"rating\": 4.9}, {\"name\": \"Demo Stay Riverside\", \"distance_km\": 0.7, \"price_per_night_krw\": 210000, \"rating\": 4.8}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 1.9, \"price_per_night_krw\": 147000, \"rating\": 4.3}]}"
+        },
+        {
+          "tool": "search_hotels",
+          "content": "{\"mock\": true, \"notice\": \"목업 데이터다. 실제 가격이 아니며, 답변에 반드시 '목업(실제 가격 아님)'이라고 표시한다.\", \"near\": \"Brandenburg Gate, Berlin, Germany\", \"check_in\": \"2027-09-25\", \"check_out\": \"2027-09-27\", \"hotels\": [{\"name\": \"Demo Stay Riverside\", \"distance_km\": 0.2, \"price_per_night_krw\": 308000, \"rating\": 4.1}, {\"name\": \"Sample Inn Station\", \"distance_km\": 1.0, \"price_per_night_krw\": 108000, \"rating\": 4.8}, {\"name\": \"Mock Hotel Central\", \"distance_km\": 1.1, \"price_per_night_krw\": 234000, \"rating\": 4.8}]}"
+        }
+      ],
+      "tool_errors": [],
+      "verification": {
+        "history": [
+          []
+        ]
+      },
+      "tools_check": {
+        "expected": [
+          "search_races|search_web",
+          "fetch_page",
+          "search_flights"
+        ],
+        "called": [
+          "fetch_page",
+          "search_flights",
+          "search_hotels",
+          "search_web"
+        ],
+        "missing": [],
+        "passed": true
+      },
+      "forbidden_check": [
+        {
+          "forbidden": "한쪽 대회만 정보를 채우고 다른 쪽은 이유 없이 비워 둠",
+          "violated": false,
+          "evidence": "답변에서 시드니 마라톤과 베를린 마라톤 모두에 대해 날짜, 종목, 접수 마감일, 참가비, 코스 특성, 기록 잘 나오는지, 항공권, 숙소, 출처 등 모든 항목을 비교표 형식으로 채워서 제공하고 있다. 양쪽 대회 모두 균형 있게 정보가 제공되었으며, 한쪽만 비워둔 항목은 없다. 위반 없음."
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     80%  (4/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           92%  (11/12)
+
+[실패 문항]
+P-01 (positive) 내년 봄에 갈 만한 해외 하프마라톤 찾아줘
+  - 금지 항목 위반: 스스로 밝힌 기간 밖의 대회를 기간 안의 대회처럼 결과에 포함
+    근거: 사용자가 요청한 기간은 '내년 봄'이며, 오늘이 2026-11-11이므로 내년은 2027년, 봄은 3~5월. 답변에서 바르셀로나 하프마라톤(2월 14일)을 포함하면서 '2027년 2월 14일 (요청 기간 밖)'이라고 명시하고, 표 제목에도 '(요청 기간 밖)'이라고 표기함. 그러나 추천 대회 비교표에 바르셀로나를 첫 번째로 포함시켜 결과에 포함시킴. 기간 밖의 대회를 기간 안의 대회처럼 결과에 포함한 것으로 판단. 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-02: search_races: 검색 실패: auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out / bing: error sending request for url (https://ht
+P-02: search_web: 검색 실패: auto: error sending request for url (https://html.duckduckgo.com/html/) > operation timed out / bing: error sending request for url (https://ht
+P-03: search_web: 검색 실패: auto: DecodeError: DecodeError('error decoding response body > request or response body error > error sending request > connection reset', None
+N-02: search_web: 검색 실패: auto: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/running/iceland/south/vik'
+For more information check: https://develop
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+E-03: geocode: 장소를 찾지 못했다: Thai Smile Bus Headquarters, Charoen Nakhon, Bangkok
+E-03: search_hotels: Error invoking tool 'search_hotels' with kwargs {'check_in': '2026-12-25', 'check_out': '2antml:parameter>\n<parameter name="near">Rama III Road, Bang
+E-03: search_web: 검색 실패: auto: ConnectError: ConnectError('error sending request for url (https://www.startpage.com/) > client error (Connect) > tcp connect error > 대상 
+E-03: geocode: 장소를 찾지 못했다: M Life store Bangkapi, Bangkok

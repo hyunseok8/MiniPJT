@@ -1,0 +1,31 @@
+[project]
+name = "runtrip-agent"
+version = "0.1.0"
+description = "RunTrip Agent: 러닝과 여행 정보를 찾아 정리해 주는 에이전트"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "langgraph",
+    "langchain-core",
+    "langchain-aws",
+    "httpx",
+    "ddgs>=9.16.1",
+    "beautifulsoup4>=4.15.0",
+    "pydantic-settings>=2.16.2",
+    "python-dotenv>=1.2.4",
+]
+
+[dependency-groups]
+dev = [
+    "ruff",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# 줄 길이는 ruff format이 맞춘다. 한국어 프롬프트, 안내 문구는 길어도 허용한다.
+ignore = ["E501"]

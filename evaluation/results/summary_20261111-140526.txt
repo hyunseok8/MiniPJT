@@ -1,0 +1,20 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive    100%  (2/2)
+negative    100%  (2/2)
+edge        100%  (1/1)
+전체          100%  (5/5)
+
+[도구 오류 - 외부 장애일 수 있음]
+P-02: fetch_page: 페이지 읽기 실패: Client error '429 Too Many Requests' for url 'https://pacertrip.com/en/races/jp/osaka'
+For more information check: https://developer.mozill
+P-02: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+P-03: geocode: 장소를 찾지 못했다: Philosopher's Path, Kyoto
+P-03: geocode: 장소를 찾지 못했다: Mt. Inari summit, Fushimi, Kyoto
+N-01: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+N-02: search_popular_routes: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+N-02: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+N-02: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+N-02: search_web: 검색 실패: auto: No results found. / bing: No results found. / auto: No results found.
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara beach, Vík, Iceland
+E-03: geocode: 장소를 찾지 못했다: Thai Smile Bus Headquarters, Charoen Nakhon, Bangkok
