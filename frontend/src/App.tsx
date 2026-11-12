@@ -9,7 +9,7 @@ interface DisplayMessage extends ChatMessage {
 
 const EXAMPLES = [
   { label: "마라톤 원정", text: "내년 봄에 갈 만한 해외 하프마라톤 찾아줘" },
-  { label: "여행 중 대회", text: "4월 둘째 주에 오사카 여행 가는데 그 기간에 열리는 마라톤 대회 있어?" },
+  { label: "여행 중 대회", text: "3월에 후쿠오카 여행 가는데 그 기간에 열리는 마라톤 대회 있어?" },
   { label: "러닝 코스", text: "교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘" },
 ];
 
