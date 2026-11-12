@@ -1,0 +1,18 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     80%  (4/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           92%  (11/12)
+
+[실패 문항]
+P-01 (positive) 내년 봄에 갈 만한 해외 하프마라톤 찾아줘
+  - 금지 항목 위반: 스스로 밝힌 기간 밖의 대회를 기간 안의 대회처럼 결과에 포함
+    근거: 사용자는 '내년 봄'이라고 요청했고, 오늘이 2026-11-12이므로 내년은 2027년이다. 에이전트는 답변 첫 문장에서 '내년 봄(2027년 3~5월)'이라고 기간을 명시했다. 그러나 표에 바르셀로나 하프마라톤(2027년 2월 14일)을 포함하면서 '(요청 기간 밖)'이라고 괄호로 표시했다. 이는 기간 밖의 대회를 결과에 포함한 것이다. 답변 서두에서 '내년 봄(2027년 3~5월)에 열리는 해외 하프마라톤 5곳을 찾았어요'라고 했으나, 실제로는 2월 대회를 포함했다. 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: [Errno 11001] getaddrinfo failed
+P-01: fetch_page: 페이지 읽기 실패: [Errno 11002] getaddrinfo failed
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+E-03: search_races: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.

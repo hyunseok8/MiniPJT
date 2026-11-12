@@ -14,11 +14,13 @@ from backend.tools.common import error, http_client
 
 MAX_PAGE_CHARS = 8000
 
-# 검색 재시도: (기다릴 초, 검색원). auto는 ddgs가 여러 검색원을 돌아가며 쓰고, bing은 auto가 막힐 때
-# 결과를 돌려준 적이 있다 (2026-11 실측). 짧은 시간에 많이 부르면 "No results found"로 막힌다.
-SEARCH_ATTEMPTS = [(0, "auto"), (2, "bing"), (5, "auto")]
-# 여러 케이스를 동시에 돌려도 검색 호출 사이에 최소 이 간격(초)을 둔다
-MIN_SEARCH_INTERVAL = 1.5
+# 검색 엔진 시도 순서: (검색원, 제한 시간 초). 실패하면 기다리지 않고 바로 다음 검색원으로 넘어간다.
+# 2026-11-12 실측: yahoo는 대부분 1초 안팎이지만 일본어 검색어 등에서 결과가 없을 때가 있고,
+# bing은 1~11초로 느리지만 그런 검색어를 찾았다. auto는 막힌 검색원들을 차례로 시도하느라 7~23초 걸렸다.
+# 예전 순서(auto → 2초 대기 → bing → 5초 대기 → auto)는 검색 1회가 20초를 넘기는 일이 잦았다.
+SEARCH_ATTEMPTS = [("yahoo", 5), ("bing", 8), ("auto", 8)]
+# 여러 케이스를 동시에 돌려도 검색 호출(검색어 하나) 사이에 최소 이 간격(초)을 둔다
+MIN_SEARCH_INTERVAL = 1.0
 _search_lock = threading.Lock()
 _last_search = [0.0]
 
@@ -45,15 +47,12 @@ def ddg_search(query: str, max_results: int = 5) -> dict[str, Any]:
         }
     raw = None
     failures = []
-    for wait_s, backend in SEARCH_ATTEMPTS:
-        time.sleep(wait_s)
-        _throttle()
+    _throttle()
+    for backend, timeout_s in SEARCH_ATTEMPTS:
         try:
-            raw = DDGS().text(query, max_results=max_results, backend=backend)
+            raw = DDGS(timeout=timeout_s).text(query, max_results=max_results, backend=backend)
             break
-        except (
-            Exception
-        ) as exc:  # 호출 한도, "No results found" 등. 잠시 뒤 다른 검색원으로 다시 시도한다
+        except Exception as exc:  # 호출 한도, 시간 초과, "No results found" 등: 다음 검색원으로
             failures.append(f"{backend}: {exc}")
     if raw is None:  # 끝내 실패한 외부 장애는 그대로 알린다
         return error("duckduckgo", "검색 실패: " + " / ".join(failures))
@@ -118,6 +117,28 @@ def fetch_page(url: str) -> dict[str, Any]:
     }
 
 
+MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+]  # fmt: skip
+
+
+def _period_words(start_date: str, end_date: str) -> str:
+    """검색어용 기간 표현. "2027-03 2027-05" 같은 숫자 형식은 검색 결과가 거의 없어서
+    "March to May 2027"처럼 달 이름으로 쓴다 (2026-11-12 실측)."""
+    try:
+        y1, m1 = int(start_date[:4]), int(start_date[5:7])
+        y2, m2 = int(end_date[:4]), int(end_date[5:7])
+    except ValueError:
+        return f"{start_date} {end_date}"
+    first, last = MONTH_NAMES[m1 - 1], MONTH_NAMES[m2 - 1]
+    if (y1, m1) == (y2, m2):
+        return f"{first} {y1}"
+    if y1 == y2:
+        return f"{first} to {last} {y1}"
+    return f"{first} {y1} to {last} {y2}"
+
+
 @tool
 def search_races(
     region: str,
@@ -140,7 +161,7 @@ def search_races(
         "10k": "10k run",
         "any": "marathon race",
     }[distance]
-    query = f"{region} {distance_words} {start_date[:7]} {end_date[:7]} race calendar entry"
+    query = f"{region} {distance_words} {_period_words(start_date, end_date)}"
     result = ddg_search(query, max_results=8)
     result["filters"] = {
         "region": region,

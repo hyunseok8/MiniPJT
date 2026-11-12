@@ -164,9 +164,17 @@ def fix_elevation_cells(answer: str) -> tuple[str, list[str]]:
             continue
         value = cells[col].strip()
         plain = value.replace("*", "").strip()
-        if not plain or plain in {"-", "—"} or re.search(r"\d", plain) or "확인 불가" in plain:
+        # 숫자가 있거나 "확인 불가"로 시작하면 규칙대로 쓴 칸이다. "완만한 오르막 (숫자 확인 불가)"처럼
+        # 설명 뒤에 '확인 불가'를 덧붙인 칸은 고친다 (2026-11-12 평가에서 빠져나간 사례)
+        if (
+            not plain
+            or plain in {"-", "—"}
+            or re.search(r"\d", plain)
+            or plain.startswith("확인 불가")
+        ):
             continue
-        cells[col] = f" 확인 불가 (출처 설명: {plain}) "
+        description = re.sub(r"\s*\([^)]*확인 불가[^)]*\)", "", plain).strip() or plain
+        cells[col] = f" 확인 불가 (출처 설명: {description}) "
         lines[i] = "|" + "|".join(cells) + "|"
         changed.append(plain)
     return "\n".join(lines), changed

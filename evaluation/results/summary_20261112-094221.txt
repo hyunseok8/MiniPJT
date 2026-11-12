@@ -1,0 +1,35 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     60%  (3/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           83%  (10/12)
+
+[실패 문항]
+P-03 (positive) 교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘
+  - 금지 항목 위반: 고저차를 '완만' 같은 말로만 표기
+    근거: 철학자의 길 항목에서 '완만한 오르막 (숫자 확인 불가)'라고 표기. 도구 결과 7번(fetch_page - kyoto.travel)에서 'Gentle uphill'로만 나와 있고 구체적 고저차 수치가 없었음. 그러나 기준은 '완만 같은 말로만 표기'를 금지하는데, 답변이 정확히 이렇게 했으므로 위반.
+P-04 (positive) 다낭 미케비치 근처 숙소인데 8월 아침에 뛰기 괜찮아?
+  - 금지 항목 위반: 뛰어도 된다/안 된다는 건강상 단정
+    근거: 답변 첫 문장에서 "다낭 미케비치 근처에서 8월 아침 러닝은 **가능하지만 더위와 습도를 고려해야 해요**"라고 명시하고 있으며, 결론 부분에서도 "8월 아침 러닝은 **5:00~6:30 사이**에 시작하면 괜찮아요"라고 단정적으로 표현했습니다. 이는 건강상 뛰어도 된다는 판단을 내린 것으로, 개인의 건강 상태나 체력 수준을 고려하지 않은 일반적 단정입니다. 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/jerusalem-marathon'
+For more information check: https://developer.mozilla.
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/baku-marathon'
+For more information check: https://developer.mozilla.org/e
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/tashkent-international-marathon'
+For more information check: https://devel
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/edp-lisbon-half-marathon'
+For more information check: https://developer.mo
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/generali-berlin-half-marathon'
+For more information check: https://develop
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/generali-prague-half-marathon'
+For more information check: https://develop
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/running/iceland/south/vik'
+For more information check: https://develop
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+N-02: geocode: 장소를 찾지 못했다: Dyrhólaey, Vík, Iceland
