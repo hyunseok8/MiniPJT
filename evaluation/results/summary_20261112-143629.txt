@@ -1,0 +1,24 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     60%  (3/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           83%  (10/12)
+
+[실패 문항]
+P-01 (positive) 내년 봄에 갈 만한 해외 하프마라톤 찾아줘
+  - 금지 항목 위반: 스스로 밝힌 기간 밖의 대회를 기간 안의 대회처럼 결과에 포함
+    근거: 사용자는 '내년 봄'이라고 요청했고, 오늘이 2026-11-12이므로 내년은 2027년, 봄은 통상 3~5월이다. 답변 서두에 '내년 봄(2027년 3~5월)'이라고 명시했다. 그러나 표에 바르셀로나 하프마라톤이 '2027년 2월 14일 (요청 기간 밖)'이라고 표시되어 있고, 이를 5개 대회 중 하나로 포함했다. 답변은 '(요청 기간 밖)'이라고 명시하여 기간 밖임을 밝혔으나, 여전히 결과에 포함시켰다. 결론: 위반
+P-02 (positive) 4월 둘째 주에 오사카 여행 가는데 그 기간에 열리는 마라톤 대회 있어?
+  - 기대 도구를 부르지 않음: fetch_page
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: search_races: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-03: search_popular_routes: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-03: fetch_page: 페이지 읽기 실패: Server error '503 Service Unavailable' for url 'https://www.runinfo.jp/archives/286'
+For more information check: https://developer.mozilla.
+N-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+E-03: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.

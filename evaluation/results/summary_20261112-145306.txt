@@ -1,0 +1,35 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     80%  (4/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           92%  (11/12)
+
+[실패 문항]
+P-02 (positive) 4월 둘째 주에 오사카 여행 가는데 그 기간에 열리는 마라톤 대회 있어?
+  - 기대 도구를 부르지 않음: fetch_page
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/jerusalem-marathon'
+For more information check: https://developer.mozilla.
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/baku-marathon'
+For more information check: https://developer.mozilla.org/e
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/semi-marathon-de-paris'
+For more information check: https://developer.mozi
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/bath-half-marathon'
+For more information check: https://developer.mozilla.
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/reading-half-marathon'
+For more information check: https://developer.mozil
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/bratislava-marathon'
+For more information check: https://developer.mozilla
+P-03: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-03: geocode: 장소를 찾지 못했다: Philosopher's Path, Kyoto
+P-04: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-05: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-05: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/running/iceland/south/vik'
+For more information check: https://develop
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+N-02: geocode: 장소를 찾지 못했다: Dyrhólaey, Vík, Iceland
+N-02: geocode: 장소를 찾지 못했다: Hatta trail, Vík, Iceland
