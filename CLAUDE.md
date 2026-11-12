@@ -10,12 +10,12 @@
 | 언어 | Python, TypeScript | Python 3.12 이상 | 백엔드는 Python, 프론트엔드는 TypeScript |
 | 에이전트 프레임워크 | LangGraph | 1.2 | 도구 호출 흐름을 그래프로 구성 |
 | LLM | Claude Sonnet 4.5 (Amazon Bedrock, us-west-2, global 교차 추론) | `global.anthropic.claude-sonnet-4-5-20250929-v1:0` | `langchain-aws`로 연결. 모델 ID와 리전은 `.env`의 `BEDROCK_MODEL_ID`, `AWS_DEFAULT_REGION`. 평가 판정기도 같은 모델을 쓴다(`JUDGE_MODEL_ID`가 비어 있을 때). 아래 "모델 선택 기록" 참고 |
-| 백엔드 | FastAPI | | 웹 채팅 API 제공 (`/api/chat`, `/api/health`) |
+| 백엔드 | FastAPI | | 웹 채팅 API 제공 (`/api/chat`, `/api/chat/stream`, `/api/health`) |
 | 프론트엔드 | React + Vite | React 19, Vite 8 | 웹 채팅 화면. 답변 마크다운은 `react-markdown` + `remark-gfm`으로 표시 |
 | 웹 검색 | DuckDuckGo (`ddgs`) | | 무료, 키 불필요. 페이지 본문은 직접 받아 `beautifulsoup4`로 추출 |
 | 러닝 코스 | OpenStreetMap Overpass API | | 무료, 키 불필요. 인기 코스는 웹 검색으로 찾는다 |
 | 지도, 고도, 날씨 | OpenStreetMap Nominatim, Open-Meteo | | 무료 API, 키 불필요 |
-| 항공권, 숙소 | 목업 | | `backend/tools/travel.py` |
+| 항공권, 숙소 | 목업 | | `src/travel/tools.py` |
 | 데이터베이스 | 없음 | | 대화와 사용자 위치를 저장하지 않는다 (SERVICE.md 정책 4) |
 | 패키지 관리 | uv (Python), npm (프론트엔드) | | |
 | 테스트 | 평가 루프 (공식: `evaluation/`, 보조: `evals/`) | | 아래 "평가 루프" 참고 |
@@ -35,38 +35,75 @@
 miniPJT/
 ├── SERVICE.md              # 무엇을, 왜 만드는가
 ├── CLAUDE.md               # 어떻게 만드는가 (이 문서)
-├── test_queries.json       # 보조 회귀 세트 24건 (evals/run.py가 읽는다)
+├── test_queries.json       # 보조 회귀 세트 24건 (src/evaluation/run_json.py가 읽는다)
 ├── pyproject.toml          # Python 의존성 (uv)
 ├── .env.example            # 환경 변수 견본. 복사해서 .env로 쓴다
-├── backend/
-│   ├── main.py             # FastAPI 서버
-│   ├── config.py           # 환경 변수 설정
-│   ├── agent/
-│   │   ├── graph.py        # LangGraph 그래프, run_agent()
-│   │   ├── prompts.py      # 시스템 프롬프트 (정책 포함)
-│   │   └── llm.py          # Bedrock Claude 연결
-│   └── tools/              # 에이전트 도구. SERVICE.md 3장 도구 표와 일치
-│       ├── search.py       # search_web, fetch_page, search_races (DuckDuckGo)
-│       ├── travel.py       # search_flights, search_hotels (목업)
-│       ├── geo.py          # geocode, get_elevation
-│       ├── weather.py      # get_weather
-│       ├── routes.py       # find_running_routes (OpenStreetMap), search_popular_routes
-│       └── common.py       # HTTP 클라이언트, 오류 형식, 목업용 유틸
-├── evals/
-│   ├── run.py              # 평가 루프 실행기 (반복 1회)
-│   ├── judge.py            # LLM 판정기
-│   ├── LOOP_LOG.md         # 보조 세트 반복 기록 (자동)
-│   └── runs/               # 보조 세트 반복별 결과 (iter_001.json ...)
-├── evaluation/             # ★ 공식 평가
+├── src/                    # ★ 모든 Python 소스. 도메인(기능)별 폴더. 아래 "src 폴더 구조" 참고
+├── evaluation/             # 공식 평가 데이터 (코드는 src/evaluation/)
 │   ├── test_queries.csv    # 공식 인-아웃 세트 12건 (positive, negative, edge, guardrail)
-│   ├── run_csv.py          # 채점기: 기대 도구 + 금지 항목 자동 채점, 기대 특성은 사람 검토
 │   ├── LOOP_LOG.md         # 실행과 수정 기록
 │   └── results/            # 채점 결과 (summary, review CSV, run JSON)
-└── frontend/               # React + Vite 웹 채팅 화면
+├── evals/                  # 보조 평가 데이터 (코드는 src/evaluation/)
+│   ├── LOOP_LOG.md         # 보조 세트 반복 기록 (자동)
+│   └── runs/               # 보조 세트 반복별 결과 (iter_001.json ...)
+└── frontend/               # React + Vite 웹 채팅 화면 (npm 프로젝트라 src/ 밖에 둔다)
     └── src/
-        ├── App.tsx         # 채팅 화면
-        └── api.ts          # /api/chat 호출
+        ├── App.tsx         # 채팅 화면 (스트리밍 답변, 예시, 이전 대화, 질문 목록)
+        └── api.ts          # /api/chat/stream 호출
 ```
+
+## src 폴더 구조
+
+기술 역할(utils, models 등)이 아니라 **에이전트의 도메인(기능) 단위**로 나눈다. 한 도메인의 실행 로직, 프롬프트, 입출력 스키마는 그 도메인 폴더 안에 함께 둔다.
+
+```
+src/
+├── agent/                  # 에이전트 조율: 그래프, 공통 시스템 프롬프트, 도구 등록부
+│   ├── graph.py            # LangGraph 그래프(agent → tools → verify), run_agent(), stream_agent()
+│   ├── prompt.py           # 시스템 프롬프트 본문(정책, 기간 해석, 답변 형식). 기능별 조각을 합친다
+│   ├── schemas.py          # AgentState(그래프 상태), ToolCall, ToolError
+│   └── tools.py            # ALL_TOOLS: 각 도메인의 도구를 모은 등록부
+├── verification/           # 출력 검증 (LLM을 부르지 않는 코드 검사)
+│   ├── checks.py           # 근거 없는 링크, 진행 멘트, 고저차 칸, 기간 밖 날짜 검사와 보정
+│   └── prompt.py           # 근거 없는 링크를 찾았을 때 agent에게 다시 쓰게 하는 메시지
+├── races/                  # 기능 A: 해외 마라톤 대회 찾기
+│   ├── tools.py            # search_races
+│   └── prompt.py           # 시스템 프롬프트의 "기능 A" 조각
+├── routes/                 # 기능 B: 숙소 근처 러닝 코스 찾기
+│   ├── tools.py            # find_running_routes (OpenStreetMap Overpass), search_popular_routes
+│   └── prompt.py           # 시스템 프롬프트의 "기능 B" 조각
+├── travel/tools.py         # search_flights, search_hotels (목업)
+├── places/tools.py         # geocode (Nominatim), get_elevation (Open-Meteo)
+├── weather/tools.py        # get_weather (Open-Meteo 평년 날씨)
+├── search/tools.py         # search_web, fetch_page, ddg_search (DuckDuckGo). races, routes도 이것을 쓴다
+├── api/                    # 웹 채팅 API
+│   ├── app.py              # FastAPI: /api/health, /api/chat, /api/chat/stream
+│   └── schemas.py          # ChatMessage, ChatRequest, ChatResponse
+├── evaluation/             # 평가 루프 코드 (데이터와 결과는 루트의 evaluation/, evals/)
+│   ├── run_csv.py          # 공식 채점기: 기대 도구 + 금지 항목 자동 채점
+│   ├── run_json.py         # 보조 세트(test_queries.json) 반복 루프 실행기
+│   ├── judge.py            # LLM 판정기 실행 로직
+│   ├── prompt.py           # 판정 프롬프트 (바꿀 때는 사용자 확인)
+│   └── schemas.py          # ItemVerdict, JudgeResult
+└── shared/                 # 여러 도메인이 함께 쓰는 것만
+    ├── config.py           # .env 설정 (ROOT_DIR, get_settings)
+    ├── llm.py              # Bedrock Claude 클라이언트 (get_llm, LLMConfigError)
+    └── http.py             # HTTP 클라이언트(User-Agent, 제한 시간), 도구 오류 형식 error()
+```
+
+### 파일 배치 규칙
+
+- **도메인 폴더의 파일 이름은 정해져 있다.** 필요한 것만 만든다.
+  - `tools.py`: LangChain `@tool` 도구와 그 구현. 도구의 docstring이 LLM에게 주는 설명(프롬프트)이고, 인자 타입이 입력 스키마다.
+  - `prompt.py`: 그 도메인의 프롬프트 템플릿이나 조각.
+  - `schemas.py`: 그 도메인의 입출력 타입(pydantic 모델, TypedDict).
+  - 그 밖의 실행 로직은 역할이 드러나는 이름으로 둔다 (예: `graph.py`, `checks.py`, `judge.py`, `app.py`).
+- **`shared/`에는 두 개 이상의 도메인이 실제로 쓰는 것만 둔다.** 한 도메인만 쓰는 함수는 그 도메인에 둔다 (예: `haversine_km`은 `routes/`, 목업용 `stable_int`는 `travel/`).
+- **도메인끼리는 서로의 `tools.py`를 가져다 쓸 수 있지만, `agent/`와 `api/`를 가져다 쓰지 않는다.** 의존 방향은 `api → agent → (verification, 도메인들) → shared`다. `evaluation/`은 `agent/`를 실행해 채점한다.
+- **새 도구를 추가할 때:** 알맞은 도메인의 `tools.py`에 만들고(없으면 새 도메인 폴더와 `__init__.py`를 만든다), `agent/tools.py`의 `ALL_TOOLS`와 SERVICE.md 3장 도구 표에 함께 넣는다. 기능 단위 안내가 필요하면 그 도메인의 `prompt.py`에 쓰고 `agent/prompt.py`에서 합친다.
+- **정책(가드레일)과 기간 해석 같은 공통 규칙은 `agent/prompt.py`에 둔다.** 기능별 조각에 정책을 따로 쓰지 않는다.
+- import는 항상 `src.`부터 쓰는 절대 경로로 쓴다 (예: `from src.shared.http import error`). 실행은 프로젝트 루트에서 `python -m src.…` 또는 `uvicorn src.api.app:app`으로 한다.
+- 평가 데이터(문항, 결과, 기록)는 `src/` 밖 루트의 `evaluation/`, `evals/`에 둔다. `src/`에는 코드만 둔다.
 
 ## 실행 방법
 
@@ -79,16 +116,16 @@ cd frontend && npm install && cd ..
 cp .env.example .env
 
 # 3. 백엔드 실행 (http://localhost:8000)
-uv run uvicorn backend.main:app --reload
+uv run uvicorn src.api.app:app --reload
 
 # 4. 프론트엔드 실행 (http://localhost:5173, /api는 백엔드로 프록시)
 cd frontend && npm run dev
 
 # 5. 공식 평가: CSV 문항 채점 (아래 "평가 루프" 참고). 결과는 evaluation/results/
-uv run python -m evaluation.run_csv
+uv run python -m src.evaluation.run_csv
 
 # 6. 보조 평가: test_queries.json 24건 반복 루프. 결과는 evals/runs/
-uv run python -m evals.run
+uv run python -m src.evaluation.run_json
 
 # 린트, 포맷
 uv run ruff check . && uv run ruff format .
@@ -107,7 +144,7 @@ uv run ruff check . && uv run ruff format .
 
 에이전트의 완성 여부는 **공식 인-아웃 세트 [evaluation/test_queries.csv](evaluation/test_queries.csv)** 를 반복 루프로 돌려서 판정한다. AI(Claude Code)는 이 루프를 직접 돌리면서 실패 원인을 찾아 코드를 고치고, 종료 조건을 만날 때까지 반복한다.
 
-루트의 [test_queries.json](test_queries.json)(24건)은 **보조 회귀 세트**다. 기능을 크게 바꿨을 때 더 넓게 확인하는 용도로 `evals/run.py`로 돌린다. 완성 판정에는 쓰지 않는다.
+루트의 [test_queries.json](test_queries.json)(24건)은 **보조 회귀 세트**다. 기능을 크게 바꿨을 때 더 넓게 확인하는 용도로 `src/evaluation/run_json.py`로 돌린다. 완성 판정에는 쓰지 않는다.
 
 ### 인-아웃 세트 (공식)
 
@@ -121,7 +158,7 @@ uv run ruff check . && uv run ruff format .
 
 ### 반복 1회의 절차
 
-1. **실행·판정·집계:** `uv run python -m evaluation.run_csv`. 문항마다 에이전트를 실행하고 채점해서 카테고리별, 전체 통과율을 출력한다.
+1. **실행·판정·집계:** `uv run python -m src.evaluation.run_csv`. 문항마다 에이전트를 실행하고 채점해서 카테고리별, 전체 통과율을 출력한다.
 2. **기록:** 결과는 `evaluation/results/`에 저장된다 (`summary_<시각>.txt`, `review_<시각>.csv`, `run_<시각>.json`). AI는 [evaluation/LOOP_LOG.md](evaluation/LOOP_LOG.md)에 한 줄을 덧붙인다: 시각, 범위, 모델, 결과, 이번 반복 전에 고친 내용.
 3. **사람 검토:** `review_<시각>.csv`의 "사람 판정" 칸에서 `expected_traits`를 확인한다.
 4. **종료 판단:** 아래 종료 조건을 확인한다. 끝나지 않았으면 5로 간다.
@@ -137,14 +174,14 @@ uv run ruff check . && uv run ruff format .
 | 조건 위반 | 기간 밖 대회, 종목이 다른 대회 포함 | 조건 추출 노드, 결과 필터링 로직 |
 | 되묻기 실패 | 모호한 입력에 말없이 임의로 가정 | 입력 분석 노드 |
 | 가드레일 위반 | 예약 대행, 날짜를 지어냄, 개인 연락처 제공 | 시스템 프롬프트 정책, 입력 분류 노드, 출력 검증 노드 |
-| 판정기 오판 | 기준을 만족했는데 실패로 판정, 근거와 판정이 엇갈림 | 판정 프롬프트(`evals/judge.py`, CSV 채점기도 이것을 쓴다). 단, 사용자 확인을 받은 뒤에만 고친다 |
+| 판정기 오판 | 기준을 만족했는데 실패로 판정, 근거와 판정이 엇갈림 | 판정 프롬프트(`src/evaluation/prompt.py`, 두 채점기가 함께 쓴다). 단, 사용자 확인을 받은 뒤에만 고친다 |
 
-지금 그래프(`backend/agent/graph.py`)는 `agent`, `tools`, `verify` 세 노드다. `verify`는 출력 검증 노드로, 최종 답변의 링크가 도구 결과에 실제로 나온 주소인지 코드로 확인한다(`backend/agent/verify.py`). 근거 없는 링크가 있으면 agent에게 한 번 고쳐 쓰게 하고, 그래도 남으면 링크를 지우고 "(출처 확인 불가)"로 바꾼다. 마지막으로 프롬프트 규칙만으로는 반복해서 어긴 것들을 코드로 고친다:
+지금 그래프(`src/agent/graph.py`)는 `agent`, `tools`, `verify` 세 노드다. `verify`는 출력 검증 노드로, 최종 답변의 링크가 도구 결과에 실제로 나온 주소인지 코드로 확인한다(`src/verification/checks.py`). 근거 없는 링크가 있으면 agent에게 한 번 고쳐 쓰게 하고, 그래도 남으면 링크를 지우고 "(출처 확인 불가)"로 바꾼다. 마지막으로 프롬프트 규칙만으로는 반복해서 어긴 것들을 코드로 고친다:
 - 답변 첫 줄의 진행 멘트("모든 정보가 모였습니다", "비교해 드릴게요" 등)를 지운다.
 - 표의 "고저차" 칸에 숫자도 "확인 불가"도 없으면 "확인 불가 (출처 설명: …)"로 바꾼다.
 - 답변 첫 줄에 밝힌 기간(예: "2027년 3~5월") 밖의 날짜가 표에 있으면 그 날짜 옆에 "(요청 기간 밖)"을 붙인다.
 
-고친 내용은 결과의 `verification` 기록(`preamble_removed`, `elevation_fixed`, `out_of_range_marked`)에 남는다. 이 기록이 자주 나오면 프롬프트나 도구 쪽 원인을 함께 고친다. 표에 나온 다른 노드(조건 추출, 입력 분석, 입력 분류)가 필요해지면 그래프에 새로 추가한다. 프롬프트는 `backend/agent/prompts.py`, 도구는 `backend/tools/`에 있다.
+고친 내용은 결과의 `verification` 기록(`preamble_removed`, `elevation_fixed`, `out_of_range_marked`)에 남는다. 이 기록이 자주 나오면 프롬프트나 도구 쪽 원인을 함께 고친다. 표에 나온 다른 노드(조건 추출, 입력 분석, 입력 분류)가 필요해지면 그래프에 새로 추가한다. 공통 프롬프트는 `src/agent/prompt.py`, 기능별 프롬프트는 `src/races/prompt.py`, `src/routes/prompt.py`, 도구는 각 도메인의 `tools.py`에 있다.
 
 ### 수정 규칙
 
@@ -165,13 +202,13 @@ uv run ruff check . && uv run ruff format .
 
 ```bash
 # 공식: 12건 전체를 한 번 실행하고 채점한다 (15~25분)
-uv run python -m evaluation.run_csv
+uv run python -m src.evaluation.run_csv
 
 # 디버깅용: 일부 문항만 (완성 판정에는 쓰지 않는다)
-uv run python -m evaluation.run_csv --case P-01 --case G-01
+uv run python -m src.evaluation.run_csv --case P-01 --case G-01
 
 # 보조: test_queries.json 24건. 반복 번호, 회귀, 루프 상태(continue/success/stop)를 자동으로 계산한다
-uv run python -m evals.run --note "이번 반복 전에 고친 내용"
+uv run python -m src.evaluation.run_json --note "이번 반복 전에 고친 내용"
 ```
 
 - 기본으로 한 문항씩 실행한다. 무료 검색(DuckDuckGo)은 짧은 시간에 많이 부르면 막히므로 `--workers`를 올리지 않는다. 검색 오류가 몰리면 몇 시간 뒤에 다시 돌린다.
@@ -188,9 +225,9 @@ uv run python -m evals.run --note "이번 반복 전에 고친 내용"
 
 - Python은 `ruff`로 린트와 포맷을 맞춘다. 변경 후 `uv run ruff check . && uv run ruff format .`를 통과해야 한다.
 - 코드 주석, 도구 설명(docstring), 사용자에게 보이는 문구는 한국어로 쓴다. 변수, 함수 이름은 영어로 쓴다.
-- 도구는 실패해도 예외를 던지지 않고 `{"error": ..., "source": ...}`를 돌려준다 (`backend/tools/common.py`의 `error()`).
+- 도구는 실패해도 예외를 던지지 않고 `{"error": ..., "source": ...}`를 돌려준다 (`src/shared/http.py`의 `error()`).
 - 목업 데이터를 돌려주는 도구는 결과에 `"mock": true`와 안내 문구를 넣는다.
-- 도구를 추가하거나 바꾸면 SERVICE.md 3장 도구 표와 `backend/tools/__init__.py`의 `ALL_TOOLS`를 함께 고친다.
+- 도구를 추가하거나 바꾸면 SERVICE.md 3장 도구 표와 `src/agent/tools.py`의 `ALL_TOOLS`를 함께 고친다.
 
 ### Git
 
