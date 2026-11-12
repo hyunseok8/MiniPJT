@@ -9,11 +9,13 @@
 """
 
 import json
+from collections.abc import Iterator
 from functools import lru_cache
 from typing import Any
 
 from langchain_core.messages import (
     AIMessage,
+    AIMessageChunk,
     BaseMessage,
     HumanMessage,
     SystemMessage,
@@ -130,18 +132,74 @@ def run_agent(history: list[dict[str, str]]) -> dict[str, Any]:
         tool_results: 도구가 돌려준 결과 (앞부분만). 평가 루프에서 답변이 도구 결과에 근거했는지 판정하는 데 쓴다
         tool_errors: 도구 오류 목록 (외부 장애 구분용)
     """
+    messages = _to_messages(history)
+    result = build_graph().invoke(_initial_state(messages), {"recursion_limit": RECURSION_LIMIT})
+    return _summarize(result, len(messages))
+
+
+def stream_agent(history: list[dict[str, str]]) -> Iterator[dict[str, Any]]:
+    """run_agent()와 같은 그래프를 돌리면서 진행 상황을 이벤트로 흘려보낸다 (웹 화면의 타자 치듯 보이는 답변용).
+
+    이벤트:
+        {"type": "token", "text": ...}   agent 노드가 쓰는 글자 조각
+        {"type": "tools", "names": [...]} agent가 도구를 부르기로 했다. 그 전에 흘려보낸 글자는 중간 생각이므로 화면에서 지운다
+        {"type": "rewrite"}               출력 검증이 근거 없는 링크를 찾아 다시 쓰게 했다. 화면의 글자를 지운다
+        {"type": "done", ...}             출력 검증까지 마친 최종 결과 (answer, tool_calls, tool_errors)
+    """
+    messages = _to_messages(history)
+    final_state: dict[str, Any] | None = None
+    for mode, payload in build_graph().stream(
+        _initial_state(messages),
+        {"recursion_limit": RECURSION_LIMIT},
+        stream_mode=["messages", "updates", "values"],
+    ):
+        if mode == "messages":
+            chunk, meta = payload
+            if meta.get("langgraph_node") == "agent" and isinstance(chunk, AIMessageChunk):
+                text = _text(chunk)
+                if text:
+                    yield {"type": "token", "text": text}
+        elif mode == "updates":
+            for node, update in (payload or {}).items():
+                new = (update or {}).get("messages") or []
+                if (
+                    node == "agent"
+                    and new
+                    and isinstance(new[-1], AIMessage)
+                    and new[-1].tool_calls
+                ):
+                    yield {"type": "tools", "names": [c["name"] for c in new[-1].tool_calls]}
+                elif node == "verify" and new and isinstance(new[-1], HumanMessage):
+                    yield {"type": "rewrite"}
+        elif mode == "values":
+            final_state = payload
+    if final_state is None:
+        raise RuntimeError("에이전트가 결과 없이 끝났다.")
+    result = _summarize(final_state, len(messages))
+    yield {
+        "type": "done",
+        "answer": result["answer"],
+        "tool_calls": result["tool_calls"],
+        "tool_errors": result["tool_errors"],
+    }
+
+
+def _to_messages(history: list[dict[str, str]]) -> list[BaseMessage]:
     # 이전 대화의 답변은 그때 이미 검증을 거쳤으므로 출력 검증에서 근거로 인정한다
-    messages: list[BaseMessage] = [
+    return [
         HumanMessage(m["content"])
         if m["role"] == "user"
         else AIMessage(m["content"], additional_kwargs={"from_history": True})
         for m in history
     ]
-    result = build_graph().invoke(
-        {"messages": messages, "rewrites": 0, "verification": {}},
-        {"recursion_limit": RECURSION_LIMIT},
-    )
-    new_messages = result["messages"][len(messages) :]
+
+
+def _initial_state(messages: list[BaseMessage]) -> dict[str, Any]:
+    return {"messages": messages, "rewrites": 0, "verification": {}}
+
+
+def _summarize(result: dict[str, Any], n_input: int) -> dict[str, Any]:
+    new_messages = result["messages"][n_input:]
     tool_calls = [
         {"name": call["name"], "args": call["args"]}
         for msg in new_messages
