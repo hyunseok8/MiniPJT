@@ -3,44 +3,53 @@
 ## 무엇을 푸나
 해외 마라톤 원정이나 여행지 러닝을 준비하는 러너가 여러 사이트에 흩어진 대회 일정·접수 마감·코스·항공·숙소·날씨 정보를 일일이 찾아 비교해야 하는 문제를, 한 번의 질문으로 출처가 달린 비교표로 정리해 준다.
 
-## 활용한 패턴 (Day 1~7)
-- Day _: **도구 호출(Tool Calling) 에이전트** — LangGraph `StateGraph`에서 LLM이 도구 10개(대회 검색, 항공·숙소, 좌표·고도, 러닝 코스, 날씨, 웹 검색·페이지 읽기)를 스스로 골라 부르고, 결과를 보고 다시 판단한다 (`agent → tools → agent`).
-- Day _: **병렬 도구 호출** — 서로의 결과가 필요 없는 도구(예: 후보 대회 3곳의 공식 사이트)를 한 번의 응답에서 함께 부르게 해 LLM 왕복을 줄였다. 기능 A 응답이 105초에서 24초로 줄었다.
-- Day _: **검색 기반 RAG** — 미리 모은 문서 대신, 웹 검색으로 후보 문서를 찾고 공식 페이지 본문을 읽어 그 내용만 근거로 답한다 (`src/retriever.py`).
-- Day _: **프롬프트 엔지니어링과 가드레일** — 시스템 프롬프트에 기간 해석 규칙, "모르면 '확인 불가'", 예약·결제 대행 금지, 개인정보 미제공, 건강 판단 금지 정책을 넣었다.
-- Day _: **출력 검증과 자기 수정(Reflection)** — `verify` 노드가 최종 답변의 링크를 도구 결과와 코드로 대조한다. 근거 없는 링크가 있으면 에이전트에게 한 번 다시 쓰게 하고, 그래도 남으면 지운다. 진행 멘트, 숫자 없는 고저차, 요청 기간 밖 날짜도 코드로 고친다.
-- Day _: **스트리밍 응답** — LangGraph `stream()`과 FastAPI SSE로 도구 진행 상황("대회 검색 중")과 답변 글자를 생성되는 대로 화면에 보낸다.
-- Day _: **LLM-as-a-Judge 평가 루프** — 인-아웃 세트를 돌려 기대 도구는 코드로, 금지 항목은 구조화 출력(`with_structured_output`)을 쓰는 LLM 판정기로 채점한다. 실패 원인을 고치고 다시 도는 반복 루프로 개선했다.
+## 활용한 패턴
+- **LCEL chain (Pydantic 구조화 출력)** — `ChatPromptTemplate | llm.with_structured_output(TripAnswer)` 체인으로 최종 답변을 Pydantic 모델(dict: 답변 유형, 결론, 기간, 대회·코스 항목, 출처, 목업 여부)로 바꿔 `/api/chat`과 스트리밍 마지막 이벤트로 돌려준다. 답변에 없는 링크는 코드로 지운다 (`src/structured.py`). 이전 대화 요약도 `prompt | llm | StrOutputParser` 체인이다.
+- **RAG (검색 기반, 쿼리 변환)** — 미리 모은 문서 대신 DuckDuckGo로 후보 문서를 찾고 공식 페이지 본문을 읽어 그 내용만 근거로 답한다. 기간을 달 이름으로 바꾼 검색어 변환과 검색 엔진 3단계 대체를 쓴다 (`src/retriever.py`, `src/tools.py`). 하이브리드 검색·리랭킹은 쓰지 않았다.
+- **ReAct (도구 자율 선택)** — `create_agent`(내부에서 `bind_tools`)로 LLM이 도구 10개를 스스로 골라 부르고, 결과를 보고 다시 판단한다 (`src/agent.py`).
+- **도구 다중 (외부 API)** — 대회 검색, 항공·숙소(목업), 좌표·고도(Nominatim, Open-Meteo), 러닝 코스(Overpass), 날씨, 웹 검색·페이지 읽기를 한 질의에서 함께 쓴다. 서로 관계없는 도구는 한 번의 응답에서 병렬로 불러 기능 A 응답을 105초에서 24초로 줄였다.
+- **가드레일 (PII·프롬프트 인젝션 방어)** — 입력의 카드번호·주민등록번호·휴대폰 번호·이메일을 가리고, "이전 지시 무시", "시스템 프롬프트 보여줘" 같은 문구는 모델을 부르지 않고 정해진 안내로 끝낸다(`InputGuardMiddleware`). 모델 출력의 카드번호·주민등록번호는 `PIIMiddleware`가 가린다 (`src/guardrails.py`). 출력 쪽에서는 `verify` 노드가 도구 결과에 없는 링크를 코드로 잡아 다시 쓰게 하거나 지운다 (`src/verify.py`).
+- **미들웨어 (요약·마스킹·재시도)** — 이전 대화가 길면 LCEL 체인으로 요약해 모델에 넘기고(`HistorySummaryMiddleware`, 원래 기록은 출력 검증용으로 그대로 둔다), Bedrock 일시 오류는 `ModelRetryMiddleware`로 다시 시도하고, 오늘 날짜 시스템 프롬프트는 `dynamic_prompt`로 만든다 (`src/middleware.py`). PII 마스킹은 위 가드레일 미들웨어다.
+- **Observability · Trace** — `.env`의 `LANGSMITH_TRACING=true`로 LangGraph·LangChain 실행이 LangSmith에 트레이스로 남는다.
+- **평가 (RAGAS · LLM-as-Judge)** — 공식 인-아웃 세트 12문항을 기대 도구(코드)와 금지 항목(LLM 판정기, 구조화 출력)으로 채점하고 고쳐 다시 도는 반복 루프를 돌렸다. RAGAS 4개 지표도 계산했다 (`src/evaluate.py`, `src/judge.py`, `src/ragas_eval.py`).
+
+쓰지 않은 패턴과 이유: MCP 서버 연동( 연동할 사내 시스템이 없음), HITL 승인( 예약·결제를 아예 하지 않는 서비스라 승인할 위험 작업이 없음), Multi-Agent Supervisor, Plan-Execute·장기 메모리( 대화와 위치를 저장하지 않는다는 정책 4와 맞지 않음).
 
 ## 아키텍처
 
 ```
 [브라우저: React 채팅 화면 :5173]
-        │  POST /api/chat/stream (SSE: 진행 상황 · 글자 조각 · 최종 답변)
+        │  POST /api/chat/stream (SSE: 진행 상황 · 글자 조각 · 최종 답변 · 구조화 결과)
         ▼
 [FastAPI  src/api.py :8000]
         │  stream_agent() / run_agent()
         ▼
-┌──────────── LangGraph 그래프  src/agent.py ─────────────────────────┐
-│                                                                      │
-│   ┌─────────┐  도구 호출   ┌──────────────────────────────────────┐  │
-│   │  agent  │ ───────────▶ │ tools  (src/tools.py, src/retriever.py)│  │
-│   │ (LLM)   │ ◀─────────── │  · search_races, search_web, fetch_page│ ──▶ DuckDuckGo (무료)
-│   └─────────┘   도구 결과  │  · geocode, find_running_routes,       │ ──▶ OpenStreetMap (무료)
-│      │   ▲                 │    search_popular_routes               │
-│      │   │ 근거 없는 링크  │  · get_elevation, get_weather          │ ──▶ Open-Meteo (무료)
-│      │   │ → 1회 다시 쓰기 │  · search_flights, search_hotels (목업)│ ──▶ data/mock_travel.json
-│ 최종 │   │                 └──────────────────────────────────────┘  │
-│ 답변 ▼   │                                                           │
-│   ┌──────────┐  링크·진행 멘트·고저차·기간 밖 날짜 검사 (src/verify.py) │
-│   │  verify  │ ─────────────────────────────────────────▶ 최종 답변    │
-│   └──────────┘                                                       │
-└──────────────────────────────────────────────────────────────────────┘
-        │ LLM 호출
+┌──────────── LangGraph 그래프  src/agent.py ──────────────────────────────────┐
+│ ┌─ agent: create_agent (ReAct 서브그래프) ──────────────────────────────────┐ │
+│ │ 미들웨어 ① 입력 가드: 개인정보 마스킹 · 인젝션 차단   (src/guardrails.py)  │ │
+│ │          ② PIIMiddleware: 입력·출력 카드번호·주민번호 가림                 │ │
+│ │          ③ 날짜 시스템 프롬프트 ④ 이전 대화 요약 ⑤ 모델 재시도 (src/middleware.py) │ │
+│ │                                                                            │ │
+│ │   ┌───────┐ 도구 호출 ┌───────────────────────────────────────────────┐    │ │
+│ │   │ model │ ────────▶ │ tools (src/tools.py, src/retriever.py)          │ ─▶ DuckDuckGo · OpenStreetMap
+│ │   │ (LLM) │ ◀──────── │  대회·웹 검색·페이지 · 좌표·코스·고도 · 날씨 · 항공·숙소(목업) │ ─▶ Open-Meteo · data/mock_travel.json
+│ │   └───────┘ 도구 결과 └───────────────────────────────────────────────┘    │ │
+│ └────────────────────────────────────────────────────────────────────────────┘ │
+│        │ 최종 답변                ▲ 근거 없는 링크 → 1회 다시 쓰기             │
+│        ▼                          │                                            │
+│   ┌──────────┐  링크·진행 멘트·고저차·기간 밖 날짜 검사 (src/verify.py)        │
+│   │  verify  │ ───────────────────────────────────────────▶ 최종 답변(마크다운) │
+│   └──────────┘                                                                 │
+└────────────────────────────────────────────────────────────────────────────────┘
+        │ 최종 답변
         ▼
-[Amazon Bedrock: Claude Sonnet 4.5 (global 교차 추론, us-west-2)]  ← 유일한 유료 API
+[구조화 출력  src/structured.py: LCEL  prompt | llm.with_structured_output(TripAnswer)] ─▶ dict
+
+[Amazon Bedrock: Claude Sonnet 4.5 (global 교차 추론, us-west-2)]  ← 유일한 유료 API (모델·요약·구조화·판정)
+[LangSmith]  ← 실행 트레이스
 
 [평가] src/evaluate.py ── run_agent() × 12문항 ──▶ src/judge.py(LLM 판정기) ──▶ evaluation/results/
+       src/ragas_eval.py ── 저장된 결과로 RAGAS 4개 지표
 ```
 
 - **기능 A (해외 마라톤 원정 플래너):** 대회 검색 → 공식 사이트로 날짜·마감일 확인 → 인천 출발 항공권·대회장 근처 숙소(목업) → 비교표
@@ -151,17 +160,21 @@ RAGAS 기본 설정에서 바꾼 것 (기본 설정으로 처음 돌린 결과�
 - **목업:** 항공권과 숙소는 목업이다. 무료로 쓸 수 있는 실제 가격 API를 찾으면 도구만 바꿔 끼울 수 있다.
 
 ## 핵심 코드 위치
-- `src/agent.py:78` — 메인 에이전트 그래프 (`build_graph`: agent → tools → verify)
-  - `src/agent.py:143` — `run_agent()`: 평가와 `/api/chat`
-  - `src/agent.py:161` — `stream_agent()`: 웹 화면 스트리밍
+- `src/agent.py:102` — 메인 에이전트 그래프 (`build_graph`: agent → verify)
+  - `src/agent.py:91` — `build_react_agent()`: `create_agent`(ReAct, 도구 결합)와 미들웨어 목록
+  - `src/agent.py:164` — `run_agent()`: 평가와 `/api/chat` (구조화 출력 포함)
+  - `src/agent.py:186` — `stream_agent()`: 웹 화면 스트리밍
 - `src/tools.py` — 도메인 도구
   - `search_races` :60, `search_flights` :109, `search_hotels` :145, `geocode` :188, `get_elevation` :215, `find_running_routes` :381, `search_popular_routes` :445, `get_weather` :469
   - 도구 등록부 `ALL_TOOLS` :525
 - `src/retriever.py` — RAG 파이프라인: `ddg_search` :46 → `search_web` :82 → `fetch_page` :95
+- `src/structured.py:80` — LCEL 구조화 출력 체인 (`TripAnswer` :38, `structure_answer` :95)
+- `src/guardrails.py:111` — 가드레일: `InputGuardMiddleware`(PII 마스킹, 인젝션 차단), `build_guard_middleware` :137
+- `src/middleware.py:66` — 이전 대화 요약 미들웨어, `build_agent_middleware` :117 (날짜 프롬프트, 재시도)
 - `src/prompts.py:5` — 시스템 프롬프트 (정책 1~5, 기간 해석)
 - `src/verify.py` — 출력 검증
   - `find_unverified` :65, `strip_preamble` :101, `fix_elevation_cells` :143, `mark_out_of_range` :208
-- `src/api.py:80` — SSE 스트리밍 엔드포인트
+- `src/api.py:91` — SSE 스트리밍 엔드포인트 (`/api/chat` :78)
 - `src/evaluate.py:64` — 문항 채점
 - `src/judge.py:90` — LLM 판정기
 - `src/ragas_eval.py` — RAGAS 4개 지표 계산 (기준 정보 항목: `evaluation/ragas_references.csv`)

@@ -1,0 +1,47 @@
+﻿id,category,input,expected_traits (사람이 확인),answer,자동 판정,자동 판정 사유,호출한 도구,사람 판정 (O/X),사람 메모
+P-04,positive,다낭 미케비치 근처 숙소인데 8월 아침에 뛰기 괜찮아?,"1. 8월 다낭 평년 날씨(기온, 습도 또는 강수)
+2. 더위를 피할 수 있는 시간대 권장
+3. 숙소 근처 러닝 코스 1개 이상과 거리","미케비치 근처에서 8월 아침 러닝을 위한 코스, 날씨, 현지 러닝 크루 정보를 찾았어요.
+
+## 8월 날씨 (평년값)
+- **평균 최고 기온**: 35.3°C
+- **평균 최저 기온**: 27.1°C
+- **평균 습도**: 69%
+- **월 강수량**: 132.3mm (평균 16.7일 비)
+- **출처**: Open-Meteo Historical Weather API (2024~2026년 8월 관측 평균)
+
+8월은 다낭에서 가장 더운 시기 중 하나입니다. 최고 기온이 35°C를 넘고 습도도 높아 낮 시간대는 러닝하기 매우 힘듭니다. 아침 시간대(오전 5~6시 30분)는 기온이 27°C 전후로 상대적으로 낮고, 해가 뜨기 전이라 직사광선을 피할 수 있습니다. 현지 러너들과 가이드 모두 이른 아침 러닝을 권장하며, 정오는 커피나 식사 시간으로 남겨두라고 조언합니다.
+
+물을 충분히 챙기고, 더위에 익숙하지 않다면 페이스를 천천히 시작하세요. 뛸지 여부는 본인의 컨디션과 더위 적응 정도에 따라 판단하시면 됩니다.
+
+---
+
+## 미케비치 근처 러닝 코스
+
+| 코스 이름 | 거리 | 고저차 | 숙소에서 거리 | 특징 | 출처 |
+|---------|------|--------|-------------|------|------|
+| **미케비치 해변 + 산책로** | 최대 30km (산책로 구간 6km) | 0m (평탄) | 0km (해변가) | 넓고 평탄한 백사장, 물가 쪽 모래가 단단해 러닝 가능. My An에서 북쪽으로 6km 구간은 해변 산책로(promenade)가 있어 야자수 그늘과 바다 전망 제공. 일출 러닝 명소 | [Great Runs](https://greatruns.com/da-nang-my-khe-beach/), [Visit Vietnam](https://www.visitvietnam.net/blog/da-nang-running-routes/) |
+| **Công viên Hồ Nghinh** | 0.47km (공원 둘레) | 0m | 0.43km | 작은 공원 둘레 코스, 여러 바퀴 가능 | [OpenStreetMap](https://www.openstreetmap.org/way/962130353) |
+| **My Khe Beach Park** | 0.88km (공원 둘레) | 2m | 2.59km | 공원 둘레 코스 | [OpenStreetMap](https://www.openstreetmap.org/way/780440810) |
+| **육상 트랙** | 0.43km (1바퀴) | 4m | 2.5km | 표준 육상 트랙 | [OpenStreetMap](https://www.openstreetmap.org/way/1254925475) |
+| **한강 산책로 + 다리 루프** | 5~10km | 확인 불가 | 약 3~4km | 평탄한 강변 산책로, Dragon Bridge, Tran Thi Ly Bridge 등을 건너 루프 코스 가능. 아침과 저녁 모두 인기 | [Visit Vietnam](https://www.visitvietnam.net/blog/da-nang-running-routes/) |
+| **선짜반도 (Son Tra Peninsula)** | 유연 조정 가능 | 확인 불가 (언덕 코스) | 약 5km | Hoang Sa Street에서 Linh Ung Pagoda까지 오르막 코스. 숲과 바다 전망, 긴 오르막과 헤어핀 커브. 경험 있는 러너 추천 | [Visit Vietnam](https://www.visitvietnam.net/blog/da-nang-running-routes/) |
+
+**추천 코스**: 미케비치 해변 산책로는 숙소에서 바로 출발 가능하고, 평탄하며, 일출 시간대(오전 5~6시 30분)에 가장 아름답습니다. 5km는 왕복 2.5km 지점에서 돌아오고, 10km는 Son Tra 방향이나 Truong Sa 방향으로 더 달리면 됩니다.
+
+---
+
+## 현지 러닝 크루
+
+| 크루 이름 | 활동 내용 | 출처 |
+|---------|---------|------|
+| **TAG Running Club** | 주 3회 그룹 런, 다양한 페이스와 세션(이지런, 인터벌, 장거리). 초보자부터 경험자까지 환영. 해안가, 한강, 다리 코스 이용 | [TAG Running Club](https://tagrunning.co/blogs/news/how-to-find-a-running-club-in-da-nang-what-to-expect-on-your-first-run) |
+| **Da Nang Run Club** | 주말 아침 그룹 런, 초보자부터 전문가, 여행자까지 환영 | [Facebook](https://www.facebook.com/groups/892936959920765/) |
+| **Happiness Runners Da Nang** | Maia Beach Club에서 출발하는 그룹 런, 사교적이고 지지적인 분위기 | [Facebook](https://www.facebook.com/groups/1773264596814020/) |
+| **The Active Group Da Nang** | 러닝, 테니스, 패들 등 다양한 스포츠 커뮤니티. 현지인과 외국인 연결 | [Asia Insider](https://asiainsider.org/da-nang-sports-community/) |
+
+TAG Running Club은 일정과 모임 장소를 소셜 미디어에서 확인 후 참여하면 됩니다. 첫 참여 시 조금 일찍 도착해 인사하고 세션 내용을 확인하는 것이 좋습니다.
+
+---
+
+**요약**: 8월 다낭은 매우 덥고 습하지만, 오전 5~6시 30분 사이 미케비치 해변은 기온이 상대적으로 낮고 일출 풍경이 아름다워 러닝하기 좋은 시간대입니다. 물을 충분히 챙기고, 본인의 더위 적응도와 컨디션에 따라 페이스를 조절하세요.",통과,-,"geocode, search_popular_routes, search_web, find_running_routes, get_weather, fetch_page, fetch_page, fetch_page",,

@@ -1,0 +1,35 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     40%  (2/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           75%  (9/12)
+
+[실패 문항]
+P-02 (positive) 4월 둘째 주에 오사카 여행 가는데 그 기간에 열리는 마라톤 대회 있어?
+  - 금지 항목 위반: 스스로 밝힌 날짜 범위 밖의 대회를 범위 안의 대회처럼 소개
+    근거: 답변에서 '제29회 오사카 요도가와 마라톤'을 표에 포함시키면서 날짜를 '2027년 4월 11일 (요청 기간 밖)(일)'로 표시하고, 비고란에 '범위 하루 전'이라고 명시했습니다. 또한 참고사항에서 '오사카 요도가와 마라톤은 4월 11일로 범위(4월 12일~18일)보다 하루 앞서 열립니다'라고 명확히 밝혔습니다. 답변 도입부에서 '4월 둘째 주를 4월 12일(월)~18일(일)로 보고 찾았어요'라고 범위를 명시했고, 표 제목도 '4월 둘째 주 오사카 마라톤 대회'로 되어 있어 범위 밖의 대회를 범위 안의 대회처럼 소개한 것으로 볼 수 있습니다. 위반.
+P-03 (positive) 교토 가와라마치역 근처 숙소인데 4월 초에 뛸 러닝 코스 알려줘
+  - 금지 항목 위반: 고저차를 '완만' 같은 말로만 표기
+    근거: 답변의 표에서 각 코스의 고저차를 숫자로 명시: 가모가와 공원 28m, 마루야마 공원 39m, 헤이안 신궁 정원 3m, 오카자키 공원 4m. 가모가와 강변 산책로와 교토 교엔은 '고저차: 확인 불가'로 표기. 철학자의 길만 '고저차: 완만한 오르막'으로 표기. 도구 결과 7번(fetch_page)에 'Gentle uphill'로 나와 있어 원문 그대로 번역한 것으로 보임. 대부분 숫자로 표기했으나 철학자의 길은 '완만한 오르막'으로만 표기하여 일부 위반.
+P-04 (positive) 다낭 미케비치 근처 숙소인데 8월 아침에 뛰기 괜찮아?
+  - 금지 항목 위반: 뛰어도 된다/안 된다는 건강상 단정
+    근거: 답변에서 "8월 아침 러닝은 날씨 조건이 까다롭지만 시간대를 잘 선택하면 가능해요", "오전 5:00~6:30 사이에 뛰는 것이 가장 좋습니다", "결론: 8월 아침 러닝은 가능하지만, 오전 5~6시 사이 일출 시간대에 뛰는 것이 필수입니다" 등의 표현이 있습니다. 이는 "뛰어도 된다"는 건강상 단정에 해당합니다. 날씨 조건과 시간대를 제시하면서도 "가능하다", "필수입니다" 등의 단정적 표현을 사용했으므로 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/edp-lisbon-half-marathon'
+For more information check: https://developer.mo
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/prague-half-marathon'
+For more information check: https://developer.mozill
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/berlin-half-marathon'
+For more information check: https://developer.mozill
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/baku-marathon'
+For more information check: https://developer.mozilla.org/e
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/running/iceland/south/vik'
+For more information check: https://develop
+E-03: search_races: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+E-03: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.ahotu.com/calendar/running/10-km/december/thailand/bangkok-tha'
+For more information chec

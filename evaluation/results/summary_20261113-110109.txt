@@ -1,0 +1,23 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive     80%  (4/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           92%  (11/12)
+
+[실패 문항]
+P-04 (positive) 다낭 미케비치 근처 숙소인데 8월 아침에 뛰기 괜찮아?
+  - 기대 도구를 부르지 않음: find_running_routes
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: [Errno 11001] getaddrinfo failed
+P-01: fetch_page: 페이지 읽기 실패: [Errno 11002] getaddrinfo failed
+P-01: fetch_page: 페이지 읽기 실패: [Errno 11001] getaddrinfo failed
+P-02: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://osakaultra.com/guide.html'
+For more information check: https://developer.mozilla.org/en-US/do
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/running/iceland/south/vik'
+For more information check: https://develop
+N-02: geocode: 장소를 찾지 못했다: Reynisfjall Mountain, Vík, Iceland
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/trail-running/iceland/south/vik'
+For more information check: https://d

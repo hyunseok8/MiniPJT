@@ -140,9 +140,28 @@ def _is_separator(cells: list[str]) -> bool:
     return all(re.fullmatch(r"\s*:?-{2,}:?\s*", c) for c in cells)
 
 
-def fix_elevation_cells(answer: str) -> tuple[str, list[str]]:
-    """표의 '고저차' 칸에 숫자도 '확인 불가'도 없으면 '확인 불가 (출처 설명: …)'로 바꾼다.
+# 목록 형식의 고저차 줄: "- 고저차: 완만한 오르막", "* **고저차:** 약간의 기복"
+ELEVATION_LINE_RE = re.compile(r"^(\s*(?:[-*•]\s*)?\**고저차\**\s*[:：]\s*\**\s*)(.+?)\s*$")
 
+
+def _needs_elevation_fix(plain: str) -> bool:
+    # 숫자가 있거나 "확인 불가"로 시작하면 규칙대로 쓴 값이다. "완만한 오르막 (숫자 확인 불가)"처럼
+    # 설명 뒤에 '확인 불가'를 덧붙인 값은 고친다 (2026-11-12 평가에서 빠져나간 사례)
+    return not (
+        not plain or plain in {"-", "—"} or re.search(r"\d", plain) or plain.startswith("확인 불가")
+    )
+
+
+def _elevation_replacement(plain: str) -> str:
+    description = re.sub(r"\s*\([^)]*확인 불가[^)]*\)", "", plain).strip() or plain
+    return f"확인 불가 (출처 설명: {description})"
+
+
+def fix_elevation_cells(answer: str) -> tuple[str, list[str]]:
+    """'고저차' 값에 숫자도 '확인 불가'도 없으면 '확인 불가 (출처 설명: …)'로 바꾼다.
+
+    표의 고저차 칸과 목록 형식의 "고저차: …" 줄을 모두 고친다. 목록 형식으로 쓴 답변이
+    표만 검사하던 보정을 빠져나간 일이 있었다 (2026-11-13 평가).
     프롬프트로 금지해도 "완만한 오르막"처럼 출처의 말을 그대로 옮기는 일이 반복돼서 코드로 고친다.
     바꾼 원래 값 목록도 돌려준다.
     """
@@ -152,6 +171,12 @@ def fix_elevation_cells(answer: str) -> tuple[str, list[str]]:
     for i, line in enumerate(lines):
         if not _is_table_row(line):
             col = None
+            m = ELEVATION_LINE_RE.match(line)
+            if m:
+                plain = m[2].replace("*", "").strip()
+                if _needs_elevation_fix(plain):
+                    lines[i] = m[1] + _elevation_replacement(plain)
+                    changed.append(plain)
             continue
         cells = _split_row(line)
         if col is None:
@@ -164,17 +189,9 @@ def fix_elevation_cells(answer: str) -> tuple[str, list[str]]:
             continue
         value = cells[col].strip()
         plain = value.replace("*", "").strip()
-        # 숫자가 있거나 "확인 불가"로 시작하면 규칙대로 쓴 칸이다. "완만한 오르막 (숫자 확인 불가)"처럼
-        # 설명 뒤에 '확인 불가'를 덧붙인 칸은 고친다 (2026-11-12 평가에서 빠져나간 사례)
-        if (
-            not plain
-            or plain in {"-", "—"}
-            or re.search(r"\d", plain)
-            or plain.startswith("확인 불가")
-        ):
+        if not _needs_elevation_fix(plain):
             continue
-        description = re.sub(r"\s*\([^)]*확인 불가[^)]*\)", "", plain).strip() or plain
-        cells[col] = f" 확인 불가 (출처 설명: {description}) "
+        cells[col] = f" {_elevation_replacement(plain)} "
         lines[i] = "|" + "|".join(cells) + "|"
         changed.append(plain)
     return "\n".join(lines), changed

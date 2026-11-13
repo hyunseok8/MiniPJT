@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from src.agent import run_agent, stream_agent
 from src.llm import LLMConfigError
+from src.structured import TripAnswer
 
 # ======================================================================
 # 요청, 응답 형식
@@ -40,10 +41,20 @@ class ToolError(BaseModel):
     error: str
 
 
+class Guardrail(BaseModel):
+    # 사용자 메시지에서 가린 개인정보 종류 (card, rrn, phone, email)
+    masked_input: list[str]
+    # 프롬프트 인젝션 문구가 있어 모델을 부르지 않고 안내로 끝냈는지
+    injection_blocked: bool
+
+
 class ChatResponse(BaseModel):
     answer: str
     tool_calls: list[ToolCall]
     tool_errors: list[ToolError]
+    guardrail: Guardrail
+    # 최종 답변의 구조화 출력 (src/structured.py의 TripAnswer). 구조화에 실패하면 null
+    structured: TripAnswer | None = None
 
 
 # ======================================================================

@@ -10,18 +10,31 @@ export interface ToolCall {
   args: Record<string, unknown>;
 }
 
+export interface Guardrail {
+  // 사용자 메시지에서 가린 개인정보 종류 (card, rrn, phone, email)
+  masked_input: string[];
+  // 프롬프트 인젝션 문구가 있어 모델을 부르지 않고 안내로 끝냈는지
+  injection_blocked: boolean;
+}
+
+// 최종 답변의 구조화 출력 (src/structured.py의 TripAnswer)
+export type StructuredAnswer = Record<string, unknown>;
+
 export interface ChatResponse {
   answer: string;
   tool_calls: ToolCall[];
   tool_errors: { tool: string; error: string }[];
+  guardrail?: Guardrail;
+  structured?: StructuredAnswer | null;
 }
 
-// /api/chat/stream 이벤트 (backend/agent/graph.py의 stream_agent()와 같은 형식)
+// /api/chat/stream 이벤트 (src/agent.py의 stream_agent()와 같은 형식)
 export type StreamEvent =
   | { type: "token"; text: string }
   | { type: "tools"; names: string[] }
   | { type: "rewrite" }
   | ({ type: "done" } & ChatResponse)
+  | { type: "structured"; data: StructuredAnswer | null }
   | { type: "error"; message: string };
 
 // 대화 기록은 브라우저 메모리에만 두고 서버에 저장하지 않는다 (SERVICE.md 정책 4)

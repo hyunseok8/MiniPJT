@@ -555,3 +555,23 @@ body {
   opacity: 0.5;
   cursor: default;
 }
+
+/* 가드레일이 개인정보를 가렸을 때 답변 아래에 보이는 안내 */
+.guard-note {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* 구조화 결과(JSON) */
+.structured {
+  margin: 6px 0 0;
+  padding: 10px;
+  max-height: 320px;
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

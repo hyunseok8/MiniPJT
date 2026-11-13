@@ -62,7 +62,10 @@ miniPJT/
 
 | 파일 | 역할 |
 |------|------|
-| `agent.py` | **메인 에이전트 그래프.** LangGraph `agent → tools → verify` 그래프, 상태(`AgentState`), `run_agent()`(평가, `/api/chat`), `stream_agent()`(웹 화면 스트리밍) |
+| `agent.py` | **메인 에이전트 그래프.** LangGraph `agent → verify` 그래프. `agent`는 `create_agent`로 만든 ReAct 에이전트(도구 호출 반복 + 미들웨어). 상태(`AgentState`), `run_agent()`(평가, `/api/chat`), `stream_agent()`(웹 화면 스트리밍) |
+| `guardrails.py` | **가드레일 미들웨어.** 입력 개인정보 마스킹(카드번호, 주민등록번호, 휴대폰 번호, 이메일), 프롬프트 인젝션 차단(`InputGuardMiddleware`), 입력·출력 카드번호·주민등록번호 가림(`PIIMiddleware`) |
+| `middleware.py` | **에이전트 미들웨어.** 오늘 날짜 시스템 프롬프트(`dynamic_prompt`), 긴 이전 대화 요약(`HistorySummaryMiddleware`, LCEL 체인), 모델 호출 재시도(`ModelRetryMiddleware`) |
+| `structured.py` | **구조화 출력.** LCEL 체인 `ChatPromptTemplate \| llm.with_structured_output(TripAnswer)`로 최종 답변을 Pydantic 모델(dict)로 바꾼다. 답변에 없는 링크는 코드로 지운다 |
 | `tools.py` | **도메인 도구.** 에이전트가 부르는 도구 10개의 구현과 등록부 `ALL_TOOLS`. 대회(`search_races`), 항공권·숙소(목업), 장소·고도, 러닝 코스, 날씨 |
 | `retriever.py` | **검색 기반 RAG 파이프라인.** DuckDuckGo 검색(`ddg_search`, `search_web`) → 공식 페이지 본문 읽기(`fetch_page`). 미리 모은 문서 대신 웹에서 근거를 가져온다 |
 | `prompts.py` | 시스템 프롬프트 (기능 A·B 안내, 기간 해석, 정책 1~5, 답변 형식) |
@@ -81,6 +84,8 @@ miniPJT/
 - **새 도구는 `tools.py`에 추가한다.** 같은 파일의 `ALL_TOOLS`와 SERVICE.md 3장 도구 표에 함께 넣는다. 웹 검색·페이지 읽기처럼 근거 문서를 가져오는 기능은 `retriever.py`에 둔다.
 - **프롬프트는 `prompts.py`에 모은다.** 단, 도구 설명은 각 도구의 docstring이고, 판정 프롬프트는 `judge.py`, 다시 쓰기 요청 문구는 `verify.py`에 둔다.
 - **그래프의 노드와 흐름은 `agent.py`에서만 바꾼다.** 새 노드(조건 추출, 입력 분류 등)가 필요하면 `agent.py`에 추가한다.
+- **모델 호출 전후에 끼우는 공통 처리는 미들웨어로 만든다.** 안전·개인정보 관련은 `guardrails.py`, 그 밖(프롬프트, 요약, 재시도)은 `middleware.py`에 두고 `build_*_middleware()` 목록에 넣는다. 미들웨어는 상태의 원래 메시지를 함부로 지우지 않는다(출력 검증이 도구 결과와 이전 답변을 근거로 쓴다).
+- **가드레일 패턴을 바꾸면** 공식 세트와 회귀 세트의 질문이 잘못 걸리지 않는지 확인한다 (`mask_pii`, `detect_injection`).
 - **목업 기준값 같은 데이터는 `data/`에 둔다.** 코드에 값을 박아 넣지 않는다.
 - **평가 데이터(문항, 결과, 기록, 보고서)는 `evaluation/`에 둔다.** `src/`에는 코드만 둔다.
 - import는 `src.`부터 쓰는 절대 경로로 쓴다 (예: `from src.common import error`). 실행은 프로젝트 루트에서 `python -m src.…` 또는 `uvicorn src.api:app`으로 한다.
@@ -165,7 +170,7 @@ uv run ruff check . && uv run ruff format .
 | 가드레일 위반 | 예약 대행, 날짜를 지어냄, 개인 연락처 제공 | 시스템 프롬프트 정책, 입력 분류 노드, 출력 검증 노드 |
 | 판정기 오판 | 기준을 만족했는데 실패로 판정, 근거와 판정이 엇갈림 | 판정 프롬프트(`src/judge.py`, 두 채점기가 함께 쓴다). 단, 사용자 확인을 받은 뒤에만 고친다 |
 
-지금 그래프(`src/agent.py`)는 `agent`, `tools`, `verify` 세 노드다. `verify`는 출력 검증 노드로, 최종 답변의 링크가 도구 결과에 실제로 나온 주소인지 코드로 확인한다(`src/verify.py`). 근거 없는 링크가 있으면 agent에게 한 번 고쳐 쓰게 하고, 그래도 남으면 링크를 지우고 "(출처 확인 불가)"로 바꾼다. 마지막으로 프롬프트 규칙만으로는 반복해서 어긴 것들을 코드로 고친다:
+지금 그래프(`src/agent.py`)는 `agent`(create_agent ReAct 서브그래프: 모델 ↔ 도구 반복과 미들웨어), `verify` 두 노드다. 미들웨어 실행 순서: 입력 가드(개인정보 마스킹, 인젝션 차단) → PII 미들웨어 → 날짜 시스템 프롬프트 → 이전 대화 요약 → 모델 재시도. 그래프가 끝나면 최종 답변을 구조화 출력(`src/structured.py`)으로도 바꾼다. `verify`는 출력 검증 노드로, 최종 답변의 링크가 도구 결과에 실제로 나온 주소인지 코드로 확인한다(`src/verify.py`). 근거 없는 링크가 있으면 agent에게 한 번 고쳐 쓰게 하고, 그래도 남으면 링크를 지우고 "(출처 확인 불가)"로 바꾼다. 마지막으로 프롬프트 규칙만으로는 반복해서 어긴 것들을 코드로 고친다:
 - 답변 첫 줄의 진행 멘트("모든 정보가 모였습니다", "비교해 드릴게요" 등)를 지운다.
 - 표의 "고저차" 칸에 숫자도 "확인 불가"도 없으면 "확인 불가 (출처 설명: …)"로 바꾼다.
 - 답변 첫 줄에 밝힌 기간(예: "2027년 3~5월") 밖의 날짜가 표에 있으면 그 날짜 옆에 "(요청 기간 밖)"을 붙인다.

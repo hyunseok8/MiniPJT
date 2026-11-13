@@ -1,11 +1,18 @@
 """LangGraph 에이전트 그래프.
 
 흐름:
-  agent(LLM) → 도구 호출이 있으면 tools → 다시 agent
-             → 도구 호출이 없으면 verify(출력 검증)
+  agent → verify → (근거 없는 링크가 있으면 1번까지) agent → verify → 종료
+  agent는 LangChain create_agent로 만든 ReAct 에이전트(서브그래프)다:
+    모델(LLM) → 도구 호출이 있으면 tools → 다시 모델 → 도구 호출이 없으면 끝
+    미들웨어 (실행 순서대로):
+      1. InputGuardMiddleware      입력 개인정보 마스킹, 프롬프트 인젝션 차단 (src/guardrails.py)
+      2. PIIMiddleware             카드번호·주민등록번호를 입력과 출력에서 가림 (LangChain 기본 제공)
+      3. system_prompt             오늘 날짜를 넣은 시스템 프롬프트 (src/middleware.py)
+      4. HistorySummaryMiddleware  긴 이전 대화를 요약본으로 바꿔 모델에 넘김
+      5. ModelRetryMiddleware      Bedrock 일시 오류 재시도
   verify → 근거 없는 링크가 없으면 종료
          → 있으면 1번까지 agent에게 고쳐 쓰게 돌려보내고, 그래도 남으면 그 링크를 지운 뒤 종료
-평가 루프에서 입력 분석 노드 등이 필요해지면 이 파일에 추가한다.
+그래프가 끝나면 최종 답변을 구조화 출력(TripAnswer, src/structured.py)으로도 바꿔 돌려준다.
 """
 
 import json
@@ -13,19 +20,20 @@ from collections.abc import Iterator
 from functools import lru_cache
 from typing import Any, TypedDict
 
+from langchain.agents import create_agent
 from langchain_core.messages import (
     AIMessage,
     AIMessageChunk,
     BaseMessage,
     HumanMessage,
-    SystemMessage,
     ToolMessage,
 )
 from langgraph.graph import END, START, MessagesState, StateGraph
-from langgraph.prebuilt import ToolNode, tools_condition
 
+from src.guardrails import MASKS, build_guard_middleware
 from src.llm import get_llm
-from src.prompts import build_system_prompt
+from src.middleware import build_agent_middleware
+from src.structured import structure_answer
 from src.tools import ALL_TOOLS
 from src.verify import (
     feedback_message,
@@ -63,7 +71,8 @@ class ToolError(TypedDict):
 # ======================================================================
 
 # 도구 호출이 끝없이 반복되지 않도록 그래프 단계 수를 제한한다
-RECURSION_LIMIT = 40
+# create_agent 서브그래프는 미들웨어 훅도 단계로 세므로 넉넉히 둔다
+RECURSION_LIMIT = 100
 # 평가용으로 남기는 도구 결과의 최대 길이(도구 호출 1회당).
 # fetch_page 본문(최대 8000자)과 JSON 포장을 모두 담도록 넉넉히 둔다.
 # 4000자로 자르던 때 판정기가 잘린 뒤쪽의 근거를 보지 못해 '지어냄'으로 오판한 일이 있었다.
@@ -74,13 +83,23 @@ TOOL_RESULT_CHARS = 9000
 MAX_REWRITES = 1
 
 
+# create_agent 안에서 LLM을 부르는 노드 이름. 스트리밍에서 이 노드의 글자만 화면에 보낸다
+MODEL_NODE = "model"
+
+
+@lru_cache
+def build_react_agent():
+    """도구 호출(ReAct) 에이전트: bind_tools와 도구 실행 반복은 create_agent가 맡는다."""
+    return create_agent(
+        model=get_llm(),
+        tools=ALL_TOOLS,
+        middleware=[*build_guard_middleware(), *build_agent_middleware()],
+        name="runtrip_agent",
+    )
+
+
 @lru_cache
 def build_graph():
-    llm = get_llm().bind_tools(ALL_TOOLS)
-
-    def agent_node(state: AgentState) -> dict[str, list[BaseMessage]]:
-        messages = [SystemMessage(build_system_prompt()), *state["messages"]]
-        return {"messages": [llm.invoke(messages)]}
 
     def verify_node(state: AgentState) -> dict[str, Any]:
         messages = state["messages"]
@@ -93,7 +112,11 @@ def build_graph():
             return {
                 "rewrites": rewrites + 1,
                 "verification": log,
-                "messages": [HumanMessage(feedback_message(unverified))],
+                "messages": [
+                    HumanMessage(
+                        feedback_message(unverified), additional_kwargs={"from_verifier": True}
+                    )
+                ],
             }
         text = _text(answer_msg)
         if unverified:
@@ -118,12 +141,10 @@ def build_graph():
         return "agent" if isinstance(state["messages"][-1], HumanMessage) else END
 
     graph = StateGraph(AgentState)
-    graph.add_node("agent", agent_node)
-    graph.add_node("tools", ToolNode(ALL_TOOLS))
+    graph.add_node("agent", build_react_agent())
     graph.add_node("verify", verify_node)
     graph.add_edge(START, "agent")
-    graph.add_conditional_edges("agent", tools_condition, {"tools": "tools", END: "verify"})
-    graph.add_edge("tools", "agent")
+    graph.add_edge("agent", "verify")
     graph.add_conditional_edges("verify", after_verify, {"agent": "agent", END: END})
     return graph.compile()
 
@@ -152,10 +173,14 @@ def run_agent(history: list[dict[str, str]]) -> dict[str, Any]:
         tool_calls: 호출한 도구 이름과 인자 목록
         tool_results: 도구가 돌려준 결과 (앞부분만). 평가 루프에서 답변이 도구 결과에 근거했는지 판정하는 데 쓴다
         tool_errors: 도구 오류 목록 (외부 장애 구분용)
+        guardrail: 가린 개인정보 종류, 프롬프트 인젝션 차단 여부
+        structured: 최종 답변의 구조화 출력 (TripAnswer dict, 실패하면 None)
     """
     messages = _to_messages(history)
     result = build_graph().invoke(_initial_state(messages), {"recursion_limit": RECURSION_LIMIT})
-    return _summarize(result, len(messages))
+    summary = _summarize(result, len(messages))
+    summary["structured"] = structure_answer(_last_question(history), summary["answer"])
+    return summary
 
 
 def stream_agent(history: list[dict[str, str]]) -> Iterator[dict[str, Any]]:
@@ -165,34 +190,41 @@ def stream_agent(history: list[dict[str, str]]) -> Iterator[dict[str, Any]]:
         {"type": "token", "text": ...}   agent 노드가 쓰는 글자 조각
         {"type": "tools", "names": [...]} agent가 도구를 부르기로 했다. 그 전에 흘려보낸 글자는 중간 생각이므로 화면에서 지운다
         {"type": "rewrite"}               출력 검증이 근거 없는 링크를 찾아 다시 쓰게 했다. 화면의 글자를 지운다
-        {"type": "done", ...}             출력 검증까지 마친 최종 결과 (answer, tool_calls, tool_errors)
+        {"type": "done", ...}             출력 검증까지 마친 최종 결과 (answer, tool_calls, tool_errors, guardrail)
+        {"type": "structured", "data": ...} 최종 답변의 구조화 출력 (done 뒤에 온다. 실패하면 data는 None)
     """
     messages = _to_messages(history)
     final_state: dict[str, Any] | None = None
-    for mode, payload in build_graph().stream(
+    # subgraphs=True: create_agent 서브그래프 안의 모델 글자와 도구 호출도 받는다
+    for namespace, mode, payload in build_graph().stream(
         _initial_state(messages),
         {"recursion_limit": RECURSION_LIMIT},
         stream_mode=["messages", "updates", "values"],
+        subgraphs=True,
     ):
         if mode == "messages":
             chunk, meta = payload
-            if meta.get("langgraph_node") == "agent" and isinstance(chunk, AIMessageChunk):
+            # 요약 체인 같은 다른 LLM 호출의 글자는 보내지 않는다
+            if meta.get("langgraph_node") == MODEL_NODE and isinstance(chunk, AIMessageChunk):
                 text = _text(chunk)
                 if text:
                     yield {"type": "token", "text": text}
         elif mode == "updates":
             for node, update in (payload or {}).items():
-                new = (update or {}).get("messages") or []
+                new = (update.get("messages") or []) if isinstance(update, dict) else []
                 if (
-                    node == "agent"
+                    namespace
+                    and node == MODEL_NODE
                     and new
                     and isinstance(new[-1], AIMessage)
                     and new[-1].tool_calls
                 ):
                     yield {"type": "tools", "names": [c["name"] for c in new[-1].tool_calls]}
-                elif node == "verify" and new and isinstance(new[-1], HumanMessage):
+                elif (
+                    not namespace and node == "verify" and new and isinstance(new[-1], HumanMessage)
+                ):
                     yield {"type": "rewrite"}
-        elif mode == "values":
+        elif mode == "values" and not namespace:
             final_state = payload
     if final_state is None:
         raise RuntimeError("에이전트가 결과 없이 끝났다.")
@@ -202,6 +234,11 @@ def stream_agent(history: list[dict[str, str]]) -> Iterator[dict[str, Any]]:
         "answer": result["answer"],
         "tool_calls": result["tool_calls"],
         "tool_errors": result["tool_errors"],
+        "guardrail": result["guardrail"],
+    }
+    yield {
+        "type": "structured",
+        "data": structure_answer(_last_question(history), result["answer"]),
     }
 
 
@@ -213,6 +250,10 @@ def _to_messages(history: list[dict[str, str]]) -> list[BaseMessage]:
         else AIMessage(m["content"], additional_kwargs={"from_history": True})
         for m in history
     ]
+
+
+def _last_question(history: list[dict[str, str]]) -> str:
+    return next((m["content"] for m in reversed(history) if m["role"] == "user"), "")
 
 
 def _initial_state(messages: list[BaseMessage]) -> dict[str, Any]:
@@ -238,7 +279,23 @@ def _summarize(result: dict[str, Any], n_input: int) -> dict[str, Any]:
         "tool_errors": _tool_errors(new_messages),
         # history: 검증할 때마다 찾은 근거 없는 링크, stripped: 끝까지 남아 코드로 지운 링크
         "verification": result.get("verification", {}),
+        "guardrail": _guardrail_log(result["messages"], new_messages),
     }
+
+
+def _guardrail_log(messages: list[BaseMessage], new_messages: list[BaseMessage]) -> dict[str, Any]:
+    """가드레일이 한 일: 사용자 메시지에서 가린 개인정보 종류, 인젝션 차단 여부."""
+    masked = sorted(
+        {
+            kind
+            for m in messages
+            if isinstance(m, HumanMessage)
+            for kind, token in MASKS.items()
+            if token in _text(m)
+        }
+    )
+    blocked = any(isinstance(m, AIMessage) and m.name == "input_guard" for m in new_messages)
+    return {"masked_input": masked, "injection_blocked": blocked}
 
 
 def _tool_errors(messages: list[BaseMessage]) -> list[dict[str, str]]:

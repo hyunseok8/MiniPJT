@@ -1,10 +1,22 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { streamChat, type ChatMessage, type StreamEvent, type ToolCall } from "./api";
+import {
+  streamChat,
+  type ChatMessage,
+  type Guardrail,
+  type StreamEvent,
+  type StructuredAnswer,
+  type ToolCall,
+} from "./api";
 
 interface DisplayMessage extends ChatMessage {
+  // 답변 말풍선 번호. 답변이 끝난 뒤 늦게 오는 구조화 결과를 이 번호로 찾아 붙인다
+  id?: number;
   toolCalls?: ToolCall[];
+  guardrail?: Guardrail;
+  // 최종 답변의 구조화 출력 (done 뒤에 따로 온다)
+  structured?: StructuredAnswer | null;
   // 답변이 아직 만들어지는 중이면 true. 글자가 타자 치듯 이어 붙는다
   streaming?: boolean;
   // 글자가 나오기 전에 보여 주는 진행 상황 (예: "대회 검색 중")
@@ -12,6 +24,13 @@ interface DisplayMessage extends ChatMessage {
 }
 
 // 도구 이름 → 진행 상황 문구
+const PII_LABELS: Record<string, string> = {
+  card: "카드번호",
+  rrn: "주민등록번호",
+  phone: "전화번호",
+  email: "이메일",
+};
+
 const TOOL_LABELS: Record<string, string> = {
   search_races: "대회 검색",
   search_web: "웹 검색",
@@ -81,6 +100,9 @@ export default function App() {
   // 새 대화를 시작하면 값이 바뀐다. 이전 대화에서 보낸 요청의 응답이 늦게 오면 버린다
   const conversationId = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
+  const nextMessageId = useRef(1);
+  // 지금 답을 기다리는 요청의 답변 번호. 끝난 요청이 늦게 loading을 끄지 않게 한다
+  const activeRequest = useRef<number | null>(null);
   const highlightTimer = useRef<number | undefined>(undefined);
 
   const questions = messages
@@ -112,36 +134,43 @@ export default function App() {
     }
   }, [theme]);
 
-  // 만들어지는 중인 답변(마지막 메시지)을 고친다
-  function updateDraft(patch: (draft: DisplayMessage) => DisplayMessage) {
-    setMessages((list) => {
-      const last = list[list.length - 1];
-      if (!last || last.role !== "assistant" || !last.streaming) return list;
-      return [...list.slice(0, -1), patch(last)];
-    });
+  // 번호로 찾은 답변 말풍선을 고친다
+  function updateMessage(id: number, patch: (m: DisplayMessage) => DisplayMessage) {
+    setMessages((list) => list.map((m) => (m.id === id ? patch(m) : m)));
   }
 
-  function onStreamEvent(event: StreamEvent) {
+  function finishRequest(id: number) {
+    if (activeRequest.current !== id) return;
+    activeRequest.current = null;
+    setLoading(false);
+  }
+
+  function onStreamEvent(event: StreamEvent, id: number) {
     switch (event.type) {
       case "token":
-        updateDraft((d) => ({ ...d, content: d.content + event.text, status: undefined }));
+        updateMessage(id, (d) => ({ ...d, content: d.content + event.text, status: undefined }));
         break;
       case "tools":
         // 도구를 부르기 전에 쓴 글자는 중간 생각이라 지우고, 지금 하는 일을 보여 준다
-        updateDraft((d) => ({ ...d, content: "", status: toolStatus(event.names) }));
+        updateMessage(id, (d) => ({ ...d, content: "", status: toolStatus(event.names) }));
         break;
       case "rewrite":
-        updateDraft((d) => ({ ...d, content: "", status: "출처를 다시 확인하는 중" }));
+        updateMessage(id, (d) => ({ ...d, content: "", status: "출처를 다시 확인하는 중" }));
         break;
       case "done":
-        // 출력 검증까지 마친 최종 답변으로 바꿔 끼운다
-        updateDraft((d) => ({
+        // 출력 검증까지 마친 최종 답변으로 바꿔 끼운다. 구조화 결과를 기다리지 않고 다음 질문을 받는다
+        updateMessage(id, (d) => ({
           ...d,
           content: event.answer,
           toolCalls: event.tool_calls,
+          guardrail: event.guardrail,
           streaming: false,
           status: undefined,
         }));
+        finishRequest(id);
+        break;
+      case "structured":
+        updateMessage(id, (d) => ({ ...d, structured: event.data }));
         break;
       case "error":
         throw new Error(event.message);
@@ -156,14 +185,16 @@ export default function App() {
       ...completedMessages(messages).map(({ role, content }) => ({ role, content })),
       { role: "user", content: question },
     ];
+    const draftId = nextMessageId.current++;
     setMessages((list) => [
       ...list.filter((m) => !(m.role === "assistant" && !m.content.trim())),
       { role: "user", content: question },
-      { role: "assistant", content: "", streaming: true, status: "질문을 살펴보는 중" },
+      { id: draftId, role: "assistant", content: "", streaming: true, status: "질문을 살펴보는 중" },
     ]);
     setInput("");
     setError(null);
     setLoading(true);
+    activeRequest.current = draftId;
     const id = conversationId.current;
     const controller = new AbortController();
     abortRef.current = controller;
@@ -171,7 +202,7 @@ export default function App() {
       await streamChat(
         history,
         (event) => {
-          if (id === conversationId.current) onStreamEvent(event);
+          if (id === conversationId.current) onStreamEvent(event, draftId);
         },
         controller.signal,
       );
@@ -179,14 +210,11 @@ export default function App() {
       if (id !== conversationId.current) return;
       setError(e instanceof Error ? e.message : String(e));
       // 답을 다 받지 못했으면 만들던 답변을 지운다
-      setMessages((list) => {
-        const last = list[list.length - 1];
-        return last?.role === "assistant" && last.streaming ? list.slice(0, -1) : list;
-      });
+      setMessages((list) => list.filter((m) => !(m.id === draftId && m.streaming)));
     } finally {
       if (id === conversationId.current) {
-        setLoading(false);
-        abortRef.current = null;
+        finishRequest(draftId);
+        if (abortRef.current === controller) abortRef.current = null;
       }
     }
   }
@@ -349,6 +377,12 @@ export default function App() {
                       {m.content}
                     </ReactMarkdown>
                   </div>
+                  {m.guardrail && m.guardrail.masked_input.length > 0 && (
+                    <p className="guard-note">
+                      🔒 입력의 {m.guardrail.masked_input.map((k) => PII_LABELS[k] ?? k).join(", ")}을(를) 가리고
+                      처리했어요.
+                    </p>
+                  )}
                   {m.toolCalls && m.toolCalls.length > 0 && (
                     <details className="tools">
                       <summary>사용한 도구 {m.toolCalls.length}개</summary>
@@ -359,6 +393,12 @@ export default function App() {
                           </li>
                         ))}
                       </ul>
+                    </details>
+                  )}
+                  {m.structured && (
+                    <details className="tools">
+                      <summary>구조화 결과 (JSON)</summary>
+                      <pre className="structured">{JSON.stringify(m.structured, null, 2)}</pre>
                     </details>
                   )}
                 </>
