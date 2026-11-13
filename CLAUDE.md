@@ -9,7 +9,7 @@
 |------|------|------|------|
 | 언어 | Python, TypeScript | Python 3.12 (`.python-version`, 3.14 미지원) | 백엔드는 Python, 프론트엔드는 TypeScript. RAGAS의 의존성(`scikit-network`)이 Python 3.14용으로 배포되지 않아 3.12로 고정했다 |
 | 에이전트 프레임워크 | LangGraph | 1.2 | 도구 호출 흐름을 그래프로 구성 |
-| LLM | Claude Sonnet 4.5 (Amazon Bedrock, us-west-2, global 교차 추론) | `global.anthropic.claude-sonnet-4-5-20250929-v1:0` | `langchain-aws`로 연결. 모델 ID와 리전은 `.env`의 `BEDROCK_MODEL_ID`, `AWS_DEFAULT_REGION`. 평가 판정기도 같은 모델을 쓴다(`JUDGE_MODEL_ID`가 비어 있을 때). 아래 "모델 선택 기록" 참고 |
+| LLM | Claude Sonnet 4.5 (Amazon Bedrock, us-west-2, us 교차 추론) | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` | `langchain-aws`로 연결. 모델 ID와 리전은 `.env`의 `BEDROCK_MODEL_ID`, `AWS_DEFAULT_REGION`. 평가 판정기도 같은 모델을 쓴다(`JUDGE_MODEL_ID`가 비어 있을 때). 아래 "모델 선택 기록" 참고 |
 | 백엔드 | FastAPI | | 웹 채팅 API 제공 (`/api/chat`, `/api/chat/stream`, `/api/health`) |
 | 프론트엔드 | React + Vite | React 19, Vite 8 | 웹 채팅 화면. 답변 마크다운은 `react-markdown` + `remark-gfm`으로 표시 |
 | 웹 검색 | DuckDuckGo (`ddgs`) | | 무료, 키 불필요. 페이지 본문은 직접 받아 `beautifulsoup4`로 추출 |
@@ -27,7 +27,7 @@
 |------|------|------|
 | Claude Sonnet 4.6 (`global.anthropic.claude-sonnet-4-6`, us-east-1) | 문항 수정 전 12건 58%, 수정 후 실패 5건 재실행 5/5 | 품질은 좋았으나 계정의 하루 토큰 한도(`ThrottlingException: Too many tokens per day`)에 걸려 더 쓸 수 없었다 |
 | Claude Haiku 4.5 (us-west-2) | 12건 자동 75% | 기간 해석을 틀리고, 없는 대회를 비슷한 대회 정보로 채웠다. **판정기로 쓰면 이런 위반을 놓친다.** 판정기로 쓰지 않는다 |
-| **Claude Sonnet 4.5 (us-west-2)** | 12건 83%, 이후 보정 뒤 실패 문항 재실행 모두 통과. 2026-11-12에 `us.` 프로필이 하루 토큰 한도에 걸려 같은 모델의 `global.` 프로필로 바꿈(12건 83%) | 지금 쓰는 모델 (`global.` 프로필) |
+| **Claude Sonnet 4.5 (us-west-2)** | 12건 83%, 이후 보정 뒤 실패 문항 재실행 모두 통과. 2026-11-12에 `us.` 프로필이 하루 토큰 한도에 걸려 같은 모델의 `global.` 프로필로 바꿈(12건 83%, 92%). 2026-11-13에 `global.` 프로필도 한도에 걸려 다시 `us.` 프로필로 바꿈 | 지금 쓰는 모델 (`us.` 프로필). 한 프로필이 하루 한도에 걸리면 다른 프로필로 바꿔 쓴다 |
 
 ## 폴더 구조
 

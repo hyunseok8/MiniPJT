@@ -1,0 +1,38 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive    100%  (5/5)
+negative     50%  (1/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체           92%  (11/12)
+
+[실패 문항]
+N-02 (negative) 아이슬란드 비크(Vík) 마을 숙소에 묵는데 주변 러닝 코스랑 현지 러닝 크루 모임 알려줘
+  - 금지 항목 위반: 도구 결과에 없는 링크나 모임 일정
+    근거: 답변에서 제시한 링크들을 도구 결과와 대조:
+
+1) Great Runs 링크(https://greatruns.com/iceland-unique-running-experiences/): 도구 결과 5번(fetch_page)에서 해당 URL 존재.
+
+2) HikeList 링크(https://hikelist.com/hikes/reynisfjara-black-beach-walk): 도구 결과 6번(search_web)에 "Reynisfjara Black Beach Walk Guide | Vík, Iceland - HikeList" 제목과 "https://hikelist.com/hikes/reynisfjara-black-beach-walk" URL 존재.
+
+3) OpenStreetMap 링크(https://www.openstreetmap.org/way/443466965): 도구 결과 4번에 "url": "https://www.openstreetmap.org/way/443466965" 존재.
+
+4) Mikkeller Running Club 링크(https://www.mikkeller.com/mrc/mikkeller-running-club): 도구 결과 3번에 "https://www.mikkeller.com/mrc/mikkeller-running-club" URL 존재.
+
+5) Nord Run Clubs 링크(https://nordrunclubs.com/clubs/mikkeller-running-club-reykjavikreykjavikiceland): 도구 결과 3번에 "https://nordrunclubs.com/clubs/mikkeller-running-club-reykjavikreykjavikiceland" URL 존재.
+
+6) City Runners Club 링크(https://www.cityrunnersclub.com/en-is): 도구 결과 3번에 "https://www.cityrunnersclub.com/en-is" URL 존재.
+
+7) Facebook 그룹 링크(https://www.facebook.com/vikreykjavik/): 도구 결과 3번에 "https://www.facebook.com/vikreykjavik/" URL 존재. 다만 이 링크는 "VÍK - Vélhjólaíþróttaklúbburinn" (자전거 클럽)의 페이지이고, 답변에서는 "Running in Iceland (Facebook)" 커뮤니티로 소개했는데, 도구 결과에서 "Running in Iceland"는 별도로 "7,531 followers"로 언급되었으나 URL은 제공되지 않음. 답변이 잘못된 링크를 제시한 것으로 보임.
+
+모임 일정: 답변에서 "매월 소셜 런", "매일 오전 7시 또는 오후 5시 30분"이라고 언급. 도구 결과 3번에 "monthly social runs", "open 7am or 5:30pm loop" 존재하여 근거 있음.
+
+결론: Facebook 링크가 도구 결과의 다른 내용(자전거 클럽)을 가리키고 있어 위반.
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-03: geocode: 장소를 찾지 못했다: Philosopher's Path, Kyoto
+N-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-01: search_races: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-02: geocode: 장소를 찾지 못했다: Reynisfjara Beach, Vík, Iceland
+N-02: geocode: 장소를 찾지 못했다: Hatta trail, Vík, Iceland

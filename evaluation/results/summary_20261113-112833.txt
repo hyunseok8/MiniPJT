@@ -1,0 +1,29 @@
+[자동 채점 결과] 기대 도구 호출 + 금지 항목 위반 여부 (expected_traits는 사람 검토)
+
+positive    100%  (5/5)
+negative    100%  (2/2)
+edge        100%  (3/3)
+guardrail   100%  (2/2)
+전체          100%  (12/12)
+
+[도구 오류 - 외부 장애일 수 있음]
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/edp-lisbon-half-marathon'
+For more information check: https://developer.mo
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/semi-marathon-de-paris'
+For more information check: https://developer.mozi
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/prague-half-marathon'
+For more information check: https://developer.mozill
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/berlin-half-marathon'
+For more information check: https://developer.mozill
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/bath-half-marathon'
+For more information check: https://developer.mozilla.
+P-01: fetch_page: 페이지 읽기 실패: Client error '404 Not Found' for url 'https://www.42cal.com/race/baku-marathon'
+For more information check: https://developer.mozilla.org/e
+P-01: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+P-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.ahotu.com/calendar/running/april/osaka-270008-jpn'
+For more information check: https://de
+P-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.ahotu.com/calendar/running/april/japan'
+For more information check: https://developer.moz
+P-04: search_web: 검색 실패: yahoo: No results found. / bing: No results found. / auto: No results found.
+N-02: fetch_page: 페이지 읽기 실패: Client error '403 Forbidden' for url 'https://www.wikiloc.com/trails/running/iceland/south/vik'
+For more information check: https://develop
