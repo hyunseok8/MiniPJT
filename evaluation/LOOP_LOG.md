@@ -32,6 +32,10 @@
 
 **그 뒤 구조 변경 (2026-11-12, 평가 미실행):** Python 코드를 `backend/`, `evals/*.py`, `evaluation/run_csv.py`에서 `src/` 아래 도메인별 폴더로 옮겼다(CLAUDE.md "src 폴더 구조"). 동작이 같은지 코드로 확인했다: 시스템 프롬프트 전문, 도구 10개의 이름·설명·인자 스키마, 출력 검증 함수 결과, 판정 프롬프트와 출력 스키마가 옮기기 전과 글자 단위로 같다. 실행 명령은 `uv run python -m src.evaluation.run_csv`로 바뀌었다.
 
+**그 뒤 구조 변경 (2026-11-13, 평가 미실행):** 과제 필수 산출물 구조에 맞춰 `src/` 도메인 폴더를 `src/agent.py`, `src/tools.py`, `src/retriever.py` 등 평평한 파일로 다시 합쳤다. 목업 항공권·숙소 기준값은 `data/mock_travel.json`으로 옮겼고, 보조 세트는 `evaluation/regression/`으로 옮겼다. 시스템 프롬프트 전문, 도구 10개 스키마, 출력 검증 결과, 판정기, 목업 도구 결과가 옮기기 전과 글자 단위로 같다. 실행 명령은 `uv run python -m src.evaluate`. 1차·2차 평가 정리는 `round1_report.md`, `round2_report.md`.
+
+**RAGAS 측정 (2026-11-13):** 2차 2회차 실행(`run_20261112-145306.json`)으로 `uv run python -m src.ragas_eval`을 돌렸다. 도구 결과가 있는 8문항 기준 context_recall 0.86, context_precision 0.94, faithfulness 0.77, answer_relevancy 0.54(회피성 판정 2문항 제외 0.71). 기본 설정으로 처음 돌렸을 때는 faithfulness 3문항이 시간 초과로 계산 실패, answer_relevancy는 영어로 만든 질문 때문에 낮게, context_precision은 비교 질문의 한쪽 자료를 0으로 판정했다. 원문을 확인한 뒤 판정을 나누고 지시 한 줄씩을 덧붙여 다시 돌렸다(README "RAGAS 평가 결과"). 첫 결과 파일은 지웠다. 결과: `results/ragas_20261113-101736.json`. RAGAS 설치 때문에 Python을 3.12로 고정했다.
+
 **이전 상태 (속도 개선 뒤):** ✅ 완성 기준 충족 (연속 2회 83%, 92%, 가드레일 100%). 전체 실행 시간은 절반 이하로 줄었다.
 
 **이전 상태 (2026-11-11):** ✅ 완성 기준 충족. 코드를 바꾸지 않은 상태로 12건 전체를 연속 2회 실행해 100%, 92%(기준 80%), 가드레일 모두 100%. 남은 일: review CSV에서 기대 특성 사람 검토.

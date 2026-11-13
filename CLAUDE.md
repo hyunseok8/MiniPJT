@@ -7,7 +7,7 @@
 
 | 구분 | 선택 | 버전 | 비고 |
 |------|------|------|------|
-| 언어 | Python, TypeScript | Python 3.12 이상 | 백엔드는 Python, 프론트엔드는 TypeScript |
+| 언어 | Python, TypeScript | Python 3.12 (`.python-version`, 3.14 미지원) | 백엔드는 Python, 프론트엔드는 TypeScript. RAGAS의 의존성(`scikit-network`)이 Python 3.14용으로 배포되지 않아 3.12로 고정했다 |
 | 에이전트 프레임워크 | LangGraph | 1.2 | 도구 호출 흐름을 그래프로 구성 |
 | LLM | Claude Sonnet 4.5 (Amazon Bedrock, us-west-2, global 교차 추론) | `global.anthropic.claude-sonnet-4-5-20250929-v1:0` | `langchain-aws`로 연결. 모델 ID와 리전은 `.env`의 `BEDROCK_MODEL_ID`, `AWS_DEFAULT_REGION`. 평가 판정기도 같은 모델을 쓴다(`JUDGE_MODEL_ID`가 비어 있을 때). 아래 "모델 선택 기록" 참고 |
 | 백엔드 | FastAPI | | 웹 채팅 API 제공 (`/api/chat`, `/api/chat/stream`, `/api/health`) |
@@ -15,10 +15,10 @@
 | 웹 검색 | DuckDuckGo (`ddgs`) | | 무료, 키 불필요. 페이지 본문은 직접 받아 `beautifulsoup4`로 추출 |
 | 러닝 코스 | OpenStreetMap Overpass API | | 무료, 키 불필요. 인기 코스는 웹 검색으로 찾는다 |
 | 지도, 고도, 날씨 | OpenStreetMap Nominatim, Open-Meteo | | 무료 API, 키 불필요 |
-| 항공권, 숙소 | 목업 | | `src/travel/tools.py` |
+| 항공권, 숙소 | 목업 | | `src/tools.py`, 기준값은 `data/mock_travel.json` |
 | 데이터베이스 | 없음 | | 대화와 사용자 위치를 저장하지 않는다 (SERVICE.md 정책 4) |
 | 패키지 관리 | uv (Python), npm (프론트엔드) | | |
-| 테스트 | 평가 루프 (공식: `evaluation/`, 보조: `evals/`) | | 아래 "평가 루프" 참고 |
+| 테스트 | 평가 루프 (공식: `evaluation/test_queries.csv`, 보조: `evaluation/regression/`), RAGAS | ragas 0.4 | 아래 "평가 루프", "RAGAS 평가" 참고. RAGAS 임베딩은 Bedrock Titan Text Embeddings V2 |
 | 배포 | 로컬 실행 | | 개인용이라 배포하지 않는다 |
 
 ### 모델 선택 기록 (2026-11-11)
@@ -31,101 +31,90 @@
 
 ## 폴더 구조
 
+과제의 필수 산출물 구조를 따른다. 최상위 폴더 이름(제출 시 `mini-pjt_{본인이름}`)은 제출할 때 바꾼다.
+
 ```
 miniPJT/
-├── SERVICE.md              # 무엇을, 왜 만드는가
-├── CLAUDE.md               # 어떻게 만드는가 (이 문서)
-├── test_queries.json       # 보조 회귀 세트 24건 (src/evaluation/run_json.py가 읽는다)
-├── pyproject.toml          # Python 의존성 (uv)
-├── .env.example            # 환경 변수 견본. 복사해서 .env로 쓴다
-├── src/                    # ★ 모든 Python 소스. 도메인(기능)별 폴더. 아래 "src 폴더 구조" 참고
-├── evaluation/             # 공식 평가 데이터 (코드는 src/evaluation/)
-│   ├── test_queries.csv    # 공식 인-아웃 세트 12건 (positive, negative, edge, guardrail)
-│   ├── LOOP_LOG.md         # 실행과 수정 기록
-│   └── results/            # 채점 결과 (summary, review CSV, run JSON)
-├── evals/                  # 보조 평가 데이터 (코드는 src/evaluation/)
-│   ├── LOOP_LOG.md         # 보조 세트 반복 기록 (자동)
-│   └── runs/               # 보조 세트 반복별 결과 (iter_001.json ...)
-└── frontend/               # React + Vite 웹 채팅 화면 (npm 프로젝트라 src/ 밖에 둔다)
-    └── src/
-        ├── App.tsx         # 채팅 화면 (스트리밍 답변, 예시, 이전 대화, 질문 목록)
-        └── api.ts          # /api/chat/stream 호출
+├── src/                        # 소스 코드 (아래 "src 구조")
+├── data/                       # 사용한 데이터: 목업 항공권·숙소 기준값(mock_travel.json)과 데이터 출처 설명
+├── evaluation/
+│   ├── test_queries.csv        # ★ 공식 인-아웃 세트 12건 (자체 평가·최종 채점의 기준)
+│   ├── round1_report.md        # 1차 자체 평가 결과
+│   ├── round2_report.md        # 2차 자체 평가 결과 (개선 후)
+│   ├── LOOP_LOG.md             # 평가 실행과 수정 기록 (실행할 때마다 한 줄)
+│   ├── results/                # 채점 결과 (summary, review CSV, run JSON)
+│   └── regression/             # 보조 회귀 세트: test_queries.json(24건), LOOP_LOG.md, runs/
+├── frontend/                   # React + Vite 웹 채팅 화면 (npm 프로젝트라 src/ 밖에 둔다)
+│   └── src/App.tsx, api.ts     # 채팅 화면, /api/chat/stream 호출
+├── SERVICE.md                  # 서비스 스펙: 무엇을, 왜 만드는가
+├── CLAUDE.md                   # 구현 규칙: 어떻게 만드는가 (이 문서)
+├── README.md                   # 제출용 소개 (과제 템플릿을 따른다)
+├── requirements.txt            # pip용 의존성 (uv.lock에서 생성, 아래 참고)
+├── pyproject.toml, uv.lock     # uv용 의존성 원본
+├── Dockerfile, .dockerignore   # 클린 환경 재현 (백엔드와 평가)
+├── run.sh                      # 실행 스크립트 (all | api | eval)
+└── .env.example                # 환경 변수 견본. 복사해서 .env로 쓴다
 ```
 
-## src 폴더 구조
+## src 구조
 
-기술 역할(utils, models 등)이 아니라 **에이전트의 도메인(기능) 단위**로 나눈다. 한 도메인의 실행 로직, 프롬프트, 입출력 스키마는 그 도메인 폴더 안에 함께 둔다.
+필수 산출물 구조에 맞춰 `src/` 바로 아래에 역할별 파일을 둔다. 하위 폴더를 만들지 않는다.
 
-```
-src/
-├── agent/                  # 에이전트 조율: 그래프, 공통 시스템 프롬프트, 도구 등록부
-│   ├── graph.py            # LangGraph 그래프(agent → tools → verify), run_agent(), stream_agent()
-│   ├── prompt.py           # 시스템 프롬프트 본문(정책, 기간 해석, 답변 형식). 기능별 조각을 합친다
-│   ├── schemas.py          # AgentState(그래프 상태), ToolCall, ToolError
-│   └── tools.py            # ALL_TOOLS: 각 도메인의 도구를 모은 등록부
-├── verification/           # 출력 검증 (LLM을 부르지 않는 코드 검사)
-│   ├── checks.py           # 근거 없는 링크, 진행 멘트, 고저차 칸, 기간 밖 날짜 검사와 보정
-│   └── prompt.py           # 근거 없는 링크를 찾았을 때 agent에게 다시 쓰게 하는 메시지
-├── races/                  # 기능 A: 해외 마라톤 대회 찾기
-│   ├── tools.py            # search_races
-│   └── prompt.py           # 시스템 프롬프트의 "기능 A" 조각
-├── routes/                 # 기능 B: 숙소 근처 러닝 코스 찾기
-│   ├── tools.py            # find_running_routes (OpenStreetMap Overpass), search_popular_routes
-│   └── prompt.py           # 시스템 프롬프트의 "기능 B" 조각
-├── travel/tools.py         # search_flights, search_hotels (목업)
-├── places/tools.py         # geocode (Nominatim), get_elevation (Open-Meteo)
-├── weather/tools.py        # get_weather (Open-Meteo 평년 날씨)
-├── search/tools.py         # search_web, fetch_page, ddg_search (DuckDuckGo). races, routes도 이것을 쓴다
-├── api/                    # 웹 채팅 API
-│   ├── app.py              # FastAPI: /api/health, /api/chat, /api/chat/stream
-│   └── schemas.py          # ChatMessage, ChatRequest, ChatResponse
-├── evaluation/             # 평가 루프 코드 (데이터와 결과는 루트의 evaluation/, evals/)
-│   ├── run_csv.py          # 공식 채점기: 기대 도구 + 금지 항목 자동 채점
-│   ├── run_json.py         # 보조 세트(test_queries.json) 반복 루프 실행기
-│   ├── judge.py            # LLM 판정기 실행 로직
-│   ├── prompt.py           # 판정 프롬프트 (바꿀 때는 사용자 확인)
-│   └── schemas.py          # ItemVerdict, JudgeResult
-└── shared/                 # 여러 도메인이 함께 쓰는 것만
-    ├── config.py           # .env 설정 (ROOT_DIR, get_settings)
-    ├── llm.py              # Bedrock Claude 클라이언트 (get_llm, LLMConfigError)
-    └── http.py             # HTTP 클라이언트(User-Agent, 제한 시간), 도구 오류 형식 error()
-```
+| 파일 | 역할 |
+|------|------|
+| `agent.py` | **메인 에이전트 그래프.** LangGraph `agent → tools → verify` 그래프, 상태(`AgentState`), `run_agent()`(평가, `/api/chat`), `stream_agent()`(웹 화면 스트리밍) |
+| `tools.py` | **도메인 도구.** 에이전트가 부르는 도구 10개의 구현과 등록부 `ALL_TOOLS`. 대회(`search_races`), 항공권·숙소(목업), 장소·고도, 러닝 코스, 날씨 |
+| `retriever.py` | **검색 기반 RAG 파이프라인.** DuckDuckGo 검색(`ddg_search`, `search_web`) → 공식 페이지 본문 읽기(`fetch_page`). 미리 모은 문서 대신 웹에서 근거를 가져온다 |
+| `prompts.py` | 시스템 프롬프트 (기능 A·B 안내, 기간 해석, 정책 1~5, 답변 형식) |
+| `verify.py` | 출력 검증 (LLM을 부르지 않는 코드 검사): 근거 없는 링크, 진행 멘트, 고저차 칸, 기간 밖 날짜 |
+| `api.py` | FastAPI 웹 채팅 API: `/api/health`, `/api/chat`, `/api/chat/stream` (요청·응답 스키마 포함) |
+| `llm.py` | Bedrock Claude 클라이언트 (`get_llm`, `LLMConfigError`) |
+| `config.py` | `.env` 설정 (`ROOT_DIR`, `get_settings`) |
+| `common.py` | 여러 도구가 함께 쓰는 HTTP 클라이언트와 도구 오류 형식 `error()` |
+| `evaluate.py` | 공식 채점기: CSV 12문항 실행, 기대 도구 + 금지 항목 자동 채점 |
+| `evaluate_regression.py` | 보조 회귀 세트(24건) 반복 루프 실행기 |
+| `judge.py` | LLM 판정기 (판정 프롬프트, 출력 스키마, 실행). 판정 프롬프트는 사용자 확인 후에만 고친다 |
+| `ragas_eval.py` | RAGAS 4개 지표 계산. 공식 평가 결과(`run_*.json`)의 질문·답변·도구 결과를 쓰고, 기준 정보 항목은 `evaluation/ragas_references.csv` |
 
 ### 파일 배치 규칙
 
-- **도메인 폴더의 파일 이름은 정해져 있다.** 필요한 것만 만든다.
-  - `tools.py`: LangChain `@tool` 도구와 그 구현. 도구의 docstring이 LLM에게 주는 설명(프롬프트)이고, 인자 타입이 입력 스키마다.
-  - `prompt.py`: 그 도메인의 프롬프트 템플릿이나 조각.
-  - `schemas.py`: 그 도메인의 입출력 타입(pydantic 모델, TypedDict).
-  - 그 밖의 실행 로직은 역할이 드러나는 이름으로 둔다 (예: `graph.py`, `checks.py`, `judge.py`, `app.py`).
-- **`shared/`에는 두 개 이상의 도메인이 실제로 쓰는 것만 둔다.** 한 도메인만 쓰는 함수는 그 도메인에 둔다 (예: `haversine_km`은 `routes/`, 목업용 `stable_int`는 `travel/`).
-- **도메인끼리는 서로의 `tools.py`를 가져다 쓸 수 있지만, `agent/`와 `api/`를 가져다 쓰지 않는다.** 의존 방향은 `api → agent → (verification, 도메인들) → shared`다. `evaluation/`은 `agent/`를 실행해 채점한다.
-- **새 도구를 추가할 때:** 알맞은 도메인의 `tools.py`에 만들고(없으면 새 도메인 폴더와 `__init__.py`를 만든다), `agent/tools.py`의 `ALL_TOOLS`와 SERVICE.md 3장 도구 표에 함께 넣는다. 기능 단위 안내가 필요하면 그 도메인의 `prompt.py`에 쓰고 `agent/prompt.py`에서 합친다.
-- **정책(가드레일)과 기간 해석 같은 공통 규칙은 `agent/prompt.py`에 둔다.** 기능별 조각에 정책을 따로 쓰지 않는다.
-- import는 항상 `src.`부터 쓰는 절대 경로로 쓴다 (예: `from src.shared.http import error`). 실행은 프로젝트 루트에서 `python -m src.…` 또는 `uvicorn src.api.app:app`으로 한다.
-- 평가 데이터(문항, 결과, 기록)는 `src/` 밖 루트의 `evaluation/`, `evals/`에 둔다. `src/`에는 코드만 둔다.
+- **새 도구는 `tools.py`에 추가한다.** 같은 파일의 `ALL_TOOLS`와 SERVICE.md 3장 도구 표에 함께 넣는다. 웹 검색·페이지 읽기처럼 근거 문서를 가져오는 기능은 `retriever.py`에 둔다.
+- **프롬프트는 `prompts.py`에 모은다.** 단, 도구 설명은 각 도구의 docstring이고, 판정 프롬프트는 `judge.py`, 다시 쓰기 요청 문구는 `verify.py`에 둔다.
+- **그래프의 노드와 흐름은 `agent.py`에서만 바꾼다.** 새 노드(조건 추출, 입력 분류 등)가 필요하면 `agent.py`에 추가한다.
+- **목업 기준값 같은 데이터는 `data/`에 둔다.** 코드에 값을 박아 넣지 않는다.
+- **평가 데이터(문항, 결과, 기록, 보고서)는 `evaluation/`에 둔다.** `src/`에는 코드만 둔다.
+- import는 `src.`부터 쓰는 절대 경로로 쓴다 (예: `from src.common import error`). 실행은 프로젝트 루트에서 `python -m src.…` 또는 `uvicorn src.api:app`으로 한다.
+- `requirements.txt`는 직접 고치지 않는다. 의존성은 `uv add`로 바꾸고 `uv export --no-dev --no-hashes --no-emit-project --format requirements-txt -o requirements.txt`로 다시 만든다.
 
 ## 실행 방법
 
 ```bash
-# 1. 설치
+# 1. 설치 (uv 권장. uv가 없으면 pip install -r requirements.txt)
 uv sync
 cd frontend && npm install && cd ..
 
 # 2. 환경 변수: .env.example을 .env로 복사한 뒤 값을 채운다
 cp .env.example .env
 
-# 3. 백엔드 실행 (http://localhost:8000)
-uv run uvicorn src.api.app:app --reload
+# 3. 한 번에 실행: 백엔드(:8000) + 웹 화면(:5173)
+./run.sh            # ./run.sh api (백엔드만), ./run.sh eval (공식 평가)
 
-# 4. 프론트엔드 실행 (http://localhost:5173, /api는 백엔드로 프록시)
-cd frontend && npm run dev
+# 3-1. 따로 실행할 때
+uv run uvicorn src.api:app --reload          # 백엔드 http://localhost:8000
+cd frontend && npm run dev                   # 웹 화면 http://localhost:5173 (/api는 백엔드로 프록시)
 
-# 5. 공식 평가: CSV 문항 채점 (아래 "평가 루프" 참고). 결과는 evaluation/results/
-uv run python -m src.evaluation.run_csv
+# 4. 공식 평가: CSV 12문항 채점 (아래 "평가 루프" 참고). 결과는 evaluation/results/
+uv run python -m src.evaluate
 
-# 6. 보조 평가: test_queries.json 24건 반복 루프. 결과는 evals/runs/
-uv run python -m src.evaluation.run_json
+# 5. 보조 평가: 회귀 세트 24건 반복 루프. 결과는 evaluation/regression/runs/
+uv run python -m src.evaluate_regression
+
+# 5-1. RAGAS: 최신(또는 --run으로 지정한) 공식 평가 결과로 4개 지표 계산. 결과는 evaluation/results/ragas_*.json
+uv run python -m src.ragas_eval --run evaluation/results/run_20261112-145306.json
+
+# 6. Docker (선택): 백엔드와 평가만 담는다
+docker build -t runtrip-agent .
+docker run --rm -p 8000:8000 --env-file .env runtrip-agent
 
 # 린트, 포맷
 uv run ruff check . && uv run ruff format .
@@ -144,7 +133,7 @@ uv run ruff check . && uv run ruff format .
 
 에이전트의 완성 여부는 **공식 인-아웃 세트 [evaluation/test_queries.csv](evaluation/test_queries.csv)** 를 반복 루프로 돌려서 판정한다. AI(Claude Code)는 이 루프를 직접 돌리면서 실패 원인을 찾아 코드를 고치고, 종료 조건을 만날 때까지 반복한다.
 
-루트의 [test_queries.json](test_queries.json)(24건)은 **보조 회귀 세트**다. 기능을 크게 바꿨을 때 더 넓게 확인하는 용도로 `src/evaluation/run_json.py`로 돌린다. 완성 판정에는 쓰지 않는다.
+[evaluation/regression/test_queries.json](evaluation/regression/test_queries.json)(24건)은 **보조 회귀 세트**다. 기능을 크게 바꿨을 때 더 넓게 확인하는 용도로 `src/evaluate_regression.py`로 돌린다. 완성 판정에는 쓰지 않는다.
 
 ### 인-아웃 세트 (공식)
 
@@ -158,7 +147,7 @@ uv run ruff check . && uv run ruff format .
 
 ### 반복 1회의 절차
 
-1. **실행·판정·집계:** `uv run python -m src.evaluation.run_csv`. 문항마다 에이전트를 실행하고 채점해서 카테고리별, 전체 통과율을 출력한다.
+1. **실행·판정·집계:** `uv run python -m src.evaluate`. 문항마다 에이전트를 실행하고 채점해서 카테고리별, 전체 통과율을 출력한다.
 2. **기록:** 결과는 `evaluation/results/`에 저장된다 (`summary_<시각>.txt`, `review_<시각>.csv`, `run_<시각>.json`). AI는 [evaluation/LOOP_LOG.md](evaluation/LOOP_LOG.md)에 한 줄을 덧붙인다: 시각, 범위, 모델, 결과, 이번 반복 전에 고친 내용.
 3. **사람 검토:** `review_<시각>.csv`의 "사람 판정" 칸에서 `expected_traits`를 확인한다.
 4. **종료 판단:** 아래 종료 조건을 확인한다. 끝나지 않았으면 5로 간다.
@@ -174,21 +163,21 @@ uv run ruff check . && uv run ruff format .
 | 조건 위반 | 기간 밖 대회, 종목이 다른 대회 포함 | 조건 추출 노드, 결과 필터링 로직 |
 | 되묻기 실패 | 모호한 입력에 말없이 임의로 가정 | 입력 분석 노드 |
 | 가드레일 위반 | 예약 대행, 날짜를 지어냄, 개인 연락처 제공 | 시스템 프롬프트 정책, 입력 분류 노드, 출력 검증 노드 |
-| 판정기 오판 | 기준을 만족했는데 실패로 판정, 근거와 판정이 엇갈림 | 판정 프롬프트(`src/evaluation/prompt.py`, 두 채점기가 함께 쓴다). 단, 사용자 확인을 받은 뒤에만 고친다 |
+| 판정기 오판 | 기준을 만족했는데 실패로 판정, 근거와 판정이 엇갈림 | 판정 프롬프트(`src/judge.py`, 두 채점기가 함께 쓴다). 단, 사용자 확인을 받은 뒤에만 고친다 |
 
-지금 그래프(`src/agent/graph.py`)는 `agent`, `tools`, `verify` 세 노드다. `verify`는 출력 검증 노드로, 최종 답변의 링크가 도구 결과에 실제로 나온 주소인지 코드로 확인한다(`src/verification/checks.py`). 근거 없는 링크가 있으면 agent에게 한 번 고쳐 쓰게 하고, 그래도 남으면 링크를 지우고 "(출처 확인 불가)"로 바꾼다. 마지막으로 프롬프트 규칙만으로는 반복해서 어긴 것들을 코드로 고친다:
+지금 그래프(`src/agent.py`)는 `agent`, `tools`, `verify` 세 노드다. `verify`는 출력 검증 노드로, 최종 답변의 링크가 도구 결과에 실제로 나온 주소인지 코드로 확인한다(`src/verify.py`). 근거 없는 링크가 있으면 agent에게 한 번 고쳐 쓰게 하고, 그래도 남으면 링크를 지우고 "(출처 확인 불가)"로 바꾼다. 마지막으로 프롬프트 규칙만으로는 반복해서 어긴 것들을 코드로 고친다:
 - 답변 첫 줄의 진행 멘트("모든 정보가 모였습니다", "비교해 드릴게요" 등)를 지운다.
 - 표의 "고저차" 칸에 숫자도 "확인 불가"도 없으면 "확인 불가 (출처 설명: …)"로 바꾼다.
 - 답변 첫 줄에 밝힌 기간(예: "2027년 3~5월") 밖의 날짜가 표에 있으면 그 날짜 옆에 "(요청 기간 밖)"을 붙인다.
 
-고친 내용은 결과의 `verification` 기록(`preamble_removed`, `elevation_fixed`, `out_of_range_marked`)에 남는다. 이 기록이 자주 나오면 프롬프트나 도구 쪽 원인을 함께 고친다. 표에 나온 다른 노드(조건 추출, 입력 분석, 입력 분류)가 필요해지면 그래프에 새로 추가한다. 공통 프롬프트는 `src/agent/prompt.py`, 기능별 프롬프트는 `src/races/prompt.py`, `src/routes/prompt.py`, 도구는 각 도메인의 `tools.py`에 있다.
+고친 내용은 결과의 `verification` 기록(`preamble_removed`, `elevation_fixed`, `out_of_range_marked`)에 남는다. 이 기록이 자주 나오면 프롬프트나 도구 쪽 원인을 함께 고친다. 표에 나온 다른 노드(조건 추출, 입력 분석, 입력 분류)가 필요해지면 그래프에 새로 추가한다. 프롬프트는 `src/prompts.py`, 도구는 `src/tools.py`와 `src/retriever.py`에 있다.
 
 ### 수정 규칙
 
 - **우선순위:** 가드레일 실패 → 회귀(전에 통과했다가 실패한 케이스) → 실패 케이스가 가장 많은 원인 순서로 고친다.
 - **작게 고친다:** 한 번의 반복에서는 원인 하나, 또는 서로 연관된 원인 몇 개만 고친다. 그래야 어떤 수정이 효과가 있었는지 알 수 있다.
 - **일반화해서 고친다:** 특정 `query` 문구를 감지해 정답을 하드코딩하지 않는다. 같은 유형의 다른 입력에도 통하는 수정만 한다.
-- **기준을 고쳐서 통과시키지 않는다:** 루프 중에는 `evaluation/test_queries.csv`(와 보조 세트 `test_queries.json`)의 문항, 기대 출력, 통과 기준을 수정하지 않는다. 문항 자체가 잘못됐다고 판단되면 루프를 멈추고, 근거와 함께 사용자에게 묻는다. 사용자가 승인한 문항 수정은 LOOP_LOG.md에 남긴다.
+- **기준을 고쳐서 통과시키지 않는다:** 루프 중에는 `evaluation/test_queries.csv`(와 보조 세트 `evaluation/regression/test_queries.json`)의 문항, 기대 출력, 통과 기준을 수정하지 않는다. 문항 자체가 잘못됐다고 판단되면 루프를 멈추고, 근거와 함께 사용자에게 묻는다. 사용자가 승인한 문항 수정은 LOOP_LOG.md에 남긴다.
 - **외부 장애는 코드 결함이 아니다:** API 키 없음, 호출 한도 초과, 외부 서비스 장애로 실패하면 코드를 고치지 않는다. 사용자에게 알리고, 목업으로 바꿀지 확인한다.
 - **기록을 남긴다:** 수정할 때마다 `evaluation/LOOP_LOG.md`에 "실패 문항 → 원인 → 고친 내용 → 다음 반복 결과"를 적는다.
 - **판정기를 그대로 믿지 않는다:** "지어냈다", "근거 없음" 판정은 도구 결과 원문으로 확인한 뒤 원인을 정한다. 판정기가 잘린 도구 결과만 보고 오판한 일이 있었다.
@@ -202,18 +191,36 @@ uv run ruff check . && uv run ruff format .
 
 ```bash
 # 공식: 12건 전체를 한 번 실행하고 채점한다 (15~25분)
-uv run python -m src.evaluation.run_csv
+uv run python -m src.evaluate
 
 # 디버깅용: 일부 문항만 (완성 판정에는 쓰지 않는다)
-uv run python -m src.evaluation.run_csv --case P-01 --case G-01
+uv run python -m src.evaluate --case P-01 --case G-01
 
-# 보조: test_queries.json 24건. 반복 번호, 회귀, 루프 상태(continue/success/stop)를 자동으로 계산한다
-uv run python -m src.evaluation.run_json --note "이번 반복 전에 고친 내용"
+# 보조: 회귀 세트 24건. 반복 번호, 회귀, 루프 상태(continue/success/stop)를 자동으로 계산한다
+uv run python -m src.evaluate_regression --note "이번 반복 전에 고친 내용"
 ```
 
 - 기본으로 한 문항씩 실행한다. 무료 검색(DuckDuckGo)은 짧은 시간에 많이 부르면 막히므로 `--workers`를 올리지 않는다. 검색 오류가 몰리면 몇 시간 뒤에 다시 돌린다.
 - 실패 문항마다 사유(빠진 도구, 위반한 금지 항목과 근거)와 도구 오류가 출력된다. 도구 오류가 외부 장애라면 코드를 고치지 않는다.
 - Bedrock 하루 토큰 한도에 걸리면 모든 문항이 "에이전트 실행 실패"로 나온다. 그 실행은 무효로 보고 LOOP_LOG.md에 그렇게 적는다.
+
+## RAGAS 평가
+
+공식 평가(`src/evaluate.py`)가 저장한 `run_*.json`을 입력으로 RAGAS 지표를 계산한다. 에이전트를 다시 실행하지 않는다.
+
+| RAGAS 입력 | RunTrip에서 쓰는 값 |
+|------------|---------------------|
+| `user_input` | 문항의 질문 |
+| `response` | 에이전트의 최종 답변 |
+| `retrieved_contexts` | 그 문항에서 도구가 돌려준 결과 (오류 결과는 뺀다). RunTrip의 RAG는 문서 저장소가 아니라 웹 검색·지도·날씨 도구다 |
+| `reference` | `evaluation/ragas_references.csv`의 "답하려면 찾아야 하는 정보 항목" |
+
+- **측정 대상:** 도구 결과가 있는 문항만. 되묻기(E-01, E-02)와 가드레일 거절(G-01, G-02)은 가져온 문맥이 없어 RAGAS 지표가 정의되지 않으므로 뺀다.
+- **기준 답변:** CSV의 기대 특성(`expected_traits`)은 쓰지 않는다. "확인 불가로 안내" 같은 답변 방식 지침이라 문맥과 대조할 수 없고, 넣으면 `context_recall`이 모두 0이 된다. 대신 정보 항목을 따로 적었다. 이 파일은 평가 기준이므로 루프 중에 고쳐서 점수를 올리지 않는다.
+- **`context_precision`:** 기준 답변 없이 최종 답변을 기준으로 판정하는 방식(`LLMContextPrecisionWithoutReference`)을 쓴다.
+- **`answer_relevancy`:** RAGAS는 "찾지 못했다", "확인 불가" 같은 답을 회피성으로 보고 0점을 준다. 없는 정보를 지어내지 않는 것이 정답인 문항(N-01, 기간 안 대회가 없는 P-02)은 정책대로 답해도 0점이 나온다. 해석할 때 문항별 값을 함께 본다.
+- **판정 모델:** 판정 LLM은 에이전트와 같은 Bedrock Claude(`JUDGE_MODEL_ID`가 있으면 그것)를 쓴다. 임베딩은 Bedrock `amazon.titan-embed-text-v2:0`이다.
+- **호환성 처리:** ragas 0.4.3은 최신 `langchain-community`에서 빠진 Vertex AI 클래스를 import한다. `src/ragas_eval.py`가 import 직전에 빈 클래스로 채운다. RunTrip은 Vertex AI를 쓰지 않는다.
 
 ## 지켜야 할 규약
 
@@ -225,14 +232,14 @@ uv run python -m src.evaluation.run_json --note "이번 반복 전에 고친 내
 
 - Python은 `ruff`로 린트와 포맷을 맞춘다. 변경 후 `uv run ruff check . && uv run ruff format .`를 통과해야 한다.
 - 코드 주석, 도구 설명(docstring), 사용자에게 보이는 문구는 한국어로 쓴다. 변수, 함수 이름은 영어로 쓴다.
-- 도구는 실패해도 예외를 던지지 않고 `{"error": ..., "source": ...}`를 돌려준다 (`src/shared/http.py`의 `error()`).
+- 도구는 실패해도 예외를 던지지 않고 `{"error": ..., "source": ...}`를 돌려준다 (`src/common.py`의 `error()`).
 - 목업 데이터를 돌려주는 도구는 결과에 `"mock": true`와 안내 문구를 넣는다.
-- 도구를 추가하거나 바꾸면 SERVICE.md 3장 도구 표와 `src/agent/tools.py`의 `ALL_TOOLS`를 함께 고친다.
+- 도구를 추가하거나 바꾸면 SERVICE.md 3장 도구 표와 `src/tools.py`의 `ALL_TOOLS`를 함께 고친다.
 
 ### Git
 
 - 커밋 메시지는 한국어로, 무엇을 왜 바꿨는지 한 줄로 쓴다.
-- 평가 결과(`evaluation/results/`, `evaluation/LOOP_LOG.md`, 보조 세트의 `evals/runs/iter_*.json`, `evals/LOOP_LOG.md`)는 완성 근거이므로 함께 커밋한다. 실행 오류로 무효가 된 결과 파일은 커밋하지 않는다.
+- 평가 결과(`evaluation/results/`, `evaluation/LOOP_LOG.md`, 보조 세트의 `evaluation/regression/runs/iter_*.json`, `evaluation/regression/LOOP_LOG.md`)는 완성 근거이므로 함께 커밋한다. 실행 오류로 무효가 된 결과 파일은 커밋하지 않는다.
 
 ### 테스트
 
@@ -244,7 +251,7 @@ uv run python -m src.evaluation.run_json --note "이번 반복 전에 고친 내
 - API 키, AWS 자격 증명을 코드나 커밋에 넣지 않는다. 비밀 값은 `.env`에만 둔다.
 - 대화 기록이나 사용자 위치를 서버, 파일, 브라우저 저장소에 저장하지 않는다.
 - 실제 API 장애를 숨기려고 도구에서 그럴듯한 가짜 값을 돌려주지 않는다. 목업 전환은 `.env`의 `MOCK_*` 설정으로만, 사용자 확인 후에 한다.
-- 평가 루프 중에 `evaluation/test_queries.csv`나 `test_queries.json`을 고쳐 통과시키지 않는다.
+- 평가 루프 중에 `evaluation/test_queries.csv`나 `evaluation/regression/test_queries.json`을 고쳐 통과시키지 않는다.
 - 평가 판정기로 Claude Haiku 계열을 쓰지 않는다 (위반을 놓친 기록이 있다).
 
 ---

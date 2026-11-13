@@ -1,0 +1,38 @@
+{
+  "_설명": "목업 항공권·숙소 도구(src/tools.py의 search_flights, search_hotels)가 쓰는 기준값. 실제 가격이 아니다.",
+  "origin_airport": "ICN",
+  "flights": {
+    "airlines": [
+      "Mock Air",
+      "Sample Airlines",
+      "Demo Jet"
+    ],
+    "base_price_krw": [
+      250000,
+      1600000
+    ],
+    "date_spread_krw": [
+      0,
+      250000
+    ]
+  },
+  "hotels": {
+    "names": [
+      "Mock Hotel Central",
+      "Sample Inn Station",
+      "Demo Stay Riverside"
+    ],
+    "distance_km_x10": [
+      2,
+      20
+    ],
+    "price_per_night_krw": [
+      60000,
+      320000
+    ],
+    "rating_x10": [
+      35,
+      49
+    ]
+  }
+}

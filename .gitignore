@@ -15,4 +15,4 @@ frontend/dist/
 .archify/
 
 # 평가 루프: 디버깅용 부분 실행 결과는 판정 근거가 아니므로 제외한다
-evals/runs/debug_*.json
+evaluation/regression/runs/debug_*.json
